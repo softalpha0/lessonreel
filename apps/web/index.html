@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lessonreel: lesson notes to explainer video, even offline</title>
+    <meta
+      name="description"
+      content="Turn your lesson notes into a narrated explainer video, even with no internet."
+    />
+  </head>
+  <body>
+    <header class="top">
+      <h1>Lessonreel</h1>
+      <div class="pills">
+        <span id="net" class="pill">…</span>
+        <span id="nano" class="pill">Nano: not checked</span>
+        <button id="warm" class="ghost" type="button">Prepare offline model</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <label for="notes">Your lesson notes</label>
+        <textarea
+          id="notes"
+          rows="12"
+          placeholder="Paste or type your notes. Bullet points are fine."
+        ></textarea>
+        <div class="row">
+          <label>Who is it for <input id="audience" placeholder="JSS2 students" /></label>
+          <label>Scenes <input id="scenes" type="number" min="3" max="8" value="5" /></label>
+          <label
+            >Second language
+            <select id="lang"></select
+          ></label>
+        </div>
+        <button id="make" type="button">Make storyboard</button>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card">
+        <div id="board" class="board"><p class="muted">Your storyboard appears here.</p></div>
+        <p id="queue" class="queue"></p>
+        <button id="play" type="button" disabled>Preview video</button>
+        <div id="stage" class="stage" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

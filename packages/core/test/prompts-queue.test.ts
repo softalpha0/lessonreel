@@ -1,0 +1,57 @@
+import { describe, expect, it } from "vitest";
+import { buildStoryboardPrompt, NotesTooLongError } from "../src/prompts";
+import { MAX_ATTEMPTS, nextRunnable, planJobs, progress, type CloudJob } from "../src/queue";
+import { findLanguage, NARRATION_LANGUAGES } from "../src/languages";
+
+describe("buildStoryboardPrompt", () => {
+  it("clamps scene count and includes the notes", () => {
+    const p = buildStoryboardPrompt({
+      notes: "Water boils at 100C.",
+      audience: "kids",
+      targetScenes: 50,
+    });
+    expect(p).toContain("exactly 8 scenes");
+    expect(p).toContain("Water boils at 100C.");
+  });
+
+  it("rejects empty and oversized notes", () => {
+    expect(() => buildStoryboardPrompt({ notes: "   ", audience: "x" })).toThrow();
+    expect(() => buildStoryboardPrompt({ notes: "a".repeat(12_001), audience: "x" })).toThrow(
+      NotesTooLongError,
+    );
+  });
+});
+
+describe("queue", () => {
+  it("plans one image plus one TTS job per language per scene", () => {
+    const jobs = planJobs("p1", 3, ["en-US", "fr-FR"], 0);
+    expect(jobs).toHaveLength(9);
+    expect(new Set(jobs.map((j) => j.id)).size).toBe(9);
+  });
+
+  it("retries failed jobs only under the cap", () => {
+    const jobs: CloudJob[] = planJobs("p1", 1, [], 0).map((j) => ({
+      ...j,
+      status: "failed",
+      attempts: MAX_ATTEMPTS,
+    }));
+    expect(nextRunnable(jobs)).toHaveLength(0);
+    expect(progress(jobs).failed).toBe(1);
+  });
+
+  it("runs fresh jobs before retries", () => {
+    const [a, b] = planJobs("p1", 2, [], 0) as [CloudJob, CloudJob];
+    const retry = { ...a, status: "failed" as const, attempts: 1 };
+    expect(nextRunnable([retry, b], 1)[0]?.id).toBe(b.id);
+  });
+});
+
+describe("languages", () => {
+  it("does not offer unsupported Nigerian languages", () => {
+    const codes = NARRATION_LANGUAGES.map((l) => l.code);
+    expect(codes.some((c) => c.startsWith("yo") || c.startsWith("ig") || c.startsWith("ha"))).toBe(
+      false,
+    );
+    expect(findLanguage("en-US")?.status).toBe("ga");
+  });
+});
