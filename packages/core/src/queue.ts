@@ -46,6 +46,14 @@ export function nextRunnable(jobs: CloudJob[], limit = 2): CloudJob[] {
     .slice(0, limit);
 }
 
+/**
+ * Jobs left "running" when a tab closed or crashed mid-call. The runner resets them
+ * to "queued" when it starts (their attempt was already counted), so they aren't stuck forever.
+ */
+export function staleRunning(jobs: CloudJob[]): CloudJob[] {
+  return jobs.filter((j) => j.status === "running");
+}
+
 export function progress(jobs: CloudJob[]): { done: number; total: number; failed: number } {
   return {
     done: jobs.filter((j) => j.status === "done").length,

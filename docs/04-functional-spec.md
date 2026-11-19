@@ -1,11 +1,11 @@
 # 04 · Functional specification (SRS)
 
-|              |                                                                                                                                                    |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Last updated | 2026-11-19                                                                                                                                         |
-| Owner        | Business Analyst                                                                                                                                   |
-| Inputs       | [01 PRD](01-product-requirements.md) · [02 UX](02-ux-design.md) · [03 Screens](03-screen-design.md)                                                |
-| Feeds        | [05 Data flow](05-data-flow.md) · [06 Architecture](06-software-architecture.md) · tests in `packages/core/test` · Index: [docs/README](README.md) |
+|              |                                                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Last updated | 2026-11-19                                                                                                           |
+| Owner        | Business Analyst                                                                                                     |
+| Inputs       | [01 PRD](01-product-requirements.md) · [02 UX](02-ux-design.md) · [03 Screens](03-screen-design.md)                  |
+| Feeds        | [05 Data flow](05-data-flow.md) · [TDD](../TDD.md) · tests in `packages/core/test` · Index: [docs/README](README.md) |
 
 Words: **must** = required for the MVP; **should** = planned if time allows; **may** = optional.
 
@@ -190,16 +190,16 @@ Written as Given / When / Then. Each maps to a test (unit = `packages/core/test`
 
 ## 8. Non-functional acceptance
 
-| ID  | Requirement (from [06 §1](06-software-architecture.md#1-purpose-and-requirements)) | Pass when                                                             |
-| --- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| N1  | Storyboard on-device < 60 s                                                        | 5 real notes on Benjamin's laptop all under 60 s                      |
-| N2  | No work lost                                                                       | AC-6.2 passes                                                         |
-| N3  | No secrets                                                                         | `git grep` finds no API keys/debug tokens; `.env.local` ignored       |
-| N4  | App Check enforced                                                                 | Console shows enforcement on for AI Logic; unauthenticated call fails |
-| N5  | Works without Nano                                                                 | AC-3.2 passes on a second machine                                     |
-| N6  | English UI                                                                         | All UI text in English                                                |
-| N7  | Free and live until Dec 16                                                         | Hosted URL loads without login on Dec 16                              |
-| N8  | Accessible                                                                         | Keyboard-only run of UF-1 succeeds; contrast table in 03 §7 all pass  |
+| ID  | Requirement (from [TDD §4](../TDD.md#4-requirements-and-constraints)) | Pass when                                                             |
+| --- | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| N1  | Storyboard on-device < 60 s                                           | 5 real notes on Benjamin's laptop all under 60 s                      |
+| N2  | No work lost                                                          | AC-6.2 passes                                                         |
+| N3  | No secrets                                                            | `git grep` finds no API keys/debug tokens; `.env.local` ignored       |
+| N4  | App Check enforced                                                    | Console shows enforcement on for AI Logic; unauthenticated call fails |
+| N5  | Works without Nano                                                    | AC-3.2 passes on a second machine                                     |
+| N6  | English UI                                                            | All UI text in English                                                |
+| N7  | Free and live until Dec 16                                            | Hosted URL loads without login on Dec 16                              |
+| N8  | Accessible                                                            | Keyboard-only run of UF-1 succeeds; contrast table in 03 §7 all pass  |
 
 ## 9. Traceability matrix
 

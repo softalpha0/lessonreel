@@ -124,14 +124,14 @@ _To be added during the build:_ screenshots and console logs of `inferenceSource
 
 ## Documentation
 
-| Doc                                                          | What it covers                                                        |
-| ------------------------------------------------------------ | --------------------------------------------------------------------- |
-| [01 Product requirements](docs/01-product-requirements.md)   | Problem, users, goals, scope                                          |
-| [02 UX design](docs/02-ux-design.md)                         | Personas, journeys, user flows, screen inventory, error flows         |
-| [03 Screen design](docs/03-screen-design.md)                 | Wireframes, design system, components, states, accessibility          |
-| [04 Functional spec](docs/04-functional-spec.md)             | Requirements, business rules, validation, errors, acceptance criteria |
-| [05 Data flow](docs/05-data-flow.md)                         | DFD level 0/1, data dictionary, privacy                               |
-| [06 Software architecture](docs/06-software-architecture.md) | Components, stack, security, ADRs                                     |
+| Doc                                                        | What it covers                                                                              |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [01 Product requirements](docs/01-product-requirements.md) | Problem, users, goals, scope                                                                |
+| [02 UX design](docs/02-ux-design.md)                       | Personas, journeys, user flows, screen inventory, error flows                               |
+| [03 Screen design](docs/03-screen-design.md)               | Wireframes, design system, components, states, accessibility                                |
+| [04 Functional spec](docs/04-functional-spec.md)           | Requirements, business rules, validation, errors, acceptance criteria                       |
+| [05 Data flow](docs/05-data-flow.md)                       | DFD level 0/1, data dictionary, privacy                                                     |
+| [TDD.md](TDD.md)                                           | Technical design: architecture, stack, data, APIs, security, testing, deployment, decisions |
 
 ## Tech stack
 
@@ -166,8 +166,9 @@ pnpm run ci   # lint, format check, typecheck, unit tests, build
 ```
 apps/web/            Vite app: UI, Firebase wiring, hybrid + cloud AI calls, queue runner, player
 packages/core/       Pure logic: storyboard schema, prompts, languages, queue (unit-tested)
-docs/                Product, UX, screens, functional spec, data flow, architecture (see docs/README.md)
+docs/                Product, UX, screens, functional spec, data flow (see docs/README.md)
 evidence/            Screenshots and logs proving on-device vs cloud behaviour
+TDD.md               Technical design document (central technical reference)
 HACKATHON.md         Hackathon brief, rules, setup steps, Git/security rules (for Claude Code)
 BUILD_PLAN.md        Ordered build stages and how each is tested
 FEATURE_GUIDE.md     Plain-language guide to each approved feature

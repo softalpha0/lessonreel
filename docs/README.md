@@ -2,14 +2,14 @@
 
 Six documents, one product. Each one answers a different question, and they share the same IDs so you can trace any feature from "why" to "how".
 
-| #   | Document                                                | Answers                                                                               | Owner role            |
-| --- | ------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------- |
-| 01  | [Product requirements](01-product-requirements.md)      | What are we building, for whom, and why? What's in and out of scope?                  | Product Manager       |
-| 02  | [UX design and user flows](02-ux-design.md)             | Who are the users, what do they do, and in what order? What happens when things fail? | UX Designer           |
-| 03  | [Screen design](03-screen-design.md)                    | What does each screen contain and look like? Which states does it have?               | UI / Product Designer |
-| 04  | [Functional specification (SRS)](04-functional-spec.md) | Exactly how must the system behave? How do we know it works?                          | Business Analyst      |
-| 05  | [Data flow](05-data-flow.md)                            | Where does each piece of data come from, where does it go, and where is it stored?    | BA + Architect        |
-| 06  | [Software architecture](06-software-architecture.md)    | How is it built technically? Why these choices?                                       | Software Architect    |
+| #   | Document                                                                                            | Answers                                                                               | Owner role                     |
+| --- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------ |
+| 01  | [Product requirements](01-product-requirements.md)                                                  | What are we building, for whom, and why? What's in and out of scope?                  | Product Manager                |
+| 02  | [UX design and user flows](02-ux-design.md)                                                         | Who are the users, what do they do, and in what order? What happens when things fail? | UX Designer                    |
+| 03  | [Screen design](03-screen-design.md)                                                                | What does each screen contain and look like? Which states does it have?               | UI / Product Designer          |
+| 04  | [Functional specification (SRS)](04-functional-spec.md)                                             | Exactly how must the system behave? How do we know it works?                          | Business Analyst               |
+| 05  | [Data flow](05-data-flow.md)                                                                        | Where does each piece of data come from, where does it go, and where is it stored?    | BA + Architect                 |
+| 06  | [Technical design (TDD)](../TDD.md) (root file; [06](06-software-architecture.md) now points to it) | How is it built technically? Why these choices?                                       | Software Architect / Tech Lead |
 
 Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md), [demo script](demo-script.md), [`AGENTS.md`](../AGENTS.md) (briefing for coding agents), [`README.md`](../README.md) (public overview).
 
@@ -23,19 +23,19 @@ Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md)
 | `UF-n`        | User flow                  | 02                                     |
 | `S-n`         | Screen / view              | 02 (inventory), 03 (design)            |
 | `E-n`         | Error or alternative state | 02 (flow), 03 (design), 04 (behaviour) |
-| `Fn` / `Fn.m` | Functional requirement     | 06 (summary), 04 (full spec)           |
-| `Nn`          | Non-functional requirement | 06 (summary), 04 (acceptance)          |
+| `Fn` / `Fn.m` | Functional requirement     | TDD §4 (summary), 04 (full spec)       |
+| `Nn`          | Non-functional requirement | TDD §4 (summary), 04 (acceptance)      |
 | `BR-n`        | Business rule              | 04                                     |
 | `AC-n`        | Acceptance criterion       | 04                                     |
 | `P-n`         | Data-flow process          | 05                                     |
 | `D-n`         | Data store                 | 05                                     |
-| `C-n` / `Cn`  | Technical component        | 06                                     |
-| `ADR-n`       | Architecture decision      | 06                                     |
+| `C-n` / `Cn`  | Technical component        | TDD §8                                 |
+| `ADR-n`       | Architecture decision      | TDD §22                                |
 
 ## How a feature traces through the docs (example)
 
 "Make a storyboard with no internet":
-`G-1` (01) → `PER-1`, `J-1` (02) → `UF-1`, `S-1`, `S-2`, `E-1` (02) → wireframes for `S-1`/`S-2` (03) → `F2`, `F3`, `BR-1`–`BR-4`, `AC-2.x` (04) → `P-1`, `D-1` (05) → `C3`, `ADR-002`, `ADR-005` (06) → `apps/web/src/ai/storyboard.ts` (code).
+`G-1` (01) → `PER-1`, `J-1` (02) → `UF-1`, `S-1`, `S-2`, `E-1` (02) → wireframes for `S-1`/`S-2` (03) → `F2`, `F3`, `BR-1`–`BR-4`, `AC-2.x` (04) → `P-1`, `D-1` (05) → `C3`, `ADR-002`, `ADR-005` (TDD) → `apps/web/src/ai/storyboard.ts` (code).
 
 ## Docs ↔ code sync
 

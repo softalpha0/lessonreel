@@ -1,6 +1,6 @@
 # HACKATHON.md: master brief for Claude Code
 
-> **Claude Code: read this whole file before doing anything.** It tells you what hackathon this is, what we're building, the rules we must follow, how to set up my computer, and how to back up and document the work. Then read [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md) (how we build: one feature at a time, I test and approve each), [`BUILD_PLAN.md`](BUILD_PLAN.md) (the ordered stages), [`AGENTS.md`](AGENTS.md) and [`docs/README.md`](docs/README.md).
+> **Claude Code: read this whole file before doing anything.** It tells you what hackathon this is, what we're building, the rules we must follow, how to set up my computer, and how to back up and document the work. Then read [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md) (how we build: one feature at a time, I test and approve each), [`BUILD_PLAN.md`](BUILD_PLAN.md) (the ordered stages), [`TDD.md`](TDD.md) (technical design: check it before technical decisions), [`AGENTS.md`](AGENTS.md) and [`docs/README.md`](docs/README.md).
 
 |              |                                                                                          |
 | ------------ | ---------------------------------------------------------------------------------------- |
@@ -159,16 +159,20 @@ From the official rules. **Breaking any of these can disqualify us.**
 
 **Full product docs** (read the one you need, they share IDs):
 
-| Doc                                                                  | Covers                                                          |
-| -------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [docs/README.md](docs/README.md)                                     | Index, shared IDs, **docs-vs-code gap table = build checklist** |
-| [docs/01-product-requirements.md](docs/01-product-requirements.md)   | Problem, users, goals, scope, release plan                      |
-| [docs/02-ux-design.md](docs/02-ux-design.md)                         | Personas, journeys, user flows, screens, error flows            |
-| [docs/03-screen-design.md](docs/03-screen-design.md)                 | Wireframes, colours, fonts, components, accessibility           |
-| [docs/04-functional-spec.md](docs/04-functional-spec.md)             | Requirements, business rules, errors, **acceptance criteria**   |
-| [docs/05-data-flow.md](docs/05-data-flow.md)                         | Where data comes from, goes, and is stored                      |
-| [docs/06-software-architecture.md](docs/06-software-architecture.md) | Components, tech choices, security, ADRs                        |
-| [AGENTS.md](AGENTS.md)                                               | Coding rules, verified SDK facts, status log                    |
+| Doc                                                                | Covers                                                                                                          |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [docs/README.md](docs/README.md)                                   | Index, shared IDs, **docs-vs-code gap table = build checklist**                                                 |
+| [docs/01-product-requirements.md](docs/01-product-requirements.md) | Problem, users, goals, scope, release plan                                                                      |
+| [docs/02-ux-design.md](docs/02-ux-design.md)                       | Personas, journeys, user flows, screens, error flows                                                            |
+| [docs/03-screen-design.md](docs/03-screen-design.md)               | Wireframes, colours, fonts, components, accessibility                                                           |
+| [docs/04-functional-spec.md](docs/04-functional-spec.md)           | Requirements, business rules, errors, **acceptance criteria**                                                   |
+| [docs/05-data-flow.md](docs/05-data-flow.md)                       | Where data comes from, goes, and is stored                                                                      |
+| [TDD.md](TDD.md)                                                   | **Technical design**: architecture, stack, data, APIs, security, testing, deployment, decisions, open questions |
+| [AGENTS.md](AGENTS.md)                                             | Coding rules, verified SDK facts, status log                                                                    |
+| [BUILD_PLAN.md](BUILD_PLAN.md)                                     | **Ordered stages, how each is tested, exit gate**                                                               |
+| [FEATURE_GUIDE.md](FEATURE_GUIDE.md)                               | Plain-language explanation of each approved feature                                                             |
+| [DEVELOPMENT_PROTOCOL.md](DEVELOPMENT_PROTOCOL.md)                 | How we build and test, feature by feature                                                                       |
+| [DEBUGGING.md](DEBUGGING.md)                                       | Bug report template, debugging steps, symptom → cause map, bug log                                              |
 
 ---
 
@@ -262,7 +266,7 @@ TTS languages we offer: English, French, Spanish, Hindi (stable), Swahili (previ
 | --- | ------------------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | 11  | Unzip `lessonreel.zip` into e.g. `C:\dev\lessonreel` and open PowerShell there | `cd C:\dev\lessonreel`                                  | `git log --oneline` shows the existing commits                                            |
 | 12  | Install libraries                                                              | `pnpm install`                                          | Finishes without errors                                                                   |
-| 13  | Run all checks                                                                 | `pnpm run ci`                                           | Lint, format, typecheck, **13 tests passing**, build OK                                   |
+| 13  | Run all checks                                                                 | `pnpm run ci`                                           | Lint, format, typecheck, **14 tests passing**, build OK                                   |
 | 14  | Create my local settings file                                                  | `Copy-Item apps\web\.env.example apps\web\.env.local`   | File exists; it's ignored by Git (`git check-ignore apps\web\.env.local` prints the path) |
 | 15  | Fill `.env.local`                                                              | After §8. Never paste its contents into chat or commits | n/a                                                                                       |
 | 16  | Start the app                                                                  | `pnpm dev`                                              | http://localhost:5173 opens                                                               |

@@ -5,6 +5,7 @@
 | Hackathon                              | #BuildHybridAI 2026 ([`HACKATHON.md`](HACKATHON.md))                                                                                                                     |
 | Process                                | [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md): build → explain → test → **Benjamin tests** → break it → fix → review → guide → **approve** → commit → push → next |
 | What each feature must do              | [`docs/04-functional-spec.md`](docs/04-functional-spec.md) (F-n, BR-n, AC-n)                                                                                             |
+| How it's built technically             | [`TDD.md`](TDD.md)                                                                                                                                                       |
 | What each feature does, in plain words | [`FEATURE_GUIDE.md`](FEATURE_GUIDE.md)                                                                                                                                   |
 | Last updated                           | 2026-11-19                                                                                                                                                               |
 
@@ -72,7 +73,7 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **What it does:** Gets Benjamin's Windows machine ready, puts the project on GitHub, and creates the Firebase project.
 - **What Benjamin can do after:** run `pnpm dev`, open the app on `localhost:5173`, see the code on github.com.
 - **Steps:** HACKATHON.md §7 (tools, one at a time) → §9.1 (fix commit authors, create repo, push) → §8 (Firebase console).
-- **Test:** `pnpm run ci` passes (13 tests). `git status` says up to date with origin. Repo visible on GitHub. `.env.local` is ignored (`git check-ignore apps\web\.env.local`).
+- **Test:** `pnpm run ci` passes (14 tests). `git status` says up to date with origin. Repo visible on GitHub. `.env.local` is ignored (`git check-ignore apps\web\.env.local`).
 - **Break tests:** run `git status` after creating `.env.local` and confirm it is **not** listed.
 - **Done when:** exit gate + Firebase web config in `.env.local` + App Check debug token registered.
 
@@ -98,6 +99,7 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **What it does:** turns notes into scenes + quiz using Gemini Nano (offline) or the cloud model, validates the result, repairs it once if broken, shows the On-device/Cloud badge and time taken.
 - **What Benjamin can do:** see a storyboard appear with Wi-Fi **off**.
 - **Data/services:** Firebase AI Logic (`PREFER_ON_DEVICE`), App Check, Zod schema in `packages/core`.
+- **Open questions to close (TDD §24):** #1 Nano on this laptop, #2 cloud model available, #8 `responseConstraint` honoured.
 - **Test (riskiest stage):** run **5 real lesson notes** with Wi-Fi off; record time and whether JSON was valid in `evidence/`. Then the same with Nano disabled → Cloud badge.
 - **Break tests:** very short notes ("Water boils."); notes in French; notes with a list of 30 bullets; offline on a machine without Nano (E-1 message, notes kept).
 
@@ -188,4 +190,5 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-19: TDD.md added. Stale `running` job recovery fixed early (was planned for Stage 8).
 - 2026-11-19: Plan created. Existing code mapped to stages as 🟡. Fixed `crypto.randomUUID` crash on plain-http phone testing; added `pnpm dev:lan`.

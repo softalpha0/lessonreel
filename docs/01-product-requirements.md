@@ -59,7 +59,7 @@ The product is global. Nigeria is the demo story because we can tell it honestly
 
 ## 6. Scope (MoSCoW)
 
-Feature IDs match the functional spec ([04](04-functional-spec.md)) and architecture ([06](06-software-architecture.md#1-purpose-and-requirements)).
+Feature IDs match the functional spec ([04](04-functional-spec.md)) and architecture ([TDD](../TDD.md#4-requirements-and-constraints)).
 
 | Priority                 | Feature                                                                                                                                            | ID   |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
@@ -81,14 +81,14 @@ Feature IDs match the functional spec ([04](04-functional-spec.md)) and architec
 
 ## 7. Constraints
 
-| Constraint                                                                       | Source                                                                                        |
-| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Must use Firebase AI Logic hybrid inference, App Check required                  | Hackathon rules                                                                               |
-| Newly created during the submission period (from Nov 11); no reused project code | Rules + our decision ([06 ADR](06-software-architecture.md#16-architecture-decision-records)) |
-| Public repo, OSS license, ≤ 3 min English video, free judge access until Dec 16  | Hackathon rules                                                                               |
-| English UI                                                                       | Hackathon rules                                                                               |
-| Submit by Nov 29 (deadline Nov 30, 11:00 PM Lagos)                               | Rules + playbook                                                                              |
-| Solo builder, free tier                                                          | Reality                                                                                       |
+| Constraint                                                                       | Source                                                                                                    |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Must use Firebase AI Logic hybrid inference, App Check required                  | Hackathon rules                                                                                           |
+| Newly created during the submission period (from Nov 11); no reused project code | Rules + our decision ([TDD ADR-011](../TDD.md#adr-011-everything-built-new-during-the-submission-period)) |
+| Public repo, OSS license, ≤ 3 min English video, free judge access until Dec 16  | Hackathon rules                                                                                           |
+| English UI                                                                       | Hackathon rules                                                                                           |
+| Submit by Nov 29 (deadline Nov 30, 11:00 PM Lagos)                               | Rules + playbook                                                                                          |
+| Solo builder, free tier                                                          | Reality                                                                                                   |
 
 ## 8. Assumptions and dependencies
 

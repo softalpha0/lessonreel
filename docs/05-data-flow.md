@@ -1,11 +1,11 @@
 # 05 · Data flow
 
-|              |                                                                                                       |
-| ------------ | ----------------------------------------------------------------------------------------------------- |
-| Last updated | 2026-11-19                                                                                            |
-| Owner        | Business Analyst + Software Architect                                                                 |
-| Inputs       | [04 Functional spec](04-functional-spec.md) (F-n, BR-n)                                               |
-| Feeds        | [06 Architecture](06-software-architecture.md) §7 Data architecture · Index: [docs/README](README.md) |
+|              |                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------- |
+| Last updated | 2026-11-19                                                                            |
+| Owner        | Business Analyst + Software Architect                                                 |
+| Inputs       | [04 Functional spec](04-functional-spec.md) (F-n, BR-n)                               |
+| Feeds        | [TDD](../TDD.md) §11 Database and data architecture · Index: [docs/README](README.md) |
 
 ## Contents
 

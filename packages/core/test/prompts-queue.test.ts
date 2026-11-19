@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { buildStoryboardPrompt, NotesTooLongError } from "../src/prompts";
-import { MAX_ATTEMPTS, nextRunnable, planJobs, progress, type CloudJob } from "../src/queue";
+import {
+  MAX_ATTEMPTS,
+  nextRunnable,
+  planJobs,
+  progress,
+  staleRunning,
+  type CloudJob,
+} from "../src/queue";
 import { findLanguage, NARRATION_LANGUAGES } from "../src/languages";
 
 describe("buildStoryboardPrompt", () => {
@@ -43,6 +50,15 @@ describe("queue", () => {
     const [a, b] = planJobs("p1", 2, [], 0) as [CloudJob, CloudJob];
     const retry = { ...a, status: "failed" as const, attempts: 1 };
     expect(nextRunnable([retry, b], 1)[0]?.id).toBe(b.id);
+  });
+});
+
+describe("stale jobs", () => {
+  it("finds jobs left running so the runner can requeue them", () => {
+    const [a, b] = planJobs("p1", 2, [], 0) as [CloudJob, CloudJob];
+    const stuck = { ...a, status: "running" as const, attempts: 1 };
+    expect(nextRunnable([stuck])).toHaveLength(0); // the bug: never picked again
+    expect(staleRunning([stuck, b]).map((j) => j.id)).toEqual([a.id]);
   });
 });
 

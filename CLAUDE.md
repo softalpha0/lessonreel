@@ -16,3 +16,4 @@ Key reminders:
 - Code marked 🟡 in BUILD_PLAN.md exists but I haven't tested it: explain it and let me test it before extending it.
 - Update FEATURE_GUIDE.md after each approved feature.
 - When I report a bug, follow DEBUGGING.md Part 2: reproduce, find the root cause, explain it, fix minimally, verify, and wait for my approval.
+- Check TDD.md before any important technical decision, and update it when the implementation changes.

@@ -1,6 +1,6 @@
 import type { AI } from "firebase/ai";
 import type { Firestore } from "firebase/firestore";
-import { nextRunnable, progress, type CloudJob } from "@lessonreel/core";
+import { nextRunnable, progress, staleRunning, type CloudJob } from "@lessonreel/core";
 import { generateSceneImage, synthesizeNarration } from "../ai/cloud-media";
 import { assetKey, listJobs, saveAsset, updateJob, type Project } from "./store";
 
@@ -14,6 +14,29 @@ export interface RunnerEvents {
  * connection drops; the next "online" event resumes from where it left off.
  */
 export async function drainQueue(
+  ai: AI,
+  db: Firestore,
+  uid: string,
+  project: Project,
+  events: RunnerEvents,
+): Promise<void> {
+  if (draining.has(project.id)) return; // one runner per lesson per tab
+  draining.add(project.id);
+  try {
+    // Recover jobs interrupted by a closed tab or crash (TDD §17).
+    const start = await listJobs(db, uid, project.id);
+    await Promise.all(
+      staleRunning(start).map((j) => updateJob(db, uid, j.id, { status: "queued" })),
+    );
+    await drainLoop(ai, db, uid, project, events);
+  } finally {
+    draining.delete(project.id);
+  }
+}
+
+const draining = new Set<string>();
+
+async function drainLoop(
   ai: AI,
   db: Firestore,
   uid: string,
