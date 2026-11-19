@@ -86,6 +86,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: Design pack: docs/11 brand, 12 design system, 13 UX writing, 14 accessibility, 15 design QA; expanded 02 (principles P1–P11, UF-6/7, states) and 03 (per-control UI spec, responsive). Found: page can't open offline → PWA (F12, ADR-012, Stage 4B); amber and input-border contrast fixes.
 - 2026-11-19: Added docs/07 frontend guide, 08 AI architecture, 09 test cases, 10 demo plan (replaces demo-script), user stories in 04 §10.
 - 2026-11-19: Added TDD.md (central technical design; docs/06 now points to it). Fixed stale `running` jobs never retrying (`staleRunning` + test) and added a one-runner-per-lesson guard. 14 tests.
 - 2026-11-19: Added DEBUGGING.md (report template, root-cause process, symptom map, bug log).

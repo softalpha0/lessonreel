@@ -171,6 +171,11 @@ From the official rules. **Breaking any of these can disqualify us.**
 | [docs/08-ai-architecture.md](docs/08-ai-architecture.md)           | Models, prompts (v1), token budget, AI quality checks, evaluation plan                                          |
 | [docs/09-test-cases.md](docs/09-test-cases.md)                     | **Test cases to run at every stage** (record results here)                                                      |
 | [docs/10-demo-plan.md](docs/10-demo-plan.md)                       | Video script, sample data, backup plan, judge instructions, Devpost draft                                       |
+| [docs/11-brand-guidelines.md](docs/11-brand-guidelines.md)         | Brand: voice, logo, colours, font                                                                               |
+| [docs/12-design-system.md](docs/12-design-system.md)               | Design tokens and components (UI must use these)                                                                |
+| [docs/13-ux-writing.md](docs/13-ux-writing.md)                     | Every interface string (single source of truth)                                                                 |
+| [docs/14-accessibility.md](docs/14-accessibility.md)               | WCAG 2.2 AA requirements and how to test them                                                                   |
+| [docs/15-design-qa.md](docs/15-design-qa.md)                       | Design acceptance checklist per stage                                                                           |
 | [TDD.md](TDD.md)                                                   | **Technical design**: architecture, stack, data, APIs, security, testing, deployment, decisions, open questions |
 | [AGENTS.md](AGENTS.md)                                             | Coding rules, verified SDK facts, status log                                                                    |
 | [BUILD_PLAN.md](BUILD_PLAN.md)                                     | **Ordered stages, how each is tested, exit gate**                                                               |

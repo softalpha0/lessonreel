@@ -94,6 +94,14 @@ Words: **must** = required for the MVP; **should** = planned if time allows; **m
 
 - **F10.1** An Android app may reuse the same rules (BR-1 to BR-10) using the Firebase AI Logic Android SDK.
 
+### F12 Installable offline app (PWA)
+
+- **F12.1** The app must cache its own files (HTML, JS, CSS, font, icons) on the first online visit so it opens with no internet.
+- **F12.2** The app must show "Works offline ✓" once its files are cached.
+- **F12.3** The app should offer "Install app" when the browser supports installation, and remember "Not now".
+- **F12.4** When a new version is deployed, the app must tell the user and update on reload (no silent breaking changes).
+- **F12.5** Firebase and Gemini network calls must **not** be cached by the service worker.
+
 ### F11 My lessons (Could)
 
 - **F11.1** The system may list lessons stored in this browser, newest first, and reopen one.
@@ -167,27 +175,28 @@ There are no admin screens and no shared data in the MVP.
 
 Written as Given / When / Then. Each maps to a test (unit = `packages/core/test`, manual = demo checklist).
 
-| ID     | Req        | Criterion                                                                                                           | Test                      |
-| ------ | ---------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| AC-1.1 | F1.3       | Given scenes = 50, when the prompt is built, then it asks for exactly 8 scenes                                      | Unit ✅                   |
-| AC-1.2 | BR-1       | Given 12,001 characters of notes, when Make is clicked, then E-2 shows and no model is called                       | Unit ✅ (prompt) + manual |
-| AC-2.1 | F2.2       | Given model JSON wrapped in prose or a code fence, when parsed, then the storyboard is extracted                    | Unit ✅                   |
-| AC-2.2 | F2.4       | Given scene indexes 7, 2, 9, when parsed, then they become 1, 2, 3                                                  | Unit ✅                   |
-| AC-2.3 | BR-2       | Given only 1 scene, when parsed, then validation fails with a message naming `scenes`                               | Unit ✅                   |
-| AC-2.4 | F2.3       | Given invalid first output, when generating, then exactly one repair request is sent                                | Manual                    |
-| AC-3.1 | F3.1, F7.1 | Given Nano is ready and Wi-Fi is off, when Make is clicked, then a storyboard appears with the On-device badge      | Manual (demo)             |
-| AC-3.2 | F3.1       | Given no Nano and online, when Make is clicked, then a storyboard appears with the Cloud badge                      | Manual (judge path)       |
-| AC-3.3 | F3.4       | Given no Nano and offline, when Make is clicked, then E-1 shows and notes remain                                    | Manual                    |
-| AC-4.1 | F4.2       | Given French selected, when voice jobs run, then the French audio is spoken French, not English read with an accent | Manual                    |
-| AC-6.1 | F6.1       | Given 3 scenes and 2 languages, when jobs are planned, then 9 jobs exist with unique ids                            | Unit ✅                   |
-| AC-6.2 | F6.2       | Given jobs queued offline, when the tab is reloaded and then goes online, then all jobs complete                    | Manual                    |
-| AC-6.3 | BR-9       | Given a job failed 3 times, when choosing next jobs, then it is not selected                                        | Unit ✅                   |
-| AC-6.4 | BR-9       | Given a fresh job and a retry, when choosing 1 job, then the fresh job runs first                                   | Unit ✅                   |
-| AC-7.1 | BR-7       | The language list contains no Yoruba, Igbo or Hausa codes                                                           | Unit ✅                   |
-| AC-8.1 | F8.2       | Given a scene with no audio, when previewing, then it shows for its duration                                        | Manual                    |
-| AC-9.1 | F9.2       | Given Chrome supports MP4 recording, when exporting, then the file ends in `.mp4` and plays in VLC and WhatsApp     | Manual                    |
-| AC-9.2 | F9.4       | Given 1 job still running, then Download is disabled                                                                | Manual                    |
-| AC-9.3 | F9.1       | Given a 5-scene lesson, when exported, then audio and captions stay in sync within 0.5 s                            | Manual                    |
+| ID      | Req        | Criterion                                                                                                                  | Test                      |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| AC-1.1  | F1.3       | Given scenes = 50, when the prompt is built, then it asks for exactly 8 scenes                                             | Unit ✅                   |
+| AC-1.2  | BR-1       | Given 12,001 characters of notes, when Make is clicked, then E-2 shows and no model is called                              | Unit ✅ (prompt) + manual |
+| AC-2.1  | F2.2       | Given model JSON wrapped in prose or a code fence, when parsed, then the storyboard is extracted                           | Unit ✅                   |
+| AC-2.2  | F2.4       | Given scene indexes 7, 2, 9, when parsed, then they become 1, 2, 3                                                         | Unit ✅                   |
+| AC-2.3  | BR-2       | Given only 1 scene, when parsed, then validation fails with a message naming `scenes`                                      | Unit ✅                   |
+| AC-2.4  | F2.3       | Given invalid first output, when generating, then exactly one repair request is sent                                       | Manual                    |
+| AC-3.1  | F3.1, F7.1 | Given Nano is ready and Wi-Fi is off, when Make is clicked, then a storyboard appears with the On-device badge             | Manual (demo)             |
+| AC-3.2  | F3.1       | Given no Nano and online, when Make is clicked, then a storyboard appears with the Cloud badge                             | Manual (judge path)       |
+| AC-3.3  | F3.4       | Given no Nano and offline, when Make is clicked, then E-1 shows and notes remain                                           | Manual                    |
+| AC-4.1  | F4.2       | Given French selected, when voice jobs run, then the French audio is spoken French, not English read with an accent        | Manual                    |
+| AC-6.1  | F6.1       | Given 3 scenes and 2 languages, when jobs are planned, then 9 jobs exist with unique ids                                   | Unit ✅                   |
+| AC-6.2  | F6.2       | Given jobs queued offline, when the tab is reloaded and then goes online, then all jobs complete                           | Manual                    |
+| AC-6.3  | BR-9       | Given a job failed 3 times, when choosing next jobs, then it is not selected                                               | Unit ✅                   |
+| AC-6.4  | BR-9       | Given a fresh job and a retry, when choosing 1 job, then the fresh job runs first                                          | Unit ✅                   |
+| AC-7.1  | BR-7       | The language list contains no Yoruba, Igbo or Hausa codes                                                                  | Unit ✅                   |
+| AC-8.1  | F8.2       | Given a scene with no audio, when previewing, then it shows for its duration                                               | Manual                    |
+| AC-9.1  | F9.2       | Given Chrome supports MP4 recording, when exporting, then the file ends in `.mp4` and plays in VLC and WhatsApp            | Manual                    |
+| AC-9.2  | F9.4       | Given 1 job still running, then Download is disabled                                                                       | Manual                    |
+| AC-9.3  | F9.1       | Given a 5-scene lesson, when exported, then audio and captions stay in sync within 0.5 s                                   | Manual                    |
+| AC-12.1 | F12.1      | Given the app was opened once online, when Chrome is reopened with no internet, then Lessonreel loads with the last lesson | Manual (TC-4B.2)          |
 
 ## 8. Non-functional acceptance
 
@@ -204,18 +213,19 @@ Written as Given / When / Then. Each maps to a test (unit = `packages/core/test`
 
 ## 9. Traceability matrix
 
-| Req | Goal (01) | Flow / screen (02, 03)     | Data (05)      | Component (06)            | Code                                                        |
-| --- | --------- | -------------------------- | -------------- | ------------------------- | ----------------------------------------------------------- |
-| F1  | G-3       | UF-1 · S-1                 | P-1 input      | C1                        | `main.ts`, `index.html`                                     |
-| F2  | G-3       | UF-1, UF-4 · S-2           | P-1 → D-1      | C3, C8                    | `ai/storyboard.ts`, `core/storyboard.ts`, `core/prompts.ts` |
-| F3  | G-1       | UF-1, UF-2 · S-0, E-1      | P-1            | C3 · ADR-002              | `ai/storyboard.ts`                                          |
-| F4  | G-4       | UF-1 · S-3                 | P-3 → D-2      | C4 · ADR-007              | `ai/cloud-media.ts`                                         |
-| F5  | G-3       | UF-1 · S-3                 | P-3 → D-2      | C4                        | `ai/cloud-media.ts`                                         |
-| F6  | G-2       | UF-1, UF-3 · S-3, E-5, E-7 | P-2, P-3 · D-3 | C5, C6 · ADR-003, ADR-004 | `lib/runner.ts`, `lib/store.ts`, `core/queue.ts`            |
-| F7  | G-5       | S-2, S-3                   | P-1 metadata   | C1, C3                    | `main.ts`                                                   |
-| F8  | G-3       | S-4                        | P-4 ← D-1, D-2 | C7                        | `lib/player.ts`                                             |
-| F9  | G-3       | UF-5 · S-5, E-6            | P-5 ← D-1, D-2 | C7 · ADR-010              | `lib/exporter.ts`                                           |
-| F11 | —         | S-6                        | D-1            | C6                        | `lib/store.ts` (`latestProject`)                            |
+| Req | Goal (01) | Flow / screen (02, 03)     | Data (05)       | Component (06)            | Code                                                        |
+| --- | --------- | -------------------------- | --------------- | ------------------------- | ----------------------------------------------------------- |
+| F1  | G-3       | UF-1 · S-1                 | P-1 input       | C1                        | `main.ts`, `index.html`                                     |
+| F2  | G-3       | UF-1, UF-4 · S-2           | P-1 → D-1       | C3, C8                    | `ai/storyboard.ts`, `core/storyboard.ts`, `core/prompts.ts` |
+| F3  | G-1       | UF-1, UF-2 · S-0, E-1      | P-1             | C3 · ADR-002              | `ai/storyboard.ts`                                          |
+| F4  | G-4       | UF-1 · S-3                 | P-3 → D-2       | C4 · ADR-007              | `ai/cloud-media.ts`                                         |
+| F5  | G-3       | UF-1 · S-3                 | P-3 → D-2       | C4                        | `ai/cloud-media.ts`                                         |
+| F6  | G-2       | UF-1, UF-3 · S-3, E-5, E-7 | P-2, P-3 · D-3  | C5, C6 · ADR-003, ADR-004 | `lib/runner.ts`, `lib/store.ts`, `core/queue.ts`            |
+| F7  | G-5       | S-2, S-3                   | P-1 metadata    | C1, C3                    | `main.ts`                                                   |
+| F8  | G-3       | S-4                        | P-4 ← D-1, D-2  | C7                        | `lib/player.ts`                                             |
+| F9  | G-3       | UF-5 · S-5, E-6            | P-5 ← D-1, D-2  | C7 · ADR-010              | `lib/exporter.ts`                                           |
+| F11 | —         | S-6                        | D-1             | C6                        | `lib/store.ts` (`latestProject`)                            |
+| F12 | —         | UF-6, UF-7 · S-0b          | app shell cache | C1 · ADR-012              | `vite-plugin-pwa` config (planned)                          |
 
 ## 10. User stories
 
@@ -239,3 +249,4 @@ Format: "As a [user], I want [capability], so that [benefit]." Personas from [02
 | US-14 | PER-1/2       | As a returning user, I want my last lesson to be there when I reopen the app, so that I can continue where I stopped                                   | Must     | TC-4.1, TC-E2E.2             | F11.2   | US-2       |
 | US-15 | PER-4 judge   | As a judge, I want sample notes I can load with one click, so that I can try it without typing                                                         | Should   | TC-2.10                      | F1.6    | US-1       |
 | US-16 | PER-1/2/3     | As any user, I want clear messages when something goes wrong, so that I know what to do next and never lose my notes                                   | Must     | TC-2.1–2.3, TC-3.3, TC-E2E.3 | 04 §6   | n/a        |
+| US-17 | PER-1 teacher | As a teacher, I want to open Lessonreel during a power cut even after closing Chrome, so that offline really means offline                             | Must     | AC-12.1 · TC-4B.x            | F12     | US-14      |

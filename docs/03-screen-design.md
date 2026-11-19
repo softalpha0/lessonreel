@@ -1,11 +1,11 @@
-# 03 · Screen design: wireframes and UI specification
+# 03 · UI specification: screens, wireframes and responsive design
 
-|                |                                                                                                           |
-| -------------- | --------------------------------------------------------------------------------------------------------- |
-| Last updated   | 2026-11-19                                                                                                |
-| Owner          | UI / Product Designer                                                                                     |
-| Inputs         | [02 UX design](02-ux-design.md) (screen IDs S-n, errors E-n)                                              |
-| Implemented in | `apps/web/index.html`, `apps/web/src/style.css`, `apps/web/src/main.ts` · Index: [docs/README](README.md) |
+|                |                                                                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Last updated   | 2026-11-19                                                                                                                                                                                                                |
+| Owner          | UI / Product Designer                                                                                                                                                                                                     |
+| Inputs         | [02 UX design](02-ux-design.md) (screen IDs S-n, errors E-n) · [11 Brand](11-brand-guidelines.md) · [12 Design system](12-design-system.md) · [13 UX writing](13-ux-writing.md) · [14 Accessibility](14-accessibility.md) |
+| Implemented in | `apps/web/index.html`, `apps/web/src/style.css`, `apps/web/src/main.ts` · Index: [docs/README](README.md)                                                                                                                 |
 
 ## Contents
 
@@ -135,118 +135,159 @@ E-5 (row in S-3):
 
 ## 3. Visual design system
 
-These are the live values in `style.css`. Change both together.
-
-### Colour tokens
-
-| Token                   | Hex       | Use                                           |
-| ----------------------- | --------- | --------------------------------------------- |
-| `--ink`                 | `#1d1b16` | Body text, focus outline                      |
-| `--paper`               | `#faf7f0` | Page background (warm, like paper)            |
-| `--card`                | `#ffffff` | Card background                               |
-| `--line`                | `#e6e0d2` | Borders                                       |
-| `--muted`               | `#6b665c` | Secondary text                                |
-| `--accent` / `--device` | `#2f6f4f` | Primary button, On-device badge, success text |
-| `--cloud`               | `#2d5d9f` | Cloud badge                                   |
-| `--queued`              | `#9a6a12` | Queued badge, warnings                        |
-| Focus halo              | `#f2c14e` | Outer ring around the dark focus outline      |
-| Video frame bg          | `#1f3b2f` | Export canvas background                      |
-
-Colour is never the only signal: every badge also has a text label.
-
-### Typography
-
-| Style                 | Font            | Size                     | Weight |
-| --------------------- | --------------- | ------------------------ | ------ |
-| App title (h1)        | system-ui stack | 1.4rem (22.4 px)         | 700    |
-| Storyboard title (h2) | system-ui       | 1.5rem (browser default) | 700    |
-| Body                  | system-ui       | 1rem (16 px)             | 400    |
-| Labels                | system-ui       | 0.9rem                   | 600    |
-| Muted / meta          | system-ui       | 0.9rem                   | 400    |
-| Pills                 | system-ui       | 0.85rem                  | 400    |
-| Badges                | system-ui       | 0.75rem                  | 400    |
-| Video caption         | system-ui       | 40 px on 1280×720 canvas | 600    |
-
-System fonts load instantly offline and match the user's OS.
-
-### Spacing and shape
-
-| Token     | Value                                                          |
-| --------- | -------------------------------------------------------------- |
-| Base unit | 4 px; common steps 6, 8, 12, 16, 24 px                         |
-| Radius    | Cards 12 px · inputs/buttons 8 px · pills/badges fully rounded |
-| Elevation | None (flat, borders only) to keep it calm and fast             |
-
-### Icons
-
-Text-first. Status uses ✓ … ○ ✕ characters with labels. No icon font, so nothing extra to download offline.
+Moved to **[12 Design system](12-design-system.md)**: colour, type, spacing, shape, motion and breakpoint tokens, with contrast measurements and the 🔧 fixes (amber `#8c6010`, input borders `#948c7c`, Atkinson Hyperlegible font). Brand reasoning: [11 Brand guidelines](11-brand-guidelines.md).
 
 ## 4. Components
 
-| Component                      | Spec                                                                                      | States                                                                                                                              |
-| ------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Primary button                 | `--accent` bg, white text, 10×16 px padding, 8 px radius, min-height 44 px                | default · hover (cursor) · focus (dark outline + yellow halo) · disabled (50% opacity, not-allowed) · busy (disabled + status text) |
-| Ghost button                   | Transparent bg, `--accent` text and 1 px border                                           | Same as primary                                                                                                                     |
-| Text input / select / textarea | Full width, 10 px padding, 1 px `--line` border, 8 px radius                              | default · focus · invalid (amber hint below) · disabled                                                                             |
-| Pill (S-0)                     | 4×10 px, full radius, 1 px border                                                         | neutral · `on` (green) · `off` (amber)                                                                                              |
-| Badge                          | 2×8 px, full radius, white text                                                           | On-device (green) · Cloud (blue) · Queued (amber)                                                                                   |
-| Status line                    | 1.5em min height, `aria-live="polite"`                                                    | info (ink) · ok (green) · warn (amber)                                                                                              |
-| Scene item                     | Numbered list item: title (bold), duration (small), narration, image prompt (muted)       | read · editing (Should)                                                                                                             |
-| Progress row (S-3)             | Scene label + per-job symbol                                                              | waiting ○ · running … · done ✓ · failed ✕                                                                                           |
-| Stage                          | 16:9, 10 px radius, dark bg; image `object-fit: cover`; caption bar at bottom (55% black) | empty · placeholder gradient · playing                                                                                              |
+Moved to **[12 §4 Component library](12-design-system.md#4-component-library)**: button variants (primary, secondary, tertiary, destructive), inputs, checkbox, pill, badge, status line, card, scene item, production row, stage, quiz panel, toast, dialog, install banner, offline-ready pill.
 
 ## 5. Screen specifications and states
 
-| Screen                  | Elements (top → bottom)                                                                                                                                                                                                                                                     | States                                                                                       |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **S-0** Status bar      | Title "Lessonreel" · Online/Offline pill · Nano pill · "Prepare offline model" ghost button                                                                                                                                                                                 | Online / Offline · Nano: not checked / downloading n% / ready / not available here           |
-| **S-1** Create lesson   | Label + textarea (12 rows) · character counter (gap) · row: audience input, scenes number (3–8, default 5), second-language select (FR/ES/HI/SW, preview marked) · slow narration checkbox (gap) · "Make storyboard" primary · "Try sample notes" ghost (gap) · status line | empty · typing · invalid (E-2) · generating (button disabled) · done · error (E-1, E-3, E-4) |
-| **S-2** Storyboard      | Title + source badge + seconds · scenes list · quiz list                                                                                                                                                                                                                    | placeholder ("Your storyboard appears here.") · loaded · editing a scene (gap)               |
-| **S-3** Production      | Badge + "n/total cloud jobs done" · per-scene rows (gap) · "Retry failed" (gap)                                                                                                                                                                                             | hidden (no lesson) · queued/offline · running · all done · some failed (E-5)                 |
-| **S-4** Preview         | "Preview video" primary · 16:9 stage                                                                                                                                                                                                                                        | disabled (no assets) · ready · playing (button disabled)                                     |
-| **S-5** Download + quiz | "Download video" ghost · status "Rendering video… n%" · quiz with answers + "Copy quiz" (gap)                                                                                                                                                                               | disabled until all jobs done · rendering · done (file name + length) · error (E-6)           |
+Every visible string comes from [13 UX writing](13-ux-writing.md) (IDs like `BTN-make`). Error IDs E-n behave as in [04 §6](04-functional-spec.md#6-error-handling). Status: ✅ built · 🔧 built but differs · 🆕 to build.
 
-### Copy (exact strings used in code)
+### S-0 Status bar
 
-| Moment              | Text                                                                                           |
-| ------------------- | ---------------------------------------------------------------------------------------------- |
-| Generating, online  | "Writing storyboard…"                                                                          |
-| Generating, offline | "Offline: writing storyboard on this device…"                                                  |
-| Done, online        | "Storyboard ready (on-device / cloud). Generating voice and images…"                           |
-| Done, offline       | "Storyboard ready on-device. Voice and images are queued for when you're back online."         |
-| E-1                 | "This device can't run Gemini Nano offline. Connect to the internet to use the cloud instead." |
-| Export              | "Rendering video… n%" → "Video ready (n s, MP4)."                                              |
-| E-6                 | "This browser can't record video. Use a recent Chrome."                                        |
+|             |                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Purpose     | Tell the teacher whether they're online, whether offline AI is ready, and whether the app works offline                                                         |
+| User / goal | Everyone / "Can I work right now?"                                                                                                                              |
+| Layout      | One row: logo lock-up + tagline (≥ 600 px) on the left; pills + Prepare button on the right. Wraps to two rows < 600 px. Sticky at top on phones (`--z-sticky`) |
+| Components  | Lock-up, pills (Online/Offline, Nano, Works offline ✓), secondary button, install banner below (S-0b)                                                           |
+| Hierarchy   | Low: it informs, it doesn't compete with S-1                                                                                                                    |
+
+| Control             | Label                 | Action on click                                          | While processing                      | Success                                         | Failure                                                  | Type     | Status |
+| ------------------- | --------------------- | -------------------------------------------------------- | ------------------------------------- | ----------------------------------------------- | -------------------------------------------------------- | -------- | ------ |
+| BTN-warm            | Prepare offline model | Check Nano; download if needed (`initializeDeviceModel`) | Disabled; pill "Nano: downloading n%" | Pill "Nano: ready" (green)                      | Pill "Nano: not available here (cloud fallback)" (amber) | modifies | ✅     |
+| BTN-install (S-0b)  | Install app           | Opens the browser install prompt                         | n/a                                   | Toast "Lessonreel is installed…"; banner hidden | Prompt dismissed → banner stays                          | opens    | 🆕     |
+| BTN-install-dismiss | Not now               | Hide banner, remember choice                             | n/a                                   | Banner hidden                                   | n/a                                                      | closes   | 🆕     |
+
+States: loading (Nano checking…) · empty n/a · error (Nano unavailable) · success (ready, Works offline ✓). On load, Nano status is checked without downloading (🆕 F3.3).
+
+### S-1 Create lesson
+
+|             |                                                                                                                                                                                                                                                                             |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Purpose     | Collect notes and options for one lesson                                                                                                                                                                                                                                    |
+| User / goal | Teacher / "Turn these notes into a video plan"                                                                                                                                                                                                                              |
+| Layout      | Card: heading "Your lesson" → first-visit hint (dismissible) → notes textarea (12 rows) + counter + helper → options row (Who is it for · Scenes · Second language) → slow narration checkbox → actions (Make storyboard primary, Try sample notes secondary) → status line |
+| Hierarchy   | Notes box is the largest element; Make storyboard is the only primary button on the page until a storyboard exists                                                                                                                                                          |
+
+| Control        | Label                 | Action                                                      | While processing                                                | Success                     | Failure                                                    | Type     | Status                |
+| -------------- | --------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------- | -------- | --------------------- |
+| Notes          | Your lesson notes     | Typing updates counter                                      | n/a                                                             | Counter neutral             | > 11,000 chars counter amber; > 12,000 E-2b on submit      | input    | ✅ field · 🆕 counter |
+| Audience       | Who is it for         | n/a                                                         | n/a                                                             | n/a                         | Empty → default used                                       | input    | ✅                    |
+| Scenes         | Scenes (3–8)          | n/a                                                         | n/a                                                             | n/a                         | Out of range → clamped                                     | input    | ✅                    |
+| Language       | Second language       | Applies to next storyboard                                  | n/a                                                             | n/a                         | n/a                                                        | select   | ✅                    |
+| Slow narration | Slow, clear narration | Sets voice style for next storyboard                        | n/a                                                             | n/a                         | n/a                                                        | checkbox | 🆕                    |
+| BTN-sample     | Try sample notes      | Fills DEMO-1 notes + audience                               | n/a                                                             | Notes filled; focus to Make | n/a                                                        | modifies | 🆕                    |
+| BTN-make       | Make storyboard       | Validate → generate (on-device or cloud) → save → plan jobs | Disabled + busy; status "Writing storyboard…" / offline variant | S-2 renders; status ok      | E-1, E-2 (under notes), E-3; notes kept; button re-enabled | submits  | ✅ (E-2 position 🔧)  |
+
+States: empty (placeholder + hint) · loading · success · error · offline (still allowed if Nano ready).
+
+### S-2 Storyboard
+
+|             |                                                                                                                                                                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Purpose     | Show the plan before cloud work, and where it was made                                                                                                                                      |
+| User / goal | Teacher / "Is this right? Can I fix a line?"                                                                                                                                                |
+| Layout      | Card (right column ≥ 900 px): heading "Storyboard" + title + source badge + seconds → Cloud explainer (if Cloud) → numbered scene list ([12 §4.8](12-design-system.md#48-scene-item-f-s-2)) |
+| Hierarchy   | Title and badge first; narration text is the main reading content                                                                                                                           |
+
+| Control         | Label                       | Action                                                    | While processing | Success                                                            | Failure                                                        | Type    | Status |
+| --------------- | --------------------------- | --------------------------------------------------------- | ---------------- | ------------------------------------------------------------------ | -------------------------------------------------------------- | ------- | ------ |
+| BTN-edit        | Edit (aria: "Edit scene n") | Swap narration/on-screen text to fields                   | n/a              | Editor open, focus in textarea                                     | n/a                                                            | opens   | 🆕     |
+| BTN-save-scene  | Save scene                  | Validate 1–400 chars; save; reset that scene's voice jobs | Disabled briefly | Read view + toast "Scene n updated. Its voice will be made again." | Inline "Narration must be 1 to 400 characters."; Save disabled | submits | 🆕     |
+| BTN-cancel-edit | Cancel                      | Discard edits                                             | n/a              | Read view; focus back to Edit                                      | n/a                                                            | closes  | 🆕     |
+
+States: empty ("Your storyboard appears here.") · success (board) · editing · error (E-3 shown in S-1 status line).
+
+### S-3 Voice and pictures (production)
+
+|         |                                                                                                                                                                                                                                     |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Purpose | Show cloud work progress and anything waiting or failed                                                                                                                                                                             |
+| Layout  | Inside the right card under S-2: heading "Voice and pictures" + badge (Cloud / Queued) + summary "9 of 15 done" + progress bar → per-scene rows ([12 §4.9](12-design-system.md#49-production-row-f-s-3)) → Retry button when needed |
+
+| Control   | Label               | Action                                     | While processing            | Success        | Failure                                      | Type     | Status |
+| --------- | ------------------- | ------------------------------------------ | --------------------------- | -------------- | -------------------------------------------- | -------- | ------ |
+| BTN-retry | Retry failed scenes | Reset failed jobs to queued; run if online | Disabled until jobs pick up | Chips go … → ✓ | Still failing → row stays ✕ with message E-5 | modifies | 🆕     |
+
+States: hidden (no lesson) · queued/offline ("Waiting for internet.") · running · all done · some failed (E-5). Rows today: totals only (🔧).
+
+### S-4 Preview
+
+| Control  | Label         | Action                        | While processing       | Success                             | Failure                                       | Type     | Status |
+| -------- | ------------- | ----------------------------- | ---------------------- | ----------------------------------- | --------------------------------------------- | -------- | ------ |
+| BTN-play | Preview video | Play scenes in the 16:9 stage | Disabled while playing | Plays to the end; button re-enabled | Missing asset → placeholder / silent duration | modifies | ✅     |
+
+States: disabled until ≥ 1 cloud job done · empty stage text "Press "Preview video" to watch it here." (🆕) · playing · ended.
+
+### S-5 Download and quiz
+
+| Control       | Label          | Action                                           | While processing                                                     | Success                               | Failure                                      | Type     | Status          |
+| ------------- | -------------- | ------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------- | -------------------------------------------- | -------- | --------------- |
+| BTN-download  | Download video | Render with MediaRecorder and save the file      | Disabled; status "Making your video… n%" + tip "Keep this tab open…" | File saved; "Video ready (n s, MP4)." | E-6                                          | submits  | ✅ (wording 🔧) |
+| BTN-copy-quiz | Copy quiz      | Copy quiz (+ narration transcript) as plain text | n/a                                                                  | Toast "Quiz copied."                  | Clipboard blocked → select-all fallback text | modifies | 🆕              |
+
+Disabled Download shows the hint "Available when all scenes are ready." Quiz panel: [12 §4.11](12-design-system.md#411-quiz-panel-f-s-5-should).
+
+### S-6 My lessons (Could)
+
+List of lessons in this browser (title, date, source badge), newest first; click opens it in S-2; "Delete lesson" (destructive) with confirm dialog. Empty: "No saved lessons yet. Make your first storyboard above." Built only if time allows.
 
 ## 6. Responsive behaviour
 
-| Width       | Layout                                                                                                                                       |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| ≥ 900 px    | Two columns: S-1 left, S-2 to S-5 right. Status bar on one line                                                                              |
-| < 900 px    | One column, stacked in flow order S-0 → S-5. Status bar wraps; form row should stack (gap: today it stays 3 columns, fix with a media query) |
-| Video stage | Always 16:9, full card width                                                                                                                 |
+### Breakpoints and why
+
+| Name | Width       | Devices                                                                        | Why this breakpoint                                                       |
+| ---- | ----------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| xs   | 320–599 px  | Small and standard phones (most Android phones in Nigeria are 360–412 px wide) | Form fields must be full width; header wraps                              |
+| sm   | 600–899 px  | Large phones landscape, small tablets                                          | Room for the options row in one line; still one column                    |
+| md   | 900–1279 px | Laptops (Benjamin's and most teachers')                                        | Two columns: input left, output right, the core "notes → storyboard" view |
+| lg   | ≥ 1280 px   | Desktops, wide screens                                                         | Content capped at 1200 px and centred so lines don't get too long         |
+
+Chosen from our content (form + two-pane output), not a framework's defaults.
+
+### Layout rules
+
+| Property     | xs                          | sm               | md           | lg                     |
+| ------------ | --------------------------- | ---------------- | ------------ | ---------------------- |
+| Columns      | 1                           | 1                | 2 (equal)    | 2 (equal), max 1200 px |
+| Page padding | 12 px sides                 | 16 px            | 24 px        | 24 px, centred         |
+| Card padding | 12 px                       | 16 px            | 16 px        | 16 px                  |
+| Grid gap     | 12 px                       | 16 px            | 16 px        | 16 px                  |
+| Header       | 2 rows, sticky              | 1 row (may wrap) | 1 row        | 1 row                  |
+| Options row  | stacked (3 rows)            | 3 in one row     | 3 in one row | 3 in one row           |
+| Actions      | full-width buttons, stacked | inline           | inline       | inline                 |
+| Stage        | full card width, 16:9       | same             | same         | same                   |
+
+### Component behaviour
+
+| Component       | Small screens                         | Large screens          |
+| --------------- | ------------------------------------- | ---------------------- |
+| Pills           | Wrap under the logo                   | Inline right           |
+| Scene item      | Duration under the title              | Duration right-aligned |
+| Production rows | Chips wrap onto a second line         | One line               |
+| Quiz            | Options stacked                       | Options inline         |
+| Toast           | Bottom centre, full width minus 24 px | Bottom right, 360 px   |
+| Dialog          | Full width minus 24 px                | 420 px centred         |
+| Textarea        | 10 rows                               | 12 rows                |
+
+### Mobile-first requirements
+
+- No horizontal scrolling at 320 px; long words wrap (`overflow-wrap: anywhere` on narration and titles).
+- Touch targets ≥ 44 px; ≥ 8 px between adjacent targets.
+- Inputs use `font-size: 16px` (stops iOS zooming on focus); notes textarea `autocapitalize="sentences"`; scenes input `inputmode="numeric"`.
+- Focused fields scroll into view above the on-screen keyboard (`scroll-padding-top` for the sticky header).
+- Landscape phones: header not sticky (saves vertical space).
+
+### Testing
+
+Viewports 320, 390, 768, 1280, 1920; portrait + landscape on a real phone; long content (8 scenes, 400-char narration, 100-char title); keyboard and touch. Checklist: [15 §4](15-design-qa.md#4-responsive-behaviour).
 
 ## 7. Accessibility
 
-Contrast measured with the WCAG formula (2026-11-19):
-
-| Pair                                              | Ratio     | WCAG AA                                                          |
-| ------------------------------------------------- | --------- | ---------------------------------------------------------------- |
-| Ink on paper                                      | 16.08 : 1 | ✅                                                               |
-| Muted on white                                    | 5.71 : 1  | ✅                                                               |
-| White on accent (primary button, On-device badge) | 5.99 : 1  | ✅                                                               |
-| White on cloud badge                              | 6.61 : 1  | ✅                                                               |
-| White on queued badge                             | 4.73 : 1  | ✅ (normal text ≥ 4.5)                                           |
-| Old focus ring (yellow on white)                  | 1.68 : 1  | ❌, **fixed**: now a dark 3 px outline (16:1) with a yellow halo |
-
-Other rules:
-
-- Every input has a visible `<label>`.
-- Status updates use `role="status"` / `aria-live="polite"`, so screen readers hear "Storyboard ready…" without losing focus.
-- All actions work by keyboard; focus is always visible.
-- Badges carry text, not just colour.
-- Generated images get the scene's image prompt as `alt` text.
-- Captions are burned into the exported video for viewers who can't hear the audio.
+Moved to **[14 Accessibility](14-accessibility.md)** (WCAG 2.2 AA: requirement, how we build it, how we test it). Measured contrast for every token pair: [12 §2.1](12-design-system.md#21-colour).
 
 ## 8. Exported video frame
 

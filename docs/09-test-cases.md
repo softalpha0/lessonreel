@@ -5,7 +5,7 @@
 | Last updated | 2026-11-19                                                                                                                                                                                    |
 | Owner        | QA Engineer (Benjamin runs them; Claude Code prepares and fixes)                                                                                                                              |
 | Strategy     | [TDD §20](../TDD.md#20-testing-strategy) · acceptance criteria [04 §7](04-functional-spec.md#7-acceptance-criteria) · process [DEVELOPMENT_PROTOCOL.md](../DEVELOPMENT_PROTOCOL.md) Phase 3–4 |
-| Used in      | Every [BUILD_PLAN](../BUILD_PLAN.md) stage exit gate · Index: [docs/README](README.md)                                                                                                        |
+| Used in      | Every [BUILD_PLAN](../BUILD_PLAN.md) stage exit gate · design checks in [15 Design QA](15-design-qa.md) · Index: [docs/README](README.md)                                                     |
 
 ## How to use this file
 
@@ -86,6 +86,17 @@
 | TC-4.2 | E    | Storyboard generating | Refresh mid-generation                            | App loads cleanly; previous lesson (if any) shown; no half-saved lesson |        | ⬜     | 🟡  |
 | TC-4.3 | E    | n/a                   | DevTools → Application → Clear site data → reload | Empty state "Your storyboard appears here."                             |        | ⬜     | 🟡  |
 | TC-4.4 | E    | Two tabs open         | Make a storyboard in tab 1; reload tab 2          | Tab 2 shows the new lesson; no errors                                   |        | ⬜     | 🟡  |
+
+## Stage 4B: Installable offline app (PWA)
+
+| ID      | Type | Preconditions                      | Steps                                                             | Expected                                                                      | Actual | Status | Sev |
+| ------- | ---- | ---------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-4B.1 | N    | Fresh profile, online              | Open the live link; wait 5 s                                      | "Works offline ✓" pill; toast once                                            |        | ⬜     | 🔴  |
+| TC-4B.2 | F    | After TC-4B.1                      | Close Chrome completely; Wi-Fi off; reopen the link (or app icon) | App loads from cache with the last lesson; pill "Offline" (AC-12.1)           |        | ⬜     | 🔴  |
+| TC-4B.3 | N    | Browser supports install           | Click "Install app" → accept                                      | App icon on desktop/home screen; opens in its own window                      |        | ⬜     | 🟠  |
+| TC-4B.4 | S    | Online, DevTools Network           | Make a storyboard via cloud                                       | AI/Firestore requests go to the network, **not** "(ServiceWorker)" from cache |        | ⬜     | 🔴  |
+| TC-4B.5 | E    | New build deployed                 | Reopen the app                                                    | "A new version is ready. Reload to update." Reload works                      |        | ⬜     | 🟠  |
+| TC-4B.6 | N    | Installed app, Nano ready, offline | Make storyboard from the installed window                         | On-device badge (TDD §24 #10)                                                 |        | ⬜     | 🟠  |
 
 ## Stage 5: Queue
 
@@ -190,6 +201,7 @@
 | 2     | 10    |     |     | 10  |      |             |
 | 3     | 8     |     |     | 8   |      |             |
 | 4     | 4     |     |     | 4   |      |             |
+| 4B    | 6     |     |     | 6   |      |             |
 | 5     | 7     |     |     | 7   |      |             |
 | 6     | 4     |     |     | 4   |      |             |
 | 7     | 2     |     |     | 2   |      |             |

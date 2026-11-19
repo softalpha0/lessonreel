@@ -16,23 +16,28 @@
 
 ### How this document relates to the others
 
-| Question                              | Document                                                             | (Names used in the TDD protocol) |
-| ------------------------------------- | -------------------------------------------------------------------- | -------------------------------- |
-| What must we satisfy?                 | [`HACKATHON.md`](HACKATHON.md)                                       | HACKATHON.md                     |
-| What is it, how do I run it?          | [`README.md`](README.md)                                             | README.md                        |
-| What are we building and why?         | [`docs/01-product-requirements.md`](docs/01-product-requirements.md) | PRD                              |
-| What does the user do, which screens? | [`docs/02-ux-design.md`](docs/02-ux-design.md)                       | USER_EXPERIENCE.md               |
-| How should it look and behave?        | [`docs/03-screen-design.md`](docs/03-screen-design.md)               | DESIGN_SYSTEM.md                 |
-| Exactly how must it behave?           | [`docs/04-functional-spec.md`](docs/04-functional-spec.md)           | SRS                              |
-| Where does data go?                   | [`docs/05-data-flow.md`](docs/05-data-flow.md)                       | DFD                              |
-| How is the web app organised?         | [`docs/07-frontend.md`](docs/07-frontend.md)                         | FRONTEND.md                      |
-| How does the AI work?                 | [`docs/08-ai-architecture.md`](docs/08-ai-architecture.md)           | AI_ARCHITECTURE.md               |
-| What do we test?                      | [`docs/09-test-cases.md`](docs/09-test-cases.md)                     | TEST_CASES.md                    |
-| How do we demo and submit?            | [`docs/10-demo-plan.md`](docs/10-demo-plan.md)                       | DEMO_PLAN.md                     |
-| **How do engineers build it?**        | **TDD.md (this file)**                                               | TDD.md                           |
-| What do we build first?               | [`BUILD_PLAN.md`](BUILD_PLAN.md)                                     | BUILD_PLAN.md                    |
-| What has actually been built?         | [`FEATURE_GUIDE.md`](FEATURE_GUIDE.md)                               | FEATURE_GUIDE.md                 |
-| Something broke                       | [`DEBUGGING.md`](DEBUGGING.md)                                       | n/a                              |
+| Question                              | Document                                                             | (Names used in the TDD protocol)     |
+| ------------------------------------- | -------------------------------------------------------------------- | ------------------------------------ |
+| What must we satisfy?                 | [`HACKATHON.md`](HACKATHON.md)                                       | HACKATHON.md                         |
+| What is it, how do I run it?          | [`README.md`](README.md)                                             | README.md                            |
+| What are we building and why?         | [`docs/01-product-requirements.md`](docs/01-product-requirements.md) | PRD                                  |
+| What does the user do, which screens? | [`docs/02-ux-design.md`](docs/02-ux-design.md)                       | USER_EXPERIENCE.md                   |
+| How should it look and behave?        | [`docs/03-screen-design.md`](docs/03-screen-design.md)               | DESIGN_SYSTEM.md                     |
+| What's the brand?                     | [`docs/11-brand-guidelines.md`](docs/11-brand-guidelines.md)         | BRAND_GUIDELINES.md                  |
+| Which tokens and components?          | [`docs/12-design-system.md`](docs/12-design-system.md)               | DESIGN_SYSTEM.md / COMPONENT_SPEC.md |
+| What exactly does the UI say?         | [`docs/13-ux-writing.md`](docs/13-ux-writing.md)                     | UX_WRITING.md                        |
+| How is it accessible?                 | [`docs/14-accessibility.md`](docs/14-accessibility.md)               | ACCESSIBILITY.md                     |
+| How do we check the design?           | [`docs/15-design-qa.md`](docs/15-design-qa.md)                       | DESIGN_QA.md                         |
+| Exactly how must it behave?           | [`docs/04-functional-spec.md`](docs/04-functional-spec.md)           | SRS                                  |
+| Where does data go?                   | [`docs/05-data-flow.md`](docs/05-data-flow.md)                       | DFD                                  |
+| How is the web app organised?         | [`docs/07-frontend.md`](docs/07-frontend.md)                         | FRONTEND.md                          |
+| How does the AI work?                 | [`docs/08-ai-architecture.md`](docs/08-ai-architecture.md)           | AI_ARCHITECTURE.md                   |
+| What do we test?                      | [`docs/09-test-cases.md`](docs/09-test-cases.md)                     | TEST_CASES.md                        |
+| How do we demo and submit?            | [`docs/10-demo-plan.md`](docs/10-demo-plan.md)                       | DEMO_PLAN.md                         |
+| **How do engineers build it?**        | **TDD.md (this file)**                                               | TDD.md                               |
+| What do we build first?               | [`BUILD_PLAN.md`](BUILD_PLAN.md)                                     | BUILD_PLAN.md                        |
+| What has actually been built?         | [`FEATURE_GUIDE.md`](FEATURE_GUIDE.md)                               | FEATURE_GUIDE.md                     |
+| Something broke                       | [`DEBUGGING.md`](DEBUGGING.md)                                       | n/a                                  |
 
 ### Evidence labels used in this document
 
@@ -105,6 +110,7 @@ Full requirements, business rules (BR-n) and acceptance criteria (AC-n) live in 
 | F9  | Export one MP4/WebM file                                                | Must                                                  |
 | F10 | Android app                                                             | Could                                                 |
 | F11 | My lessons list (F11.2 reopen latest: Must)                             | Could                                                 |
+| F12 | Installable offline app (PWA): app opens with no internet               | Must                                                  |
 
 ### Non-functional requirements
 
@@ -206,27 +212,29 @@ flowchart TB
 
 ## 7. Technology stack and rationale
 
-| Technology                                  | Purpose                          | Where used                        | Why chosen                                   | Alternatives                                   | Limitations                                                                      | Status                                                     |
-| ------------------------------------------- | -------------------------------- | --------------------------------- | -------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| TypeScript 5 (strict)                       | Language                         | Everywhere                        | Type safety around SDK calls                 | JavaScript                                     | Build step                                                                       | ✅ installed                                               |
-| Vite 6                                      | Dev server, bundler              | `apps/web`                        | Fast, simple, static output                  | Webpack, Next.js                               | n/a                                                                              | ✅                                                         |
-| Vanilla DOM                                 | UI                               | `main.ts`                         | One screen; no framework to learn            | React, Preact                                  | Manual DOM updates (ADR-008)                                                     | ✅                                                         |
-| Firebase JS SDK 13.4                        | Firebase client                  | `firebase.ts`                     | Required platform                            | n/a                                            | ~235 KB gzipped                                                                  | ✅ **[CONFIRMED]** installed                               |
-| Firebase AI Logic (`firebase/ai`)           | On-device + cloud Gemini         | `ai/*.ts`                         | **Required** by rules; hybrid modes built in | Direct Gemini API (not allowed: key in client) | v1beta API; on-device limits                                                     | ✅                                                         |
-| Gemini Nano 4 (Chrome Prompt API)           | Offline storyboard               | via AI Logic                      | Required for Web; offline + free             | n/a                                            | Desktop Chrome 139+, flag, disk/GPU; ~9,216 tokens; text/image in, text out only | **[CONFIRMED]** SDK; ⬜ hardware test                      |
-| Gemini cloud text (`gemini-3.5-flash-lite`) | Fallback storyboard, translation | `storyboard.ts`, `cloud-media.ts` | Cheap/fast; named in organizer's resources   | Flash, Pro                                     | Free-tier limits                                                                 | **[NEEDS CONFIRMATION]** model availability in our project |
-| Gemini TTS (`gemini-3.8-flash-tts`)         | Narration                        | `cloud-media.ts`                  | Nano can't speak; good multilingual voices   | Cloud Text-to-Speech                           | Language list; `3.1-flash-tts-preview` retired Nov 17                            | **[CONFIRMED]** in Firebase docs; ⬜ live test             |
-| Gemini image model                          | Scene images                     | `cloud-media.ts`                  | One SDK for everything                       | Imagen                                         | May need quota account                                                           | **[NEEDS CONFIRMATION]** model name → `VITE_IMAGE_MODEL`   |
-| App Check + reCAPTCHA Enterprise            | Abuse protection                 | `firebase.ts`                     | **Required**                                 | reCAPTCHA v3                                   | Ad blockers can block it                                                         | ✅ code; ⬜ console                                        |
-| Firebase Anonymous Auth                     | Per-browser identity             | `firebase.ts`                     | No sign-up; enables rules                    | Email/Google sign-in                           | Data tied to one browser                                                         | ✅ code; ⬜ console                                        |
-| Cloud Firestore (persistent local cache)    | Job queue                        | `store.ts`                        | Offline writes + sync for free               | IndexedDB-only queue                           | 1 MB doc limit (so no blobs)                                                     | ✅ code; ⬜ console                                        |
-| IndexedDB (`idb-keyval` 6)                  | Lessons, audio, images           | `store.ts`                        | Large blobs, offline, free                   | Cache API, Firebase Storage                    | Per-browser; quota varies                                                        | ✅                                                         |
-| Zod 3                                       | Validate AI output               | `packages/core`                   | Small models break JSON                      | Hand-written checks                            | n/a                                                                              | ✅                                                         |
-| Canvas + Web Audio + MediaRecorder          | Video export                     | `exporter.ts`                     | Built into browsers, no server               | ffmpeg.wasm                                    | Real-time render; MP4 support varies                                             | ✅ code; ⬜ browser test                                   |
-| Vitest 2 / ESLint 9 / Prettier 3            | Tests / lint / format            | repo                              | Fast, standard                               | Jest                                           | n/a                                                                              | ✅                                                         |
-| pnpm 10 workspaces                          | Monorepo deps                    | repo                              | Shared `core` package                        | npm workspaces                                 | One more tool to install                                                         | ✅ (on Benjamin's PC: ⬜)                                  |
-| GitHub + Actions                            | Backup, CI                       | `.github/workflows/ci.yml`        | Required public repo; CI badge               | GitLab                                         | n/a                                                                              | ✅ file; ⬜ pushed                                         |
-| Firebase Hosting                            | Live URL                         | `firebase.json`                   | Free HTTPS, same project                     | Vercel, Netlify                                | n/a                                                                              | ⬜ deploy                                                  |
+| Technology                                     | Purpose                          | Where used                        | Why chosen                                                    | Alternatives                                   | Limitations                                                                      | Status                                                     |
+| ---------------------------------------------- | -------------------------------- | --------------------------------- | ------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| TypeScript 5 (strict)                          | Language                         | Everywhere                        | Type safety around SDK calls                                  | JavaScript                                     | Build step                                                                       | ✅ installed                                               |
+| Vite 6                                         | Dev server, bundler              | `apps/web`                        | Fast, simple, static output                                   | Webpack, Next.js                               | n/a                                                                              | ✅                                                         |
+| Vanilla DOM                                    | UI                               | `main.ts`                         | One screen; no framework to learn                             | React, Preact                                  | Manual DOM updates (ADR-008)                                                     | ✅                                                         |
+| Firebase JS SDK 13.4                           | Firebase client                  | `firebase.ts`                     | Required platform                                             | n/a                                            | ~235 KB gzipped                                                                  | ✅ **[CONFIRMED]** installed                               |
+| Firebase AI Logic (`firebase/ai`)              | On-device + cloud Gemini         | `ai/*.ts`                         | **Required** by rules; hybrid modes built in                  | Direct Gemini API (not allowed: key in client) | v1beta API; on-device limits                                                     | ✅                                                         |
+| Gemini Nano 4 (Chrome Prompt API)              | Offline storyboard               | via AI Logic                      | Required for Web; offline + free                              | n/a                                            | Desktop Chrome 139+, flag, disk/GPU; ~9,216 tokens; text/image in, text out only | **[CONFIRMED]** SDK; ⬜ hardware test                      |
+| Gemini cloud text (`gemini-3.5-flash-lite`)    | Fallback storyboard, translation | `storyboard.ts`, `cloud-media.ts` | Cheap/fast; named in organizer's resources                    | Flash, Pro                                     | Free-tier limits                                                                 | **[NEEDS CONFIRMATION]** model availability in our project |
+| Gemini TTS (`gemini-3.8-flash-tts`)            | Narration                        | `cloud-media.ts`                  | Nano can't speak; good multilingual voices                    | Cloud Text-to-Speech                           | Language list; `3.1-flash-tts-preview` retired Nov 17                            | **[CONFIRMED]** in Firebase docs; ⬜ live test             |
+| Gemini image model                             | Scene images                     | `cloud-media.ts`                  | One SDK for everything                                        | Imagen                                         | May need quota account                                                           | **[NEEDS CONFIRMATION]** model name → `VITE_IMAGE_MODEL`   |
+| App Check + reCAPTCHA Enterprise               | Abuse protection                 | `firebase.ts`                     | **Required**                                                  | reCAPTCHA v3                                   | Ad blockers can block it                                                         | ✅ code; ⬜ console                                        |
+| Firebase Anonymous Auth                        | Per-browser identity             | `firebase.ts`                     | No sign-up; enables rules                                     | Email/Google sign-in                           | Data tied to one browser                                                         | ✅ code; ⬜ console                                        |
+| Cloud Firestore (persistent local cache)       | Job queue                        | `store.ts`                        | Offline writes + sync for free                                | IndexedDB-only queue                           | 1 MB doc limit (so no blobs)                                                     | ✅ code; ⬜ console                                        |
+| IndexedDB (`idb-keyval` 6)                     | Lessons, audio, images           | `store.ts`                        | Large blobs, offline, free                                    | Cache API, Firebase Storage                    | Per-browser; quota varies                                                        | ✅                                                         |
+| Zod 3                                          | Validate AI output               | `packages/core`                   | Small models break JSON                                       | Hand-written checks                            | n/a                                                                              | ✅                                                         |
+| Canvas + Web Audio + MediaRecorder             | Video export                     | `exporter.ts`                     | Built into browsers, no server                                | ffmpeg.wasm                                    | Real-time render; MP4 support varies                                             | ✅ code; ⬜ browser test                                   |
+| vite-plugin-pwa 2 (Workbox)                    | Service worker + manifest        | `apps/web/vite.config.ts`         | App must open offline (ADR-012)                               | Hand-written SW                                | Update handling; must not cache API calls                                        | ⬜ to add (Stage 4B)                                       |
+| Atkinson Hyperlegible (`@fontsource`, OFL-1.1) | Brand font, bundled              | `main.ts` import                  | Legibility; works offline ([11](docs/11-brand-guidelines.md)) | System fonts                                   | ~2 font files to cache                                                           | ⬜ to add (Stage 2)                                        |
+| Vitest 2 / ESLint 9 / Prettier 3               | Tests / lint / format            | repo                              | Fast, standard                                                | Jest                                           | n/a                                                                              | ✅                                                         |
+| pnpm 10 workspaces                             | Monorepo deps                    | repo                              | Shared `core` package                                         | npm workspaces                                 | One more tool to install                                                         | ✅ (on Benjamin's PC: ⬜)                                  |
+| GitHub + Actions                               | Backup, CI                       | `.github/workflows/ci.yml`        | Required public repo; CI badge                                | GitLab                                         | n/a                                                                              | ✅ file; ⬜ pushed                                         |
+| Firebase Hosting                               | Live URL                         | `firebase.json`                   | Free HTTPS, same project                                      | Vercel, Netlify                                | n/a                                                                              | ⬜ deploy                                                  |
 
 ---
 
@@ -661,6 +669,13 @@ Requirement → test mapping: [04 §7 acceptance criteria](docs/04-functional-sp
 - **Why:** no backend, no reused code; ffmpeg.wasm is heavy and needs special headers.
 - **Trade-off:** real-time rendering; format depends on browser.
 
+### ADR-012: Installable offline app (PWA) with vite-plugin-pwa
+
+- **Decision:** add a service worker that precaches the app shell (HTML, JS, CSS, bundled font, icons) and a web app manifest; use `vite-plugin-pwa` (v2.0.0, peer Vite 3–8, checked 2026-11-19) with Workbox.
+- **Why:** without it the page can't load offline after Chrome is closed, which breaks the core promise (found in the design audit, 2026-11-19).
+- **Alternatives:** hand-written service worker (more code, easier to get caching wrong); no PWA (offline only while the tab stays open).
+- **Trade-off:** one more dependency and update handling ("new version, reload"); service worker must **not** cache Firebase/Gemini API calls; installed-app behaviour of the Prompt API **[NEEDS CONFIRMATION]**.
+
 ### ADR-011: Everything built new during the submission period
 
 - **Decision:** no code from Inkcut or other projects.
@@ -707,6 +722,7 @@ Order and acceptance per stage: [`BUILD_PLAN.md`](BUILD_PLAN.md).
 | 7   | Do teachers confirm the problem?                                        | Impact story                | 3 interviews ([01 §9](docs/01-product-requirements.md#9-validation-plan-playbook-step-3)) |
 | 8   | Is `responseConstraint` honoured by Chrome's Prompt API for our schema? | Repair frequency            | Stage 3 logs                                                                              |
 | 9   | ~~Should stale `running` jobs reset on start?~~                         | Reliability                 | **Resolved:** yes, implemented with a unit test                                           |
+| 10  | Does Gemini Nano / Prompt API work inside the installed PWA window?     | Offline demo from app icon  | Stage 4B test                                                                             |
 
 ---
 

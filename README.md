@@ -128,13 +128,18 @@ _To be added during the build:_ screenshots and console logs of `inferenceSource
 | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | [01 Product requirements](docs/01-product-requirements.md) | Problem, users, goals, scope                                                                |
 | [02 UX design](docs/02-ux-design.md)                       | Personas, journeys, user flows, screen inventory, error flows                               |
-| [03 Screen design](docs/03-screen-design.md)               | Wireframes, design system, components, states, accessibility                                |
+| [03 UI spec](docs/03-screen-design.md)                     | Screens, every control's behaviour, wireframes, responsive rules                            |
 | [04 Functional spec](docs/04-functional-spec.md)           | Requirements, business rules, validation, errors, acceptance criteria                       |
 | [05 Data flow](docs/05-data-flow.md)                       | DFD level 0/1, data dictionary, privacy                                                     |
 | [07 Frontend guide](docs/07-frontend.md)                   | Module map, state, events, UI rules, how to add a view                                      |
 | [08 AI architecture](docs/08-ai-architecture.md)           | Models, prompts, token budget, evaluation, fallbacks                                        |
 | [09 Test cases](docs/09-test-cases.md)                     | Normal, edge, invalid, failure, mobile and accessibility cases                              |
 | [10 Demo plan](docs/10-demo-plan.md)                       | Video script, judge instructions, Devpost description draft                                 |
+| [11 Brand guidelines](docs/11-brand-guidelines.md)         | Voice, logo, colours, typography                                                            |
+| [12 Design system](docs/12-design-system.md)               | Tokens and components                                                                       |
+| [13 UX writing](docs/13-ux-writing.md)                     | Every interface string                                                                      |
+| [14 Accessibility](docs/14-accessibility.md)               | WCAG 2.2 AA requirements and tests                                                          |
+| [15 Design QA](docs/15-design-qa.md)                       | Design acceptance checklist                                                                 |
 | [TDD.md](TDD.md)                                           | Technical design: architecture, stack, data, APIs, security, testing, deployment, decisions |
 
 ## Tech stack

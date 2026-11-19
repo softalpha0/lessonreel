@@ -28,6 +28,7 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 | 2     | Lesson form + validation                               | S-1, F1, BR-1, E-2                 | 1          | 🟡     | Nov 20    |
 | 3     | Storyboard: on-device with cloud fallback              | S-2, F2.1–F2.4, F3, F7.1, E-1, E-3 | 2          | 🟡     | Nov 20    |
 | 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | 🟡     | Nov 21    |
+| 4B    | Installable offline app (PWA) + brand icon             | F12, UF-6, UF-7, S-0b, ADR-012     | 4          | ⬜     | Nov 21    |
 | 5     | Plan jobs + offline queue                              | F6.1–F6.3, F7.2, BR-8, D-3         | 4          | 🟡     | Nov 21    |
 | 6     | Narration (translate + voice)                          | F4.1–F4.3, ADR-007                 | 5          | 🟡     | Nov 21    |
 | 7     | Scene images                                           | F5                                 | 5          | 🟡     | Nov 22    |
@@ -45,7 +46,7 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 ```mermaid
 flowchart LR
   S0[0 Setup] --> S1[1 Shell] --> S2[2 Form] --> S3[3 Storyboard] --> S4[4 Save]
-  S4 --> S5[5 Queue]
+  S4 --> S4B[4B PWA] --> S5[5 Queue]
   S5 --> S6[6 Voice]
   S5 --> S7[7 Images]
   S6 --> S8[8 Progress]
@@ -109,6 +110,14 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Missing today:** S-6 "My lessons" list is a Could (not planned unless time allows).
 - **Test:** make a storyboard, refresh → it's still there.
 - **Break tests:** refresh while generating; open in a second tab; clear site data → app still loads with an empty state.
+
+### Stage 4B: Installable offline app (PWA) + brand icon ⬜
+
+- **What it does:** the app's own files are saved on the device so Lessonreel opens with no internet, even after Chrome was closed. Adds the Lessonreel icon, "Works offline ✓" pill and install banner.
+- **Why:** found in the design audit. Without it, "offline" only works while the tab stays open.
+- **Build:** `vite-plugin-pwa` (ADR-012), manifest (name, icons from [11 §3](docs/11-brand-guidelines.md#3-visual-identity)), precache app shell + font, **never cache Firebase/Gemini calls**, update prompt ([13 §10](docs/13-ux-writing.md#10-onboarding-install-and-offline)).
+- **Test:** TC-4B.1–4B.5 in [09](docs/09-test-cases.md). Open once online → close Chrome → Wi-Fi off → open from icon → app + last lesson load.
+- **Break tests:** deploy a new version → "new version" message; clear site data → reload online re-caches; check Network tab that AI calls aren't served from cache.
 
 ### Stage 5: Plan jobs + offline queue 🟡
 
@@ -190,5 +199,6 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-19: Design pack (docs/11–15) added. New Stage 4B (PWA) from the design audit; Stage 2 now includes the token/font/wording fixes.
 - 2026-11-19: TDD.md added. Stale `running` job recovery fixed early (was planned for Stage 8).
 - 2026-11-19: Plan created. Existing code mapped to stages as 🟡. Fixed `crypto.randomUUID` crash on plain-http phone testing; added `pnpm dev:lan`.

@@ -171,11 +171,12 @@ Rule: **validation logic belongs in `@lessonreel/core`** so it's unit-tested; th
 | S-5       | "Rendering video… n%"                                           | Download disabled until all jobs done | "Video ready (n s, MP4)."          | E-6                                    |
 | App       | n/a                                                             | n/a                                   | n/a                                | E-4 → Make disabled                    |
 
-Exact wording: [03 §5 copy table](03-screen-design.md#5-screen-specifications-and-states). Error map: [04 §6](04-functional-spec.md#6-error-handling).
+Exact wording: [13 UX writing](13-ux-writing.md). Error map: [04 §6](04-functional-spec.md#6-error-handling).
 
 ## 10. Styling and responsive rules
 
-- Use tokens (`var(--accent)`, etc.) from `style.css`; **no hard-coded colours** in new CSS.
+- Use tokens from [12 Design system](12-design-system.md#2-design-tokens) (`var(--color-brand)` etc. after the Stage 2 refactor); **no hard-coded colours** in new CSS.
+- Components and their states: [12 §4](12-design-system.md#4-component-library). Screen-by-screen control behaviour: [03 §5](03-screen-design.md#5-screen-specifications-and-states). Breakpoints: [03 §6](03-screen-design.md#6-responsive-behaviour).
 - Breakpoint: `min-width: 900px` → two columns; below → stacked.
 - Planned fix: form row (`.row`) must stack below 900 px (gap in [docs/README](README.md#docs--code-sync)).
 - Buttons ≥ 44 px tall; primary = `button`, secondary = `button.ghost`.
@@ -189,7 +190,7 @@ Exact wording: [03 §5 copy table](03-screen-design.md#5-screen-specifications-a
 4. Generated images get `alt` from the scene's image prompt.
 5. New controls must work with keyboard only (Tab, Enter, Space).
 
-Details and contrast table: [03 §7](03-screen-design.md#7-accessibility).
+Full requirements and tests: [14 Accessibility](14-accessibility.md).
 
 ## 12. Security rules for frontend code
 
@@ -234,14 +235,14 @@ From `apps/web/.env.example` (names only):
 
 ## 16. How to add a new view or control (recipe)
 
-1. Check the requirement exists in [04](04-functional-spec.md) and the screen in [02](02-ux-design.md)/[03](03-screen-design.md). If not, update the docs first.
+1. Check the requirement exists in [04](04-functional-spec.md), the screen/control in [03 §5](03-screen-design.md#5-screen-specifications-and-states), the component in [12](12-design-system.md) and the text in [13](13-ux-writing.md). If not, update the docs first.
 2. Add the element to `index.html` with an `id` and a `<label>` if it's an input.
 3. Add it to `els` in `main.ts`.
 4. Put any rule/validation in `@lessonreel/core` with a unit test.
 5. Write a small `render…()` or `on…()` function; disable/re-enable buttons; use `setStatus()`; escape model text.
 6. Style with tokens; check 390 px and 1280 px widths.
 7. `pnpm run ci`, then test in the browser (online, offline, phone).
-8. Add test cases to [09](09-test-cases.md); update [FEATURE_GUIDE](../FEATURE_GUIDE.md) after Benjamin approves.
+8. Run the relevant [15 Design QA](15-design-qa.md) rows; add test cases to [09](09-test-cases.md); update [FEATURE_GUIDE](../FEATURE_GUIDE.md) after Benjamin approves.
 
 ## 17. Planned frontend work
 

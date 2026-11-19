@@ -72,6 +72,7 @@ Feature IDs match the functional spec ([04](04-functional-spec.md)) and architec
 | **Must**                 | On-device / Cloud / Queued badges                                                                                                                  | F7   |
 | **Must**                 | Preview the video                                                                                                                                  | F8   |
 | **Must**                 | Export one video file                                                                                                                              | F9   |
+| **Must**                 | Installable app that opens with no internet (PWA)                                                                                                  | F12  |
 | **Should**               | Edit a scene's narration before voice is generated                                                                                                 | F2.6 |
 | **Should**               | Slow narration for younger learners                                                                                                                | F4.4 |
 | **Should**               | Quiz with answer reveal and copy-to-clipboard                                                                                                      | F2.5 |
