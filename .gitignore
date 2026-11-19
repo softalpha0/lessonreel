@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# MCP client config can contain API keys (e.g. 21st.dev writes .mcp.json)
+.mcp.json
+
 # Dependencies and build output
 node_modules/
 dist/

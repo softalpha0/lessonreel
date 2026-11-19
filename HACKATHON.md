@@ -159,29 +159,30 @@ From the official rules. **Breaking any of these can disqualify us.**
 
 **Full product docs** (read the one you need, they share IDs):
 
-| Doc                                                                | Covers                                                                                                          |
-| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| [docs/README.md](docs/README.md)                                   | Index, shared IDs, **docs-vs-code gap table = build checklist**                                                 |
-| [docs/01-product-requirements.md](docs/01-product-requirements.md) | Problem, users, goals, scope, release plan                                                                      |
-| [docs/02-ux-design.md](docs/02-ux-design.md)                       | Personas, journeys, user flows, screens, error flows                                                            |
-| [docs/03-screen-design.md](docs/03-screen-design.md)               | Wireframes, colours, fonts, components, accessibility                                                           |
-| [docs/04-functional-spec.md](docs/04-functional-spec.md)           | Requirements, business rules, errors, **acceptance criteria**                                                   |
-| [docs/05-data-flow.md](docs/05-data-flow.md)                       | Where data comes from, goes, and is stored                                                                      |
-| [docs/07-frontend.md](docs/07-frontend.md)                         | How the web app is organised; recipe for adding a view safely                                                   |
-| [docs/08-ai-architecture.md](docs/08-ai-architecture.md)           | Models, prompts (v1), token budget, AI quality checks, evaluation plan                                          |
-| [docs/09-test-cases.md](docs/09-test-cases.md)                     | **Test cases to run at every stage** (record results here)                                                      |
-| [docs/10-demo-plan.md](docs/10-demo-plan.md)                       | Video script, sample data, backup plan, judge instructions, Devpost draft                                       |
-| [docs/11-brand-guidelines.md](docs/11-brand-guidelines.md)         | Brand: voice, logo, colours, font                                                                               |
-| [docs/12-design-system.md](docs/12-design-system.md)               | Design tokens and components (UI must use these)                                                                |
-| [docs/13-ux-writing.md](docs/13-ux-writing.md)                     | Every interface string (single source of truth)                                                                 |
-| [docs/14-accessibility.md](docs/14-accessibility.md)               | WCAG 2.2 AA requirements and how to test them                                                                   |
-| [docs/15-design-qa.md](docs/15-design-qa.md)                       | Design acceptance checklist per stage                                                                           |
-| [TDD.md](TDD.md)                                                   | **Technical design**: architecture, stack, data, APIs, security, testing, deployment, decisions, open questions |
-| [AGENTS.md](AGENTS.md)                                             | Coding rules, verified SDK facts, status log                                                                    |
-| [BUILD_PLAN.md](BUILD_PLAN.md)                                     | **Ordered stages, how each is tested, exit gate**                                                               |
-| [FEATURE_GUIDE.md](FEATURE_GUIDE.md)                               | Plain-language explanation of each approved feature                                                             |
-| [DEVELOPMENT_PROTOCOL.md](DEVELOPMENT_PROTOCOL.md)                 | How we build and test, feature by feature                                                                       |
-| [DEBUGGING.md](DEBUGGING.md)                                       | Bug report template, debugging steps, symptom → cause map, bug log                                              |
+| Doc                                                                                              | Covers                                                                                                          |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| [docs/README.md](docs/README.md)                                                                 | Index, shared IDs, **docs-vs-code gap table = build checklist**                                                 |
+| [docs/01-product-requirements.md](docs/01-product-requirements.md)                               | Problem, users, goals, scope, release plan                                                                      |
+| [docs/02-ux-design.md](docs/02-ux-design.md)                                                     | Personas, journeys, user flows, screens, error flows                                                            |
+| [docs/03-screen-design.md](docs/03-screen-design.md)                                             | Wireframes, colours, fonts, components, accessibility                                                           |
+| [docs/04-functional-spec.md](docs/04-functional-spec.md)                                         | Requirements, business rules, errors, **acceptance criteria**                                                   |
+| [docs/05-data-flow.md](docs/05-data-flow.md)                                                     | Where data comes from, goes, and is stored                                                                      |
+| [docs/07-frontend.md](docs/07-frontend.md)                                                       | How the web app is organised; recipe for adding a view safely                                                   |
+| [docs/08-ai-architecture.md](docs/08-ai-architecture.md)                                         | Models, prompts (v1), token budget, AI quality checks, evaluation plan                                          |
+| [docs/09-test-cases.md](docs/09-test-cases.md)                                                   | **Test cases to run at every stage** (record results here)                                                      |
+| [docs/10-demo-plan.md](docs/10-demo-plan.md)                                                     | Video script, sample data, backup plan, judge instructions, Devpost draft                                       |
+| [docs/11-brand-guidelines.md](docs/11-brand-guidelines.md)                                       | Brand: voice, logo, colours, font                                                                               |
+| [docs/12-design-system.md](docs/12-design-system.md)                                             | Design tokens and components (UI must use these)                                                                |
+| [docs/13-ux-writing.md](docs/13-ux-writing.md)                                                   | Every interface string (single source of truth)                                                                 |
+| [docs/14-accessibility.md](docs/14-accessibility.md)                                             | WCAG 2.2 AA requirements and how to test them                                                                   |
+| [docs/15-design-qa.md](docs/15-design-qa.md)                                                     | Design acceptance checklist per stage                                                                           |
+| [HACKATHON_LANDING_PAGE_AND_FRONTEND_TOOLING.md](HACKATHON_LANDING_PAGE_AND_FRONTEND_TOOLING.md) | Landing page vs app, judge journey, frontend skills/MCP tools, install & security policy, Lessonreel decisions  |
+| [TDD.md](TDD.md)                                                                                 | **Technical design**: architecture, stack, data, APIs, security, testing, deployment, decisions, open questions |
+| [AGENTS.md](AGENTS.md)                                                                           | Coding rules, verified SDK facts, status log                                                                    |
+| [BUILD_PLAN.md](BUILD_PLAN.md)                                                                   | **Ordered stages, how each is tested, exit gate**                                                               |
+| [FEATURE_GUIDE.md](FEATURE_GUIDE.md)                                                             | Plain-language explanation of each approved feature                                                             |
+| [DEVELOPMENT_PROTOCOL.md](DEVELOPMENT_PROTOCOL.md)                                               | How we build and test, feature by feature                                                                       |
+| [DEBUGGING.md](DEBUGGING.md)                                                                     | Bug report template, debugging steps, symptom → cause map, bug log                                              |
 
 ---
 
