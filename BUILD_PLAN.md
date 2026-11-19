@@ -66,7 +66,7 @@ flowchart LR
 
 Every stage ends with the same **exit gate** (not repeated below):
 
-> Technical checks pass (`pnpm run ci`, app runs, no console errors) · Benjamin tested the happy path **and** the break tests · problems fixed · self-review done (functionality, security, reliability, UX, hackathon readiness) · `FEATURE_GUIDE.md` updated · Benjamin approved · commit + **push verified**.
+> Technical checks pass (`pnpm run ci`, app runs, no console errors) · stage test cases in [`docs/09-test-cases.md`](docs/09-test-cases.md) run and recorded · Benjamin tested the happy path **and** the break tests · problems fixed · self-review done (functionality, security, reliability, UX, hackathon readiness) · `FEATURE_GUIDE.md` updated · Benjamin approved · commit + **push verified**.
 
 ### Stage 0: Setup, GitHub backup, Firebase project 🟡
 
@@ -173,7 +173,7 @@ Every stage ends with the same **exit gate** (not repeated below):
 ### Stage 15: Final end-to-end, polish, evidence, video, submit ⬜
 
 - Phase 9 of the protocol: test as first-time user, returning user, user who makes mistakes, slow connection (Chrome DevTools → Network → Slow 3G), phone, and judge.
-- Collect `evidence/` screenshots, finish README, record the demo ([`docs/demo-script.md`](docs/demo-script.md)), run HACKATHON.md §9.5 and §11, **submit Nov 29**.
+- Collect `evidence/` screenshots, finish README, record the demo ([`docs/10-demo-plan.md`](docs/10-demo-plan.md)), run HACKATHON.md §9.5 and §11, **submit Nov 29**.
 
 ---
 

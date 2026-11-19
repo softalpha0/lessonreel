@@ -20,6 +20,7 @@ Words: **must** = required for the MVP; **should** = planned if time allows; **m
 7. [Acceptance criteria](#7-acceptance-criteria)
 8. [Non-functional acceptance](#8-non-functional-acceptance)
 9. [Traceability matrix](#9-traceability-matrix)
+10. [User stories](#10-user-stories)
 
 ## 1. Functional requirements
 
@@ -215,3 +216,26 @@ Written as Given / When / Then. Each maps to a test (unit = `packages/core/test`
 | F8  | G-3       | S-4                        | P-4 ← D-1, D-2 | C7                        | `lib/player.ts`                                             |
 | F9  | G-3       | UF-5 · S-5, E-6            | P-5 ← D-1, D-2 | C7 · ADR-010              | `lib/exporter.ts`                                           |
 | F11 | —         | S-6                        | D-1            | C6                        | `lib/store.ts` (`latestProject`)                            |
+
+## 10. User stories
+
+Format: "As a [user], I want [capability], so that [benefit]." Personas from [02 §2](02-ux-design.md#2-personas). Priority matches [01 §6](01-product-requirements.md#6-scope-moscow). Test cases: [09](09-test-cases.md).
+
+| ID    | Persona       | Story                                                                                                                                                  | Priority | Acceptance                   | Feature | Depends on |
+| ----- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ---------------------------- | ------- | ---------- |
+| US-1  | PER-1 teacher | As a teacher, I want to paste my existing notes and say who they're for, so that I don't have to rewrite my lesson                                     | Must     | AC-1.1, AC-1.2 · TC-2.x      | F1      | n/a        |
+| US-2  | PER-1 teacher | As a teacher with no data tonight, I want the storyboard written on my laptop with no internet, so that I can prepare during a power cut               | Must     | AC-3.1 · TC-3.1              | F2, F3  | US-1, US-3 |
+| US-3  | PER-1 teacher | As a teacher, I want to prepare the offline model once while I have Wi-Fi, so that offline mode works later                                            | Must     | TC-1.3                       | F3.2    | n/a        |
+| US-4  | PER-4 judge   | As a judge without Gemini Nano, I want the app to still work through the cloud, so that I can evaluate it in minutes                                   | Must     | AC-3.2 · TC-3.2, TC-14.1     | F3.1    | US-1       |
+| US-5  | PER-1/2       | As a user, I want to see whether each step ran on my device, in the cloud or is waiting, so that I trust what's happening                              | Must     | TC-3.1, TC-5.1               | F7      | US-2       |
+| US-6  | PER-2 trainer | As a trainer in the field, I want voice and images to wait and finish by themselves when I'm back online, so that I don't lose work or babysit the app | Must     | AC-6.2 · TC-5.2–5.4          | F6      | US-2       |
+| US-7  | PER-2 trainer | As a trainer, I want narration in English and Swahili, so that my learners understand                                                                  | Must     | AC-4.1 · TC-6.1–6.2          | F4      | US-6       |
+| US-8  | PER-1 teacher | As a teacher, I want a picture for each scene, so that the video holds students' attention                                                             | Must     | TC-7.1–7.2                   | F5      | US-6       |
+| US-9  | PER-1 teacher | As a teacher, I want to preview the video before downloading, so that I can check it                                                                   | Must     | AC-8.1 · TC-9.x              | F8      | US-7, US-8 |
+| US-10 | PER-3 tutor   | As a tutor, I want one video file I can send on WhatsApp, so that students can watch at home                                                           | Must     | AC-9.1–9.3 · TC-10.x         | F9      | US-9       |
+| US-11 | PER-1 teacher | As a teacher, I want a short quiz with the answers, so that I can check understanding after the video                                                  | Should   | TC-3.8, TC-11.1              | F2.5    | US-2       |
+| US-12 | PER-1 teacher | As a teacher, I want to fix a scene's wording before voice is made, so that the narration says exactly what I want                                     | Should   | TC-12.x                      | F2.6    | US-2, US-6 |
+| US-13 | PER-1 teacher | As a primary teacher, I want slower narration, so that young learners can follow                                                                       | Should   | TC-13.1                      | F4.4    | US-7       |
+| US-14 | PER-1/2       | As a returning user, I want my last lesson to be there when I reopen the app, so that I can continue where I stopped                                   | Must     | TC-4.1, TC-E2E.2             | F11.2   | US-2       |
+| US-15 | PER-4 judge   | As a judge, I want sample notes I can load with one click, so that I can try it without typing                                                         | Should   | TC-2.10                      | F1.6    | US-1       |
+| US-16 | PER-1/2/3     | As any user, I want clear messages when something goes wrong, so that I know what to do next and never lose my notes                                   | Must     | TC-2.1–2.3, TC-3.3, TC-E2E.3 | 04 §6   | n/a        |

@@ -86,6 +86,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: Added docs/07 frontend guide, 08 AI architecture, 09 test cases, 10 demo plan (replaces demo-script), user stories in 04 §10.
 - 2026-11-19: Added TDD.md (central technical design; docs/06 now points to it). Fixed stale `running` jobs never retrying (`staleRunning` + test) and added a one-runner-per-lesson guard. 14 tests.
 - 2026-11-19: Added DEBUGGING.md (report template, root-cause process, symptom map, bug log).
 - 2026-11-19: Adopted DEVELOPMENT_PROTOCOL.md. Added BUILD_PLAN.md (stages 0–15; existing code = 🟡 untested) and FEATURE_GUIDE.md. Fixed randomUUID on plain-http (phone LAN testing); added `pnpm dev:lan`.

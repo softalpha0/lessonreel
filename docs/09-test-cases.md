@@ -1,0 +1,202 @@
+# 09 · Test cases
+
+|              |                                                                                                                                                                                               |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Last updated | 2026-11-19                                                                                                                                                                                    |
+| Owner        | QA Engineer (Benjamin runs them; Claude Code prepares and fixes)                                                                                                                              |
+| Strategy     | [TDD §20](../TDD.md#20-testing-strategy) · acceptance criteria [04 §7](04-functional-spec.md#7-acceptance-criteria) · process [DEVELOPMENT_PROTOCOL.md](../DEVELOPMENT_PROTOCOL.md) Phase 3–4 |
+| Used in      | Every [BUILD_PLAN](../BUILD_PLAN.md) stage exit gate · Index: [docs/README](README.md)                                                                                                        |
+
+## How to use this file
+
+1. Before approving a stage, run every case tagged with that stage.
+2. Fill **Actual** and **Status**. Don't delete failed rows; fix, re-run, and keep the history in the Notes column.
+3. A failed case = a bug report ([DEBUGGING.md](../DEBUGGING.md) Part 1).
+4. Use test notes only. No real student data.
+
+**Type:** N normal · E edge · I invalid input · F failure/network · S security · A accessibility · M mobile
+**Severity if it fails:** 🔴 blocks demo/submission · 🟠 major · 🟡 minor
+**Status:** ⬜ not run · ✅ pass · ❌ fail · ⏭ blocked/not applicable
+
+**Sample notes for tests** (paste as-is):
+
+- **SN-1 (normal, science):** "Photosynthesis. Plants make their own food using sunlight, water and carbon dioxide. This happens in the leaves, inside chloroplasts, which contain chlorophyll, the green pigment. The plant releases oxygen. Word equation: carbon dioxide + water → glucose + oxygen. Why it matters: it feeds almost all life on Earth and gives us oxygen."
+- **SN-2 (very short):** "Water boils at 100°C at sea level."
+- **SN-3 (special characters):** `<script>alert(1)</script> & "quotes" 'single' emoji 🌱 naira ₦500`
+- **SN-4 (too long):** any text over 12,000 characters (e.g. SN-1 pasted 40 times).
+
+---
+
+## Stage 0: Setup and backup
+
+| ID     | Type | Preconditions                  | Steps                                  | Expected                                                              | Actual | Status | Sev |
+| ------ | ---- | ------------------------------ | -------------------------------------- | --------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-0.1 | N    | Repo unzipped, tools installed | `pnpm install` then `pnpm run ci`      | Lint, format, typecheck pass; **14 tests pass**; build OK             |        | ⬜     | 🔴  |
+| TC-0.2 | S    | `.env.local` created           | `git status`                           | `.env.local` **not** listed                                           |        | ⬜     | 🔴  |
+| TC-0.3 | S    | n/a                            | `git check-ignore apps\web\.env.local` | Prints the path                                                       |        | ⬜     | 🔴  |
+| TC-0.4 | N    | Remote created                 | `git push`, then open GitHub           | Commits visible; `git status` "up to date with origin/main"           |        | ⬜     | 🔴  |
+| TC-0.5 | N    | Authors rewritten              | `git log --format="%an <%ae>"`         | Benjamin's name/email on every commit                                 |        | ⬜     | 🟠  |
+| TC-0.6 | N    | Firebase set up                | `pnpm dev`, open localhost:5173        | Page loads, no red console errors; App Check debug token printed once |        | ⬜     | 🔴  |
+
+## Stage 1: Shell and status
+
+| ID     | Type | Preconditions                 | Steps                         | Expected                                              | Actual | Status        | Sev |
+| ------ | ---- | ----------------------------- | ----------------------------- | ----------------------------------------------------- | ------ | ------------- | --- |
+| TC-1.1 | N    | App open, online              | Look at header                | "Online" pill                                         |        | ⬜            | 🟡  |
+| TC-1.2 | F    | App open                      | DevTools → Network → Offline  | Pill changes to "Offline" within 1 s                  |        | ⬜            | 🟠  |
+| TC-1.3 | N    | Nano-capable Chrome           | Click "Prepare offline model" | % increases → "Nano: ready"                           |        | ⬜            | 🔴  |
+| TC-1.4 | E    | Non-Nano machine or phone     | Click Prepare                 | "Nano: not available here (cloud fallback)", no crash |        | ⬜            | 🟠  |
+| TC-1.5 | E    | Download running              | Click Prepare again quickly   | Button disabled; no second download                   |        | ⬜            | 🟡  |
+| TC-1.6 | F    | Offline, model not downloaded | Click Prepare                 | Clear message, no crash                               |        | ⬜            | 🟡  |
+| TC-1.7 | N    | Planned (F3.3)                | Reload page                   | Nano status shown without clicking                    |        | ⏭ until built | 🟡  |
+
+## Stage 2: Lesson form
+
+| ID      | Type | Preconditions       | Steps                                           | Expected                                                                                           | Actual | Status        | Sev |
+| ------- | ---- | ------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------ | ------------- | --- |
+| TC-2.1  | I    | App ready           | Leave notes empty → Make                        | "Add your lesson notes first." Notes box still focused/usable                                      |        | ⬜            | 🟠  |
+| TC-2.2  | I    | n/a                 | Notes = only spaces → Make                      | Same as TC-2.1                                                                                     |        | ⬜            | 🟠  |
+| TC-2.3  | I    | n/a                 | Paste SN-4 → Make                               | "Notes are N characters; the limit is 12,000. Split the lesson." No model call (Network tab quiet) |        | ⬜            | 🟠  |
+| TC-2.4  | E    | n/a                 | Exactly 12,000 chars → Make                     | Accepted                                                                                           |        | ⬜            | 🟡  |
+| TC-2.5  | I    | n/a                 | Scenes = 0, then 99, then -3, then blank → Make | Clamped to 3–8 (blank → 5); no error                                                               |        | ⬜            | 🟡  |
+| TC-2.6  | E    | n/a                 | Audience blank → Make                           | Uses "secondary school students"                                                                   |        | ⬜            | 🟡  |
+| TC-2.7  | E    | n/a                 | Double-click Make fast                          | Only one storyboard request; button disabled while working                                         |        | ⬜            | 🟠  |
+| TC-2.8  | N    | n/a                 | Open language select                            | Shows French, Spanish, Hindi, Swahili (preview); no Yoruba/Igbo/Hausa                              |        | ⬜            | 🟡  |
+| TC-2.9  | M    | Phone, 390 px       | View the form                                   | No sideways scroll; fields full width (row stacks: planned)                                        |        | ⬜            | 🟠  |
+| TC-2.10 | N    | Planned (F1.5/F1.6) | Type notes; click "Try sample notes"            | Counter updates; sample fills box                                                                  |        | ⏭ until built | 🟡  |
+
+## Stage 3: Storyboard (hybrid)
+
+| ID     | Type | Preconditions           | Steps                                                                                              | Expected                                                                               | Actual | Status | Sev |
+| ------ | ---- | ----------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-3.1 | N    | Nano ready, **offline** | Paste SN-1 → Make                                                                                  | Storyboard with **On-device** badge, seconds shown, 5 scenes + quiz (AC-3.1)           |        | ⬜     | 🔴  |
+| TC-3.2 | N    | No Nano, online         | Paste SN-1 → Make                                                                                  | Storyboard with **Cloud** badge (AC-3.2)                                               |        | ⬜     | 🔴  |
+| TC-3.3 | F    | No Nano, offline        | Paste SN-1 → Make                                                                                  | E-1 message; notes still in box (AC-3.3)                                               |        | ⬜     | 🔴  |
+| TC-3.4 | E    | Any route               | Paste SN-2 → Make                                                                                  | Storyboard with ≥ 3 scenes and **no invented facts** (or fewer scenes after prompt v2) |        | ⬜     | 🟠  |
+| TC-3.5 | S    | Any route               | Paste SN-3 → Make                                                                                  | Text shows literally; **no alert pops up** (escaping works)                            |        | ⬜     | 🔴  |
+| TC-3.6 | N    | Any route               | Run the 5 eval notes ([08 §8](08-ai-architecture.md#8-evaluation-plan))                            | ≥ 4/5 valid first try on-device; all < 60 s; record in `evidence/ai-eval.md`           |        | ⬜     | 🔴  |
+| TC-3.7 | F    | DevTools open           | Force invalid output (temporarily set scenes limit in a test build) or observe a repair in console | One repair request; then storyboard or E-3 (AC-2.4)                                    |        | ⬜     | 🟡  |
+| TC-3.8 | N    | Storyboard shown        | Read quiz                                                                                          | 3 questions, 3 options each, answers match notes                                       |        | ⬜     | 🟠  |
+
+## Stage 4: Save and reload
+
+| ID     | Type | Preconditions         | Steps                                             | Expected                                                                | Actual | Status | Sev |
+| ------ | ---- | --------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-4.1 | N    | Storyboard shown      | Refresh page                                      | Same storyboard and badge reappear                                      |        | ⬜     | 🔴  |
+| TC-4.2 | E    | Storyboard generating | Refresh mid-generation                            | App loads cleanly; previous lesson (if any) shown; no half-saved lesson |        | ⬜     | 🟡  |
+| TC-4.3 | E    | n/a                   | DevTools → Application → Clear site data → reload | Empty state "Your storyboard appears here."                             |        | ⬜     | 🟡  |
+| TC-4.4 | E    | Two tabs open         | Make a storyboard in tab 1; reload tab 2          | Tab 2 shows the new lesson; no errors                                   |        | ⬜     | 🟡  |
+
+## Stage 5: Queue
+
+| ID     | Type | Preconditions       | Steps                                                                       | Expected                                                             | Actual | Status | Sev |
+| ------ | ---- | ------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-5.1 | N    | Offline, Nano ready | Make storyboard (SN-1, French)                                              | "Queued … 0/15" (5 images + 10 voice)                                |        | ⬜     | 🔴  |
+| TC-5.2 | N    | After TC-5.1        | Go online                                                                   | Count rises automatically, no click needed                           |        | ⬜     | 🔴  |
+| TC-5.3 | F    | Jobs running        | Go offline mid-way                                                          | Badge → Queued; no error popup; resumes when online (AC-6.2)         |        | ⬜     | 🔴  |
+| TC-5.4 | F    | Jobs running        | Close tab mid-way, reopen online                                            | Jobs resume; none stuck "running" (stale-job fix)                    |        | ⬜     | 🔴  |
+| TC-5.5 | S    | Jobs exist          | Firebase console → Firestore `users/{uid}/jobs`                             | Only job metadata (ids, status, attempts, error); **no lesson text** |        | ⬜     | 🟠  |
+| TC-5.6 | S    | Rules deployed      | Second browser/incognito tries to read first user's jobs (Rules Playground) | Denied                                                               |        | ⬜     | 🔴  |
+| TC-5.7 | E    | n/a                 | Make the same storyboard twice                                              | Two lessons, no duplicate job ids within a lesson                    |        | ⬜     | 🟡  |
+
+## Stage 6: Narration
+
+| ID     | Type | Preconditions                      | Steps                                                | Expected                                                             | Actual | Status | Sev |
+| ------ | ---- | ---------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-6.1 | N    | Online                             | Generate SN-1 with French; play scene 1 French audio | Spoken **French**, not English with an accent (AC-4.1)               |        | ⬜     | 🔴  |
+| TC-6.2 | N    | Online                             | Repeat for es-ES, hi-IN, sw-KE                       | Each in the right language; record in `evidence/tts-languages.txt`   |        | ⬜     | 🟠  |
+| TC-6.3 | E    | n/a                                | Notes with numbers/symbols ("₦500, 3.14, H₂O")       | Audio reads them sensibly; no failure                                |        | ⬜     | 🟡  |
+| TC-6.4 | F    | Wrong `VITE_TTS_MODEL` (test only) | Generate                                             | Voice jobs fail after 3 tries with error recorded; app keeps working |        | ⬜     | 🟠  |
+
+## Stage 7: Images
+
+| ID     | Type | Preconditions            | Steps         | Expected                                                                  | Actual | Status | Sev |
+| ------ | ---- | ------------------------ | ------------- | ------------------------------------------------------------------------- | ------ | ------ | --- |
+| TC-7.1 | N    | `VITE_IMAGE_MODEL` set   | Generate SN-1 | One image per scene; no text in images                                    |        | ⬜     | 🟠  |
+| TC-7.2 | E    | `VITE_IMAGE_MODEL` empty | Generate      | Placeholder frames; image jobs complete as "done" without image; no crash |        | ⬜     | 🟠  |
+
+## Stage 8: Progress and retry (planned)
+
+| ID     | Type | Preconditions   | Steps                                  | Expected                         | Actual | Status        | Sev |
+| ------ | ---- | --------------- | -------------------------------------- | -------------------------------- | ------ | ------------- | --- |
+| TC-8.1 | N    | Jobs running    | Watch S-3                              | Per-scene rows update ○ → … → ✓  |        | ⏭ until built | 🟠  |
+| TC-8.2 | F    | A job failed 3× | Fix cause, click "Retry failed scenes" | Failed jobs requeue and complete |        | ⏭ until built | 🟠  |
+| TC-8.3 | E    | n/a             | Click Retry repeatedly / while offline | No duplicates; waits for online  |        | ⏭ until built | 🟡  |
+
+## Stage 9: Preview
+
+| ID     | Type | Preconditions      | Steps               | Expected                                            | Actual | Status | Sev |
+| ------ | ---- | ------------------ | ------------------- | --------------------------------------------------- | ------ | ------ | --- |
+| TC-9.1 | N    | All jobs done      | Click Preview       | Scenes play in order with image, caption, narration |        | ⬜     | 🔴  |
+| TC-9.2 | E    | Some audio missing | Preview             | Silent scenes last their planned duration (AC-8.1)  |        | ⬜     | 🟡  |
+| TC-9.3 | E    | Preview playing    | Click Preview again | Button disabled while playing                       |        | ⬜     | 🟡  |
+| TC-9.4 | M    | Phone              | Preview             | Stage fits width; audio plays after tap             |        | ⬜     | 🟠  |
+
+## Stage 10: Download
+
+| ID      | Type | Preconditions         | Steps                          | Expected                                                                 | Actual | Status | Sev |
+| ------- | ---- | --------------------- | ------------------------------ | ------------------------------------------------------------------------ | ------ | ------ | --- |
+| TC-10.1 | N    | All jobs done         | Click Download                 | "Rendering video… n%" → file `title-fr-FR.mp4` (or .webm) saved (AC-9.1) |        | ⬜     | 🔴  |
+| TC-10.2 | N    | File saved            | Play in VLC; send to WhatsApp  | Plays; captions and voice in sync within 0.5 s (AC-9.3)                  |        | ⬜     | 🔴  |
+| TC-10.3 | I    | One job still running | Try Download                   | Button disabled (AC-9.2)                                                 |        | ⬜     | 🟠  |
+| TC-10.4 | E    | 8 scenes (~2 min)     | Download, keep tab visible     | Completes; length ≈ sum of audio                                         |        | ⬜     | 🟠  |
+| TC-10.5 | F    | Rendering             | Switch to another tab for 20 s | Note result (timers throttle); document limitation if out of sync        |        | ⬜     | 🟡  |
+
+## Stages 11–13 (planned features)
+
+| ID      | Type | Steps                                      | Expected                                                | Status        | Sev |
+| ------- | ---- | ------------------------------------------ | ------------------------------------------------------- | ------------- | --- |
+| TC-11.1 | N    | Click "Copy quiz", paste in Notes/WhatsApp | Readable questions with answers                         | ⏭ until built | 🟡  |
+| TC-12.1 | I    | Edit a scene to empty / 401 chars          | Save disabled with hint                                 | ⏭ until built | 🟡  |
+| TC-12.2 | N    | Edit narration after voice made            | That scene's voice jobs requeue; new audio matches edit | ⏭ until built | 🟠  |
+| TC-13.1 | N    | Tick "Slow narration", generate            | Noticeably slower, clearer audio                        | ⏭ until built | 🟡  |
+
+## Stage 14: Deploy and judge path
+
+| ID      | Type | Preconditions      | Steps                                                           | Expected                                                            | Actual | Status          | Sev                                      |
+| ------- | ---- | ------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------- | ------ | --------------- | ---------------------------------------- |
+| TC-14.1 | N    | Deployed           | Open `*.web.app` in incognito on a second computer              | Full journey works with Cloud badge, no login                       |        | ⬜              | 🔴                                       |
+| TC-14.2 | S    | App Check enforced | Call AI from a script/other origin (or check App Check metrics) | Unverified requests rejected                                        |        | ⬜              | 🔴                                       |
+| TC-14.3 | S    | n/a                | `git grep -i -E "apikey                                         | secret                                                              | token  | BEGIN PRIVATE"` | Only safe matches (variable names, docs) |     | ⬜  | 🔴  |
+| TC-14.4 | F    | Ad blocker on      | Use the app                                                     | Understandable message if reCAPTCHA is blocked (E-8)                |        | ⬜              | 🟠                                       |
+| TC-14.5 | M    | Phone, mobile data | Full journey on the live link                                   | Works; nothing overflows; buttons easy to tap; portrait + landscape |        | ⬜              | 🔴                                       |
+
+## Cross-cutting: accessibility
+
+| ID     | Type | Steps                                                     | Expected                                   | Status | Sev |
+| ------ | ---- | --------------------------------------------------------- | ------------------------------------------ | ------ | --- |
+| TC-A.1 | A    | Do the whole journey with keyboard only (Tab/Enter/Space) | Everything reachable; focus always visible | ⬜     | 🟠  |
+| TC-A.2 | A    | Lighthouse → Accessibility                                | Score ≥ 90; no contrast failures           | ⬜     | 🟡  |
+| TC-A.3 | A    | Screen reader (Windows Narrator) on Make                  | Status message is announced                | ⬜     | 🟡  |
+
+## Final end-to-end (Stage 15)
+
+| ID       | Persona                    | Steps                                                         | Expected                                       | Status |
+| -------- | -------------------------- | ------------------------------------------------------------- | ---------------------------------------------- | ------ |
+| TC-E2E.1 | First-time teacher (PER-1) | Prepare model → offline storyboard → online finish → download | Done in < 10 min without help                  | ⬜     |
+| TC-E2E.2 | Returning user             | Reopen next day                                               | Last lesson shown; anything unfinished resumes | ⬜     |
+| TC-E2E.3 | User who makes mistakes    | Empty notes, huge notes, double clicks, offline mid-job       | Every error understandable; nothing lost       | ⬜     |
+| TC-E2E.4 | Slow connection            | DevTools Slow 3G                                              | Works, just slower; progress visible           | ⬜     |
+| TC-E2E.5 | Phone user                 | Live link on phone                                            | Usable end to end (cloud path)                 | ⬜     |
+| TC-E2E.6 | Judge (PER-4)              | Live link, no Nano, 3 minutes                                 | Sees storyboard, voice, images, preview        | ⬜     |
+| TC-E2E.7 | Main journey ×3            | Repeat TC-E2E.1 three times                                   | Same result every time                         | ⬜     |
+
+## Results summary
+
+| Stage | Cases | ✅  | ❌  | ⬜  | Date | Approved by |
+| ----- | ----- | --- | --- | --- | ---- | ----------- |
+| 0     | 6     |     |     | 6   |      |             |
+| 1     | 7     |     |     | 7   |      |             |
+| 2     | 10    |     |     | 10  |      |             |
+| 3     | 8     |     |     | 8   |      |             |
+| 4     | 4     |     |     | 4   |      |             |
+| 5     | 7     |     |     | 7   |      |             |
+| 6     | 4     |     |     | 4   |      |             |
+| 7     | 2     |     |     | 2   |      |             |
+| 8     | 3     |     |     | 3   |      |             |
+| 9     | 4     |     |     | 4   |      |             |
+| 10    | 5     |     |     | 5   |      |             |
+| 11–13 | 4     |     |     | 4   |      |             |
+| 14    | 5     |     |     | 5   |      |             |
+| A11y  | 3     |     |     | 3   |      |             |
+| E2E   | 7     |     |     | 7   |      |             |

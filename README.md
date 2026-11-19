@@ -131,6 +131,10 @@ _To be added during the build:_ screenshots and console logs of `inferenceSource
 | [03 Screen design](docs/03-screen-design.md)               | Wireframes, design system, components, states, accessibility                                |
 | [04 Functional spec](docs/04-functional-spec.md)           | Requirements, business rules, validation, errors, acceptance criteria                       |
 | [05 Data flow](docs/05-data-flow.md)                       | DFD level 0/1, data dictionary, privacy                                                     |
+| [07 Frontend guide](docs/07-frontend.md)                   | Module map, state, events, UI rules, how to add a view                                      |
+| [08 AI architecture](docs/08-ai-architecture.md)           | Models, prompts, token budget, evaluation, fallbacks                                        |
+| [09 Test cases](docs/09-test-cases.md)                     | Normal, edge, invalid, failure, mobile and accessibility cases                              |
+| [10 Demo plan](docs/10-demo-plan.md)                       | Video script, judge instructions, Devpost description draft                                 |
 | [TDD.md](TDD.md)                                           | Technical design: architecture, stack, data, APIs, security, testing, deployment, decisions |
 
 ## Tech stack

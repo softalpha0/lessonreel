@@ -1,6 +1,6 @@
 # Lessonreel documentation
 
-Six documents, one product. Each one answers a different question, and they share the same IDs so you can trace any feature from "why" to "how".
+Ten documents, one product. Each one answers a different question, and they share the same IDs so you can trace any feature from "why" to "how".
 
 | #   | Document                                                                                            | Answers                                                                               | Owner role                     |
 | --- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------ |
@@ -10,8 +10,12 @@ Six documents, one product. Each one answers a different question, and they shar
 | 04  | [Functional specification (SRS)](04-functional-spec.md)                                             | Exactly how must the system behave? How do we know it works?                          | Business Analyst               |
 | 05  | [Data flow](05-data-flow.md)                                                                        | Where does each piece of data come from, where does it go, and where is it stored?    | BA + Architect                 |
 | 06  | [Technical design (TDD)](../TDD.md) (root file; [06](06-software-architecture.md) now points to it) | How is it built technically? Why these choices?                                       | Software Architect / Tech Lead |
+| 07  | [Frontend implementation guide](07-frontend.md)                                                     | How is the web app organised, and how do I change it safely?                          | Frontend Architect             |
+| 08  | [AI architecture](08-ai-architecture.md)                                                            | Which model does what, with which prompt? How do we check AI output?                  | AI/ML Architect                |
+| 09  | [Test cases](09-test-cases.md)                                                                      | What exactly do we test, and did it pass?                                             | QA Engineer                    |
+| 10  | [Demo plan](10-demo-plan.md)                                                                        | How do we show it to judges and describe it on Devpost?                               | PM + Tech Lead                 |
 
-Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md), [demo script](demo-script.md), [`AGENTS.md`](../AGENTS.md) (briefing for coding agents), [`README.md`](../README.md) (public overview).
+Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md), [`AGENTS.md`](../AGENTS.md) (briefing for coding agents), [`README.md`](../README.md) (public overview).
 
 ## Shared IDs (use these everywhere)
 
@@ -35,7 +39,7 @@ Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md)
 ## How a feature traces through the docs (example)
 
 "Make a storyboard with no internet":
-`G-1` (01) → `PER-1`, `J-1` (02) → `UF-1`, `S-1`, `S-2`, `E-1` (02) → wireframes for `S-1`/`S-2` (03) → `F2`, `F3`, `BR-1`–`BR-4`, `AC-2.x` (04) → `P-1`, `D-1` (05) → `C3`, `ADR-002`, `ADR-005` (TDD) → `apps/web/src/ai/storyboard.ts` (code).
+`G-1` (01) → `PER-1`, `J-1` (02) → `UF-1`, `S-1`, `S-2`, `E-1` (02) → wireframes for `S-1`/`S-2` (03) → `F2`, `F3`, `BR-1`–`BR-4`, `AC-2.x` (04) → `P-1`, `D-1` (05) → `US-2` (04 §10) → `C3`, `ADR-002`, `ADR-005` (TDD) → `AI-1`, prompt v1 (08) → `TC-3.1` (09) → `apps/web/src/ai/storyboard.ts` (code).
 
 ## Docs ↔ code sync
 

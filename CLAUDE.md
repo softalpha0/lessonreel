@@ -17,3 +17,4 @@ Key reminders:
 - Update FEATURE_GUIDE.md after each approved feature.
 - When I report a bug, follow DEBUGGING.md Part 2: reproduce, find the root cause, explain it, fix minimally, verify, and wait for my approval.
 - Check TDD.md before any important technical decision, and update it when the implementation changes.
+- Before approving a stage, run its test cases in docs/09-test-cases.md and record results. For AI changes follow docs/08-ai-architecture.md §13; for UI changes follow docs/07-frontend.md §16.

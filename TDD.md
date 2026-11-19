@@ -25,6 +25,10 @@
 | How should it look and behave?        | [`docs/03-screen-design.md`](docs/03-screen-design.md)               | DESIGN_SYSTEM.md                 |
 | Exactly how must it behave?           | [`docs/04-functional-spec.md`](docs/04-functional-spec.md)           | SRS                              |
 | Where does data go?                   | [`docs/05-data-flow.md`](docs/05-data-flow.md)                       | DFD                              |
+| How is the web app organised?         | [`docs/07-frontend.md`](docs/07-frontend.md)                         | FRONTEND.md                      |
+| How does the AI work?                 | [`docs/08-ai-architecture.md`](docs/08-ai-architecture.md)           | AI_ARCHITECTURE.md               |
+| What do we test?                      | [`docs/09-test-cases.md`](docs/09-test-cases.md)                     | TEST_CASES.md                    |
+| How do we demo and submit?            | [`docs/10-demo-plan.md`](docs/10-demo-plan.md)                       | DEMO_PLAN.md                     |
 | **How do engineers build it?**        | **TDD.md (this file)**                                               | TDD.md                           |
 | What do we build first?               | [`BUILD_PLAN.md`](BUILD_PLAN.md)                                     | BUILD_PLAN.md                    |
 | What has actually been built?         | [`FEATURE_GUIDE.md`](FEATURE_GUIDE.md)                               | FEATURE_GUIDE.md                 |

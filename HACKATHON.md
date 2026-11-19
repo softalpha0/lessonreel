@@ -167,6 +167,10 @@ From the official rules. **Breaking any of these can disqualify us.**
 | [docs/03-screen-design.md](docs/03-screen-design.md)               | Wireframes, colours, fonts, components, accessibility                                                           |
 | [docs/04-functional-spec.md](docs/04-functional-spec.md)           | Requirements, business rules, errors, **acceptance criteria**                                                   |
 | [docs/05-data-flow.md](docs/05-data-flow.md)                       | Where data comes from, goes, and is stored                                                                      |
+| [docs/07-frontend.md](docs/07-frontend.md)                         | How the web app is organised; recipe for adding a view safely                                                   |
+| [docs/08-ai-architecture.md](docs/08-ai-architecture.md)           | Models, prompts (v1), token budget, AI quality checks, evaluation plan                                          |
+| [docs/09-test-cases.md](docs/09-test-cases.md)                     | **Test cases to run at every stage** (record results here)                                                      |
+| [docs/10-demo-plan.md](docs/10-demo-plan.md)                       | Video script, sample data, backup plan, judge instructions, Devpost draft                                       |
 | [TDD.md](TDD.md)                                                   | **Technical design**: architecture, stack, data, APIs, security, testing, deployment, decisions, open questions |
 | [AGENTS.md](AGENTS.md)                                             | Coding rules, verified SDK facts, status log                                                                    |
 | [BUILD_PLAN.md](BUILD_PLAN.md)                                     | **Ordered stages, how each is tested, exit gate**                                                               |
@@ -374,15 +378,15 @@ Our `.gitignore` already ignores `.env`, `.env.*` (except `.env.example`), `node
 
 ### Plan to the deadline (from [01 §10](docs/01-product-requirements.md#10-release-plan))
 
-| Date      | Goal                                                                                                     |
-| --------- | -------------------------------------------------------------------------------------------------------- |
-| Nov 19–20 | Setup (§7–§8), push to GitHub, test Nano storyboard on 5 real lesson notes, talk to 3 teachers           |
-| Nov 21–22 | Queue + voice + images end to end; Nano status on load; sample notes; per-scene progress                 |
-| Nov 23–24 | Export tested in real Chrome; edit scene; quiz panel; mobile fixes; error messages                       |
-| Nov 25    | Quota Sprint 3 request if needed (before 7:00 PM Lagos)                                                  |
-| Nov 26    | **Feature freeze**                                                                                       |
-| Nov 27–28 | Polish, evidence screenshots, README, record demo video (see [docs/demo-script.md](docs/demo-script.md)) |
-| Nov 29    | **Submit on Devpost**                                                                                    |
+| Date      | Goal                                                                                                       |
+| --------- | ---------------------------------------------------------------------------------------------------------- |
+| Nov 19–20 | Setup (§7–§8), push to GitHub, test Nano storyboard on 5 real lesson notes, talk to 3 teachers             |
+| Nov 21–22 | Queue + voice + images end to end; Nano status on load; sample notes; per-scene progress                   |
+| Nov 23–24 | Export tested in real Chrome; edit scene; quiz panel; mobile fixes; error messages                         |
+| Nov 25    | Quota Sprint 3 request if needed (before 7:00 PM Lagos)                                                    |
+| Nov 26    | **Feature freeze**                                                                                         |
+| Nov 27–28 | Polish, evidence screenshots, README, record demo video (see [docs/10-demo-plan.md](docs/10-demo-plan.md)) |
+| Nov 29    | **Submit on Devpost**                                                                                      |
 
 **Build order:** riskiest first. (1) Nano gives valid storyboard JSON, (2) TTS model and languages work, (3) video export in real Chrome.
 
