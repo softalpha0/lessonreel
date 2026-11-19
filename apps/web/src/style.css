@@ -194,3 +194,9 @@ select:focus-visible {
   background: rgba(0, 0, 0, 0.55);
   font-size: 1.1rem;
 }
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}

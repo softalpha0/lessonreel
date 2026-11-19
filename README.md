@@ -37,7 +37,7 @@ That rules out a lot of teachers. A teacher in Enugu preparing tomorrow's lesson
 1. You paste your lesson notes and say who it's for.
 2. **On your device**, Gemini Nano writes the script, splits it into scenes, plans an image for each one and adds a 3-question quiz. No internet needed.
 3. Voiceover and images need the cloud, so they **wait in a queue**. When you're back online, they run on their own.
-4. You preview the finished video with narration in English plus one more language (French, Spanish, Hindi or Swahili).
+4. You preview the finished video and download it as one file, with narration in English plus one more language (French, Spanish, Hindi or Swahili).
 
 Every step shows where it ran: **On-device**, **Cloud** or **Queued**.
 
@@ -163,12 +163,13 @@ AGENTS.md            Briefing for coding agents
 
 - On-device generation needs Chrome desktop with Gemini Nano downloaded (several GB of disk and a capable GPU/CPU). Lower-end machines use the cloud path, which needs internet.
 - Gemini TTS doesn't support Yoruba, Igbo, Hausa or Nigerian Pidgin yet, so they aren't offered.
-- Video export is in progress (porting the renderer from Inkcut). Preview playback works today.
+- Video export runs in the browser with MediaRecorder: MP4 where Chrome supports it, otherwise WebM. It records in real time, so a 60-second video takes about 60 seconds to render.
 
 ## Build log
 
 - **2026-11-18:** Idea locked. Monorepo scaffolded, core logic + tests, hybrid storyboard, cloud TTS/translate/image, offline queue, preview player.
+- **2026-11-19:** Architecture doc. In-browser video export (canvas + Web Audio + MediaRecorder). Decided to build everything new, no reused code.
 
 ## Credits
 
-Built by Benjamin Ugochukwu for #BuildHybridAI 2026. Video engine adapted from Inkcut, my earlier project. Licensed under Apache-2.0.
+Built from scratch by Benjamin Ugochukwu for #BuildHybridAI 2026, during the submission period. Licensed under Apache-2.0.

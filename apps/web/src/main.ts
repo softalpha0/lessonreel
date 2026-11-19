@@ -5,6 +5,7 @@ import { generateStoryboard, warmUpDeviceModel } from "./ai/storyboard";
 import { enqueueJobs, latestProject, saveProject, type Project } from "./lib/store";
 import { drainQueue } from "./lib/runner";
 import { playPreview } from "./lib/player";
+import { downloadBlob, exportVideo } from "./lib/exporter";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -21,6 +22,7 @@ const els = {
   board: $("board"),
   queue: $("queue"),
   play: $<HTMLButtonElement>("play"),
+  download: $<HTMLButtonElement>("download"),
   stage: $("stage"),
 };
 
@@ -130,6 +132,7 @@ async function runQueue() {
     onProgress: ({ done, total, failed }) => {
       els.queue.innerHTML = `${badge(navigator.onLine ? "in_cloud" : "queued")} ${done}/${total} cloud jobs done${failed ? `, ${failed} failed` : ""}`;
       els.play.disabled = done === 0;
+      els.download.disabled = done < total || total === 0;
     },
     onJob: () => undefined,
   });
@@ -155,6 +158,26 @@ async function onPlay() {
   els.play.disabled = true;
   await playPreview(current, els.lang.value, els.stage, () => undefined);
   els.play.disabled = false;
+}
+
+async function onDownload() {
+  if (!current) return;
+  els.download.disabled = true;
+  try {
+    const res = await exportVideo(current, els.lang.value, (pct) =>
+      setStatus(`Rendering video… ${pct}%`),
+    );
+    const name = current.board.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "lesson";
+    downloadBlob(res.blob, `${name}-${els.lang.value}.${res.extension}`);
+    setStatus(
+      `Video ready (${Math.round(res.durationSec)}s, ${res.extension.toUpperCase()}).`,
+      "ok",
+    );
+  } catch (err) {
+    setStatus(err instanceof Error ? err.message : String(err), "warn");
+  } finally {
+    els.download.disabled = false;
+  }
 }
 
 function escape(s: string): string {
@@ -192,6 +215,7 @@ async function boot() {
   els.warm.addEventListener("click", () => void onWarm());
   els.make.addEventListener("click", () => void onMake());
   els.play.addEventListener("click", () => void onPlay());
+  els.download.addEventListener("click", () => void onDownload());
 }
 
 void boot();

@@ -3,7 +3,7 @@ import { assetKey, loadAsset, type Project } from "./store";
 
 /**
  * Preview player: plays scenes in order with image + narration + on-screen text.
- * TODO(inkcut): replace with Inkcut's renderer to export a single MP4/WebM file.
+ * Export to a single file lives in exporter.ts.
  */
 export async function playPreview(
   project: Project,

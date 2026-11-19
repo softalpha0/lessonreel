@@ -40,18 +40,18 @@
 
 ### Functional requirements
 
-| ID  | Requirement                                                           | MVP                   |
-| --- | --------------------------------------------------------------------- | --------------------- |
-| F1  | Paste notes, choose audience and scene count                          | ✅                    |
-| F2  | Generate script, scenes, image prompts and a 3-question quiz          | ✅                    |
-| F3  | F2 works with no internet when Gemini Nano is available               | ✅                    |
-| F4  | Narrate each scene in English plus one more language                  | ✅                    |
-| F5  | Generate one image per scene                                          | ✅                    |
-| F6  | Queue F4/F5 while offline and run them automatically when back online | ✅                    |
-| F7  | Show where each step ran: On-device, Cloud or Queued                  | ✅                    |
-| F8  | Preview the video in the browser                                      | ✅                    |
-| F9  | Export one video file                                                 | ✅ (port from Inkcut) |
-| F10 | Android app                                                           | Could                 |
+| ID  | Requirement                                                           | MVP                    |
+| --- | --------------------------------------------------------------------- | ---------------------- |
+| F1  | Paste notes, choose audience and scene count                          | ✅                     |
+| F2  | Generate script, scenes, image prompts and a 3-question quiz          | ✅                     |
+| F3  | F2 works with no internet when Gemini Nano is available               | ✅                     |
+| F4  | Narrate each scene in English plus one more language                  | ✅                     |
+| F5  | Generate one image per scene                                          | ✅                     |
+| F6  | Queue F4/F5 while offline and run them automatically when back online | ✅                     |
+| F7  | Show where each step ran: On-device, Cloud or Queued                  | ✅                     |
+| F8  | Preview the video in the browser                                      | ✅                     |
+| F9  | Export one video file                                                 | ✅ (`lib/exporter.ts`) |
+| F10 | Android app                                                           | Could                  |
 
 ### Non-functional requirements
 
@@ -77,7 +77,7 @@ These are the forces that shaped every decision below, in priority order.
 2. **Judging criteria.** Four equally weighted criteria. Technical implementation is the first tie-break, so the hybrid split has to be real and visible.
 3. **Offline-first is the product.** On-device is a requirement here, not just an optimisation.
 4. **Nano is not everywhere.** Judges and many users won't have it. The cloud path must give the same result.
-5. **Solo builder, 11 days.** No servers to run, no microservices. Reuse Inkcut's renderer.
+5. **Solo builder, 11 days.** No servers to run, no microservices. Everything is built new during the event, so prefer browser APIs over heavy libraries.
 6. **Cost.** Stay inside the free tier; nothing billable by default.
 
 ## 3. System context
@@ -153,7 +153,7 @@ Dependency rule: arrows point inwards. `core` depends on nothing but Zod.
 | C4  | Cloud media service | `ai/cloud-media.ts`                  | Translate narration, TTS, image generation                                                  | Cloud only      |
 | C5  | Queue runner        | `lib/runner.ts`                      | Drain jobs two at a time while online, retry up to 3 times                                  | Browser → cloud |
 | C6  | Store               | `lib/store.ts`                       | Projects and assets in IndexedDB; job records in Firestore                                  | Browser         |
-| C7  | Player / exporter   | `lib/player.ts` (+ Inkcut renderer)  | Preview playback; export one video file                                                     | Browser         |
+| C7  | Player / exporter   | `lib/player.ts`, `lib/exporter.ts`   | Preview playback; export one video file                                                     | Browser         |
 | C8  | Domain core         | `packages/core/*`                    | Storyboard schema, prompt builders, language list, queue planning rules                     | Anywhere        |
 
 ## 6. Technology stack
@@ -382,6 +382,7 @@ Config lives in `apps/web/.env.local` (`VITE_FIREBASE_*`, `VITE_*_MODEL`). Movin
 | Nano context (~9k tokens)           | Notes capped at 12,000 chars; 3–8 scenes; narration ≤ 400 chars each                                                              |
 | First-run Nano download (GBs)       | Explicit "Prepare offline model" button with progress; cloud covers the gap meanwhile                                             |
 | Cloud latency                       | Runner does 2 jobs in parallel; images and TTS for different scenes overlap                                                       |
+| Export time                         | MediaRecorder records in real time: a 60 s video takes ~60 s; progress shown                                                      |
 | Bundle size                         | ~235 KB gzipped (Firebase SDK); acceptable for one page; code-split later if needed                                               |
 | Growth to many users                | No server to scale. Each user's cost is their own Gemini calls; Firestore load is tiny job docs                                   |
 | Cost per 5-scene video, 2 languages | 1 storyboard (free on-device) + 5 translations + 10 TTS + 5 images = 20 cloud calls. Free tier for the demo; quota form if needed |
@@ -417,7 +418,8 @@ lessonreel/
 │           └── lib/
 │               ├── store.ts     # C6 IndexedDB + Firestore jobs
 │               ├── runner.ts    # C5 queue runner
-│               └── player.ts    # C7 preview (export via Inkcut renderer)
+│               ├── player.ts    # C7 preview
+│               └── exporter.ts  # C7 export: canvas + Web Audio + MediaRecorder
 ├── packages/
 │   └── core/                    # C8 pure domain logic + unit tests
 │       ├── src/{storyboard,prompts,languages,queue,index}.ts
@@ -440,7 +442,7 @@ lessonreel/
 6. **No secrets in git.** Ever.
 7. **Plain UI copy:** short, human, no hype words.
 8. **Cross-platform scripts:** nothing bash-only in `package.json` (main dev box is Windows).
-9. **Disclose reuse:** code taken from Inkcut is listed in the README and the Devpost description.
+9. **Built new:** no code copied from other projects. Third-party libraries are listed in the README and used under their licences.
 
 ## 16. Architecture Decision Records
 
@@ -448,7 +450,7 @@ lessonreel/
 
 - **Decision:** The app is a static site. Firebase services replace a server.
 - **Reason:** One developer, 11 days. Firebase AI Logic already proxies Gemini securely with App Check. A server adds hosting, cost and a failure point with no user benefit.
-- **Consequences:** All logic runs in the browser. Heavy video export must be client-side (Inkcut renderer). Long-running jobs only run while the tab is open.
+- **Consequences:** All logic runs in the browser. Video export must be client-side (ADR-010). Long-running jobs only run while the tab is open.
 
 ### ADR-002: `PREFER_ON_DEVICE` for the storyboard, not `ONLY_ON_DEVICE`
 
@@ -498,17 +500,22 @@ lessonreel/
 - **Reason:** Firestore rules need a uid; teachers and judges shouldn't need an account.
 - **Consequences:** Data is tied to the browser. Account linking is a future feature.
 
+### ADR-010: Render video in the browser with MediaRecorder
+
+- **Decision:** Export draws each scene on a canvas (image with slow zoom + caption), plays narration through Web Audio into a `MediaStreamDestination`, and records both with `MediaRecorder`. MP4 if `isTypeSupported`, otherwise WebM.
+- **Reason:** No backend (ADR-001), no reused code, and ffmpeg.wasm is ~30 MB and needs cross-origin isolation headers. Browser APIs are built in and free.
+- **Consequences:** Rendering takes real time (a 60 s video takes ~60 s) and the tab must stay open. Output format depends on the browser. Good enough for 1–3 minute lessons.
+
 ## 17. Risks and open questions
 
-| Risk / question                                       | Impact | Mitigation / owner                                            |
-| ----------------------------------------------------- | ------ | ------------------------------------------------------------- |
-| Nano JSON reliability on real hardware                | High   | Test 5 real lesson notes on day 1; tune prompt; repair pass   |
-| Video export in browser (Inkcut port)                 | High   | Start by Nov 21; fall back to WebM via canvas + MediaRecorder |
-| Current image model name for AI Logic                 | Medium | Check docs; images optional until confirmed                   |
-| Free-tier quota for TTS/images                        | Medium | 4–6 scene demos; Sprint 3 quota form by Nov 25 if needed      |
-| Do judges test the on-device path?                    | Medium | Asked in Discord; video shows it clearly either way           |
-| Does reusing Inkcut count as "significantly updated"? | Medium | Disclose; all hybrid AI work is new; asked in Discord         |
-| Jobs left `running` after a crash                     | Low    | Treated as retryable on next drain (attempts cap)             |
+| Risk / question                         | Impact | Mitigation / owner                                                |
+| --------------------------------------- | ------ | ----------------------------------------------------------------- |
+| Nano JSON reliability on real hardware  | High   | Test 5 real lesson notes on day 1; tune prompt; repair pass       |
+| Video export in browser (MediaRecorder) | High   | Test on real Chrome by Nov 21: MP4 support, A/V sync, 2-min video |
+| Current image model name for AI Logic   | Medium | Check docs; images optional until confirmed                       |
+| Free-tier quota for TTS/images          | Medium | 4–6 scene demos; Sprint 3 quota form by Nov 25 if needed          |
+| Do judges test the on-device path?      | Medium | Asked in Discord; video shows it clearly either way               |
+| Jobs left `running` after a crash       | Low    | Treated as retryable on next drain (attempts cap)                 |
 
 ## 18. Future evolution
 

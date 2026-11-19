@@ -21,7 +21,7 @@ A teacher pastes lesson notes with Wi-Fi off. In under a minute they get a scrip
 - **App Check is required.** Debug tokens are fine for development. Never ship the debug token in production.
 - Public repo, open-source license visible in the GitHub About section (Apache-2.0, already in `LICENSE`).
 - Demo video on YouTube, English, only the first 3 minutes are judged.
-- Existing apps are allowed if significantly updated during the event. Lessonreel reuses Inkcut's video engine; every hybrid AI feature is new work. Keep commits small and dated so the history shows that.
+- Lessonreel is **newly created** during the submission period (started 2026-11-18). Do not copy code from other projects (including Inkcut). Standard tools, libraries and AI coding assistants are allowed. Keep commits small and dated.
 - Judging: technical implementation (quality + use of hybrid inference), design (complete product, not a proof of concept), potential impact, quality of the idea.
 
 ## Why hybrid (this is the pitch, keep the code honest to it)
@@ -62,7 +62,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## MVP scope
 
-- **Must:** notes → on-device storyboard with badge; offline queue that drains when online; TTS narration in English + one more language; scene images; preview playback; export one video file (port Inkcut renderer); App Check; deployed on Firebase Hosting.
+- **Must:** notes → on-device storyboard with badge; offline queue that drains when online; TTS narration in English + one more language; scene images; preview playback; export one video file (`lib/exporter.ts`); App Check; deployed on Firebase Hosting.
 - **Should:** 3-question quiz per video (already generated), slow-narration toggle for younger learners, Nano download progress UI.
 - **Could:** Android app (same core, Kotlin hybrid SDK) for the multi-platform bonus; Remote Config for model names.
 - **Won't:** auto-posting, student accounts, timeline editing after export.
@@ -71,7 +71,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 1. Gemini Nano producing valid storyboard JSON reliably on a real machine. Test with 5 real lesson notes on day 1.
 2. TTS model name + language codes on the current model.
-3. Video export in the browser (port from Inkcut).
+3. Video export in the browser (`lib/exporter.ts`: canvas + Web Audio + MediaRecorder). Test on real Chrome early: MP4 support, audio sync, long videos.
 
 ## Conventions
 
@@ -82,4 +82,5 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: No Inkcut code: everything is built new. Added `docs/architecture.md` and `lib/exporter.ts` + Download button (typechecks; not yet tested in a real browser).
 - 2026-11-18: Repo scaffolded. Core schema/prompts/queue + 13 tests passing. Web app wired to Firebase AI Logic hybrid (storyboard), cloud TTS/translate/image, Firestore offline queue, preview player. Not yet run against a real Firebase project. Next: create Firebase project, enable AI Logic + App Check, test Nano storyboard on 5 real notes.
