@@ -154,7 +154,7 @@ pnpm run ci   # lint, format check, typecheck, unit tests, build
 ```
 apps/web/            Vite app: UI, Firebase wiring, hybrid + cloud AI calls, queue runner, player
 packages/core/       Pure logic: storyboard schema, prompts, languages, queue (unit-tested)
-docs/                Architecture notes, demo script
+docs/                Architecture (docs/architecture.md), demo script
 evidence/            Screenshots and logs proving on-device vs cloud behaviour
 AGENTS.md            Briefing for coding agents
 ```
