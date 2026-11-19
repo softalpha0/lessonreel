@@ -11,7 +11,7 @@ Six documents, one product. Each one answers a different question, and they shar
 | 05  | [Data flow](05-data-flow.md)                            | Where does each piece of data come from, where does it go, and where is it stored?    | BA + Architect        |
 | 06  | [Software architecture](06-software-architecture.md)    | How is it built technically? Why these choices?                                       | Software Architect    |
 
-Supporting: [demo script](demo-script.md), [`AGENTS.md`](../AGENTS.md) (briefing for coding agents), [`README.md`](../README.md) (public overview).
+Supporting: [build plan](../BUILD_PLAN.md), [feature guide](../FEATURE_GUIDE.md), [demo script](demo-script.md), [`AGENTS.md`](../AGENTS.md) (briefing for coding agents), [`README.md`](../README.md) (public overview).
 
 ## Shared IDs (use these everywhere)
 
@@ -38,6 +38,8 @@ Supporting: [demo script](demo-script.md), [`AGENTS.md`](../AGENTS.md) (briefing
 `G-1` (01) → `PER-1`, `J-1` (02) → `UF-1`, `S-1`, `S-2`, `E-1` (02) → wireframes for `S-1`/`S-2` (03) → `F2`, `F3`, `BR-1`–`BR-4`, `AC-2.x` (04) → `P-1`, `D-1` (05) → `C3`, `ADR-002`, `ADR-005` (06) → `apps/web/src/ai/storyboard.ts` (code).
 
 ## Docs ↔ code sync
+
+The order in which these gaps get built (and how each is tested) is in [`BUILD_PLAN.md`](../BUILD_PLAN.md).
 
 The docs describe the MVP we will submit. Where the code doesn't match yet, it's listed here and in the "Status" column of the screen inventory (02 §6). Update this table when you close a gap.
 

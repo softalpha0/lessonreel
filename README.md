@@ -144,7 +144,7 @@ _To be added during the build:_ screenshots and console logs of `inferenceSource
 ```bash
 pnpm install
 cp apps/web/.env.example apps/web/.env.local   # fill in your Firebase web config
-pnpm dev
+pnpm dev            # or: pnpm dev:lan to open it from a phone on the same Wi-Fi
 ```
 
 Firebase setup: create a project → enable **Firebase AI Logic** (Gemini Developer API) → register a Web app → enable **App Check** with reCAPTCHA Enterprise (register your debug token for localhost) → enable **Anonymous** sign-in → create **Firestore** and deploy `firestore.rules`.
@@ -169,6 +169,9 @@ packages/core/       Pure logic: storyboard schema, prompts, languages, queue (u
 docs/                Product, UX, screens, functional spec, data flow, architecture (see docs/README.md)
 evidence/            Screenshots and logs proving on-device vs cloud behaviour
 HACKATHON.md         Hackathon brief, rules, setup steps, Git/security rules (for Claude Code)
+BUILD_PLAN.md        Ordered build stages and how each is tested
+FEATURE_GUIDE.md     Plain-language guide to each approved feature
+DEVELOPMENT_PROTOCOL.md  Feature-by-feature build and QA process
 CLAUDE.md            Loads HACKATHON.md + AGENTS.md into Claude Code
 AGENTS.md            Coding rules, verified SDK facts, status log
 ```

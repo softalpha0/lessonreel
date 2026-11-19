@@ -1,6 +1,6 @@
 # HACKATHON.md: master brief for Claude Code
 
-> **Claude Code: read this whole file before doing anything.** It tells you what hackathon this is, what we're building, the rules we must follow, how to set up my computer, and how to back up and document the work. Then read [`AGENTS.md`](AGENTS.md) and [`docs/README.md`](docs/README.md).
+> **Claude Code: read this whole file before doing anything.** It tells you what hackathon this is, what we're building, the rules we must follow, how to set up my computer, and how to back up and document the work. Then read [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md) (how we build: one feature at a time, I test and approve each), [`BUILD_PLAN.md`](BUILD_PLAN.md) (the ordered stages), [`AGENTS.md`](AGENTS.md) and [`docs/README.md`](docs/README.md).
 
 |              |                                                                                          |
 | ------------ | ---------------------------------------------------------------------------------------- |
@@ -385,12 +385,12 @@ Our `.gitignore` already ignores `.env`, `.env.*` (except `.env.example`), `node
 ### Every working session
 
 1. `git pull`, then `pnpm install` if `package.json` changed.
-2. Pick the next item from the gap table in `docs/README.md`.
-3. Plan it with me, then build **one feature at a time**.
+2. Pick the next stage in [`BUILD_PLAN.md`](BUILD_PLAN.md).
+3. Follow [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md): explain → build **one feature** → technical checks → my testing guide → **wait for my approval**.
 4. Test it like a user (and offline, if it touches offline behaviour).
 5. `pnpm run ci` must pass.
-6. Commit with a clear message and **push**. Verify the push.
-7. Update the README / gap table / `AGENTS.md` Status if something changed.
+6. After I approve: update `FEATURE_GUIDE.md`, then commit with a clear message and **push**. Verify the push.
+7. Update `BUILD_PLAN.md` status, the README, the docs gap table and `AGENTS.md` Status if something changed.
 8. Stuck for 30 minutes? Change approach, ask in Discord, or cut the feature.
 
 ---
@@ -434,12 +434,14 @@ Open PowerShell in the project folder, run `claude`, then paste:
 
 ```
 I'm a beginner preparing for the #BuildHybridAI 2026 hackathon. I want to build Lessonreel.
-Read HACKATHON.md fully, then AGENTS.md and docs/README.md.
+Read HACKATHON.md fully, then DEVELOPMENT_PROTOCOL.md, BUILD_PLAN.md, AGENTS.md and docs/README.md.
 
-First, check what's already installed on my computer, then install anything else this project needs,
-following HACKATHON.md section 7. Go one step at a time, explain each step in plain language,
-and confirm it works before moving on.
+We follow DEVELOPMENT_PROTOCOL.md: one feature at a time, and you stop after each one
+so I can test it myself and approve it before you commit, push and move on.
 
-After that, do section 9.1 (fix commit authors, create the GitHub repo, push and verify),
-then guide me through section 8 (Firebase setup) one screen at a time.
+Start with BUILD_PLAN.md Stage 0: check what's already installed on my computer, then install
+anything else this project needs (HACKATHON.md section 7). Go one step at a time, explain each
+step in plain language, and confirm it works before moving on. Then do section 9.1 (fix commit
+authors, create the GitHub repo, push and verify) and guide me through section 8 (Firebase setup)
+one screen at a time. Stop at the end of Stage 0 and give me my testing guide.
 ```

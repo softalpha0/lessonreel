@@ -4,7 +4,7 @@ Briefing for coding agents (Codex, Claude Code). Read this fully before changing
 
 ## Read these first
 
-Hackathon brief, setup and Git/security rules: [`HACKATHON.md`](HACKATHON.md). Docs index: [`docs/README.md`](docs/README.md). Requirements and acceptance criteria: [`docs/04-functional-spec.md`](docs/04-functional-spec.md). Architecture and ADRs: [`docs/06-software-architecture.md`](docs/06-software-architecture.md). Keep code and docs in sync: change the requirement first, then the code, and update the gap table in `docs/README.md`.
+Hackathon brief, setup and Git/security rules: [`HACKATHON.md`](HACKATHON.md). How we build (one feature at a time, Benjamin approves each): [`DEVELOPMENT_PROTOCOL.md`](DEVELOPMENT_PROTOCOL.md). Ordered stages: [`BUILD_PLAN.md`](BUILD_PLAN.md). Docs index: [`docs/README.md`](docs/README.md). Requirements and acceptance criteria: [`docs/04-functional-spec.md`](docs/04-functional-spec.md). Architecture and ADRs: [`docs/06-software-architecture.md`](docs/06-software-architecture.md). Keep code and docs in sync: change the requirement first, then the code, and update the gap table in `docs/README.md`.
 
 ## The product in one line
 
@@ -86,6 +86,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: Adopted DEVELOPMENT_PROTOCOL.md. Added BUILD_PLAN.md (stages 0–15; existing code = 🟡 untested) and FEATURE_GUIDE.md. Fixed randomUUID on plain-http (phone LAN testing); added `pnpm dev:lan`.
 - 2026-11-19: Added HACKATHON.md (master brief for Claude Code) + CLAUDE.md; tightened .gitignore.
 - 2026-11-19: Added product doc set (01–06) with shared IDs. Fixed focus-ring contrast. Aligned error copy with 04 §6.
 - 2026-11-19: No Inkcut code: everything is built new. Added the architecture doc (now `docs/06-software-architecture.md`) and `lib/exporter.ts` + Download button (typechecks; not yet tested in a real browser).

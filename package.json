@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "pnpm --filter @lessonreel/web dev",
+    "dev:lan": "pnpm --filter @lessonreel/web dev:lan",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",

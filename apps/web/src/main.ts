@@ -97,7 +97,7 @@ async function onMake() {
     renderBoard(res.board, res.source, res.ms);
 
     const project: Project = {
-      id: crypto.randomUUID(),
+      id: newId(),
       createdAt: Date.now(),
       notes,
       audience,
@@ -190,6 +190,13 @@ async function onDownload() {
   } finally {
     els.download.disabled = false;
   }
+}
+
+/** crypto.randomUUID only exists on HTTPS/localhost; phones on the LAN use plain http. */
+function newId(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function escape(s: string): string {
