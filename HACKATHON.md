@@ -391,7 +391,8 @@ Our `.gitignore` already ignores `.env`, `.env.*` (except `.env.example`), `node
 5. `pnpm run ci` must pass.
 6. After I approve: update `FEATURE_GUIDE.md`, then commit with a clear message and **push**. Verify the push.
 7. Update `BUILD_PLAN.md` status, the README, the docs gap table and `AGENTS.md` Status if something changed.
-8. Stuck for 30 minutes? Change approach, ask in Discord, or cut the feature.
+8. Something broken? Fill in the report in [`DEBUGGING.md`](DEBUGGING.md) Part 1 and paste it to Claude Code.
+9. Stuck for 30 minutes? Change approach, ask in Discord, or cut the feature.
 
 ---
 

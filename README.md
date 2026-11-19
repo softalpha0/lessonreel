@@ -172,6 +172,7 @@ HACKATHON.md         Hackathon brief, rules, setup steps, Git/security rules (fo
 BUILD_PLAN.md        Ordered build stages and how each is tested
 FEATURE_GUIDE.md     Plain-language guide to each approved feature
 DEVELOPMENT_PROTOCOL.md  Feature-by-feature build and QA process
+DEBUGGING.md         Bug report template and troubleshooting map
 CLAUDE.md            Loads HACKATHON.md + AGENTS.md into Claude Code
 AGENTS.md            Coding rules, verified SDK facts, status log
 ```

@@ -86,6 +86,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: Added DEBUGGING.md (report template, root-cause process, symptom map, bug log).
 - 2026-11-19: Adopted DEVELOPMENT_PROTOCOL.md. Added BUILD_PLAN.md (stages 0–15; existing code = 🟡 untested) and FEATURE_GUIDE.md. Fixed randomUUID on plain-http (phone LAN testing); added `pnpm dev:lan`.
 - 2026-11-19: Added HACKATHON.md (master brief for Claude Code) + CLAUDE.md; tightened .gitignore.
 - 2026-11-19: Added product doc set (01–06) with shared IDs. Fixed focus-ring contrast. Aligned error copy with 04 §6.
