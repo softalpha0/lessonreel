@@ -1,11 +1,25 @@
+# Secrets: never commit real values
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
 node_modules/
 dist/
+build/
+.next/
 coverage/
-.env
-.env.local
-.env.*.local
+.firebase/
+
+# Python (in case any scripts are added)
+__pycache__/
+.venv/
+
+# Logs and OS files
 *.log
 .DS_Store
-.firebase/
+Thumbs.db
+
+# Editor
 .vscode/*
 !.vscode/extensions.json

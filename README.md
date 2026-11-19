@@ -168,7 +168,9 @@ apps/web/            Vite app: UI, Firebase wiring, hybrid + cloud AI calls, que
 packages/core/       Pure logic: storyboard schema, prompts, languages, queue (unit-tested)
 docs/                Product, UX, screens, functional spec, data flow, architecture (see docs/README.md)
 evidence/            Screenshots and logs proving on-device vs cloud behaviour
-AGENTS.md            Briefing for coding agents
+HACKATHON.md         Hackathon brief, rules, setup steps, Git/security rules (for Claude Code)
+CLAUDE.md            Loads HACKATHON.md + AGENTS.md into Claude Code
+AGENTS.md            Coding rules, verified SDK facts, status log
 ```
 
 ## Known limitations
