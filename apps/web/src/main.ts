@@ -1,5 +1,10 @@
 import "./style.css";
-import { NARRATION_LANGUAGES, planJobs, type Storyboard } from "@lessonreel/core";
+import {
+  NARRATION_LANGUAGES,
+  planJobs,
+  StoryboardParseError,
+  type Storyboard,
+} from "@lessonreel/core";
 import { initFirebase, type FirebaseServices } from "./firebase";
 import { generateStoryboard, warmUpDeviceModel } from "./ai/storyboard";
 import { enqueueJobs, latestProject, saveProject, type Project } from "./lib/store";
@@ -114,16 +119,23 @@ async function onMake() {
     );
     void runQueue();
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    setStatus(
-      !navigator.onLine && /device|available|unavailable/i.test(msg)
-        ? "This device can't run Gemini Nano offline. Connect to the internet to use the cloud instead."
-        : msg,
-      "warn",
-    );
+    setStatus(storyboardErrorMessage(err), "warn");
   } finally {
     els.make.disabled = false;
   }
+}
+
+/** User-facing copy for E-1 / E-2 / E-3 (docs/04-functional-spec.md §6). */
+function storyboardErrorMessage(err: unknown): string {
+  const msg = err instanceof Error ? err.message : String(err);
+  if (err instanceof StoryboardParseError) {
+    console.warn("Storyboard output rejected:", err.raw);
+    return "We couldn't build a storyboard from these notes. Try again, or shorten them.";
+  }
+  if (!navigator.onLine && /device|available|unavailable/i.test(msg)) {
+    return "This device can't run Gemini Nano offline. Connect to the internet to use the cloud instead.";
+  }
+  return msg; // E-2 messages come from core already in user-facing form
 }
 
 async function runQueue() {
@@ -201,7 +213,8 @@ async function boot() {
   try {
     fb = await initFirebase();
   } catch (err) {
-    setStatus(err instanceof Error ? err.message : String(err), "warn");
+    console.error(err);
+    setStatus("Lessonreel can't start right now. (Developers: check apps/web/.env.local.)", "warn");
     els.make.disabled = true;
     return;
   }

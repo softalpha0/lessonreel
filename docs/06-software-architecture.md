@@ -1,11 +1,12 @@
-# Lessonreel: Software Architecture
+# 06 · Software architecture (SAD)
 
-|         |                                                                                              |
-| ------- | -------------------------------------------------------------------------------------------- |
-| Status  | Draft v1, 2026-11-19                                                                         |
-| Owner   | Benjamin Ugochukwu (architect, tech lead, developer)                                         |
-| Scope   | MVP for #BuildHybridAI 2026 (deadline 2026-11-30, 2:00 PM PT)                                |
-| Related | [`AGENTS.md`](../AGENTS.md), [`README.md`](../README.md), [`demo-script.md`](demo-script.md) |
+|         |                                                                                                                              |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Status  | Draft v1, 2026-11-19                                                                                                         |
+| Owner   | Benjamin Ugochukwu (architect, tech lead, developer)                                                                         |
+| Scope   | MVP for #BuildHybridAI 2026 (deadline 2026-11-30, 2:00 PM PT)                                                                |
+| Inputs  | [01 PRD](01-product-requirements.md) · [04 Functional spec](04-functional-spec.md) · [05 Data flow](05-data-flow.md)         |
+| Related | [02 UX](02-ux-design.md) · [03 Screens](03-screen-design.md) · [`AGENTS.md`](../AGENTS.md) · Index: [docs/README](README.md) |
 
 ---
 
@@ -39,6 +40,8 @@
 **Users:** Teachers, tutors and NGO trainers with unreliable internet, unreliable power or expensive data.
 
 ### Functional requirements
+
+Summary only. Full detail, business rules and acceptance criteria: [04 Functional spec](04-functional-spec.md).
 
 | ID  | Requirement                                                           | MVP                    |
 | --- | --------------------------------------------------------------------- | ---------------------- |
@@ -175,6 +178,8 @@ Dependency rule: arrows point inwards. `core` depends on nothing but Zod.
 | Tooling          | pnpm workspaces, ESLint, Prettier, Vitest, GitHub Actions | Monorepo with shared core; CI on every push                                                |
 
 ## 7. Data architecture
+
+How data moves between processes is in [05 Data flow](05-data-flow.md). This section covers storage design.
 
 ### 7.1 Where data lives
 

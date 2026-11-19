@@ -22,7 +22,7 @@ export class NotesTooLongError extends Error {
 
 export function buildStoryboardPrompt(req: StoryboardRequest): string {
   const notes = req.notes.trim();
-  if (!notes) throw new Error("Notes are empty");
+  if (!notes) throw new Error("Add your lesson notes first.");
   if (notes.length > LIMITS.maxNotesChars) {
     throw new NotesTooLongError(
       `Notes are ${notes.length} characters; the limit is ${LIMITS.maxNotesChars}. Split the lesson.`,
