@@ -3,13 +3,15 @@ import {
   collection,
   doc,
   getDocs,
+  getDocsFromCache,
   query,
-  setDoc,
   updateDoc,
   where,
+  writeBatch,
   type Firestore,
 } from "firebase/firestore";
 import type { CloudJob, Storyboard } from "@lessonreel/core";
+import { isOnline } from "./connectivity";
 
 /**
  * Two stores on purpose:
@@ -27,6 +29,8 @@ export interface Project {
   languages: string[];
   board: Storyboard;
   storyboardSource: "on_device" | "in_cloud";
+  /** false when the storyboard was made before sign-in (first visit offline). Missing = true. */
+  jobsPlanned?: boolean;
 }
 
 const projectKey = (id: string) => `project:${id}`;
@@ -65,23 +69,32 @@ export async function deleteAsset(key: string): Promise<void> {
 
 const jobsCol = (db: Firestore, uid: string) => collection(db, "users", uid, "jobs");
 
-export async function enqueueJobs(db: Firestore, uid: string, jobs: CloudJob[]): Promise<void> {
-  // Do not await the server: with the local cache these resolve once written locally.
-  await Promise.all(jobs.map((j) => setDoc(doc(jobsCol(db, uid), safeId(j.id)), j)));
+/**
+ * Firestore applies writes to its local cache at once and syncs them when online. The promise a
+ * write returns only settles when the SERVER confirms, which never happens offline, so we must
+ * not await it (that hung "Make storyboard" offline). Failures are logged, not thrown.
+ */
+export function enqueueJobs(db: Firestore, uid: string, jobs: CloudJob[]): void {
+  const batch = writeBatch(db);
+  for (const j of jobs) batch.set(doc(jobsCol(db, uid), safeId(j.id)), j);
+  void batch.commit().catch((err) => console.error("Saving the job list failed:", err));
 }
 
 export async function listJobs(db: Firestore, uid: string, projectId: string): Promise<CloudJob[]> {
-  const snap = await getDocs(query(jobsCol(db, uid), where("projectId", "==", projectId)));
+  const q = query(jobsCol(db, uid), where("projectId", "==", projectId));
+  // Offline (even when the browser thinks it's online), read the local copy instead of waiting
+  // for the server to time out.
+  const snap = isOnline()
+    ? await getDocs(q).catch(() => getDocsFromCache(q))
+    : await getDocsFromCache(q);
   return snap.docs.map((d) => d.data() as CloudJob);
 }
 
-export async function updateJob(
-  db: Firestore,
-  uid: string,
-  id: string,
-  patch: Partial<CloudJob>,
-): Promise<void> {
-  await updateDoc(doc(jobsCol(db, uid), safeId(id)), patch);
+/** Same rule as enqueueJobs: applied locally at once, synced later, never awaited. */
+export function updateJob(db: Firestore, uid: string, id: string, patch: Partial<CloudJob>): void {
+  void updateDoc(doc(jobsCol(db, uid), safeId(id)), patch).catch((err) =>
+    console.error(`Updating job ${id} failed:`, err),
+  );
 }
 
 /** Firestore doc ids cannot contain "/". */

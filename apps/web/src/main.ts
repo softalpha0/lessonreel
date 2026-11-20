@@ -17,7 +17,7 @@ import {
   type NanoStatus,
   type Storyboard,
 } from "@lessonreel/core";
-import { initFirebase, type FirebaseServices } from "./firebase";
+import { ensureSignedIn, initFirebase, type FirebaseServices } from "./firebase";
 import { checkDeviceModel, generateStoryboard, warmUpDeviceModel } from "./ai/storyboard";
 import { enqueueJobs, latestProject, saveProject, type Project } from "./lib/store";
 import { drainQueue } from "./lib/runner";
@@ -185,13 +185,10 @@ async function onMake() {
       languages,
       board: res.board,
       storyboardSource: res.source,
+      jobsPlanned: false,
     };
-    await saveProject(project);
     current = project;
-
-    if (fb.uid) {
-      await enqueueJobs(fb.db, fb.uid, planJobs(project.id, res.board.scenes.length, languages));
-    }
+    await planJobsIfSignedIn(project); // also saves the lesson
     setStatus(
       isOnline()
         ? `Storyboard ready (${res.source === "on_device" ? "on-device" : "cloud"}). Making voice and pictures…`
@@ -234,14 +231,41 @@ function storyboardErrorMessage(err: unknown): string {
   return "We couldn't build a storyboard from these notes. Try again, or shorten them."; // E-3 (fallback)
 }
 
+/**
+ * Voice and picture jobs live under the signed-in user in Firestore. On a first visit with no
+ * internet there is no sign-in yet, so the lesson remembers that its jobs still need planning
+ * and they're created as soon as sign-in finishes (Stage 5).
+ */
+async function planJobsIfSignedIn(project: Project) {
+  if (fb?.uid && project.jobsPlanned === false) {
+    enqueueJobs(
+      fb.db,
+      fb.uid,
+      planJobs(project.id, project.board.scenes.length, project.languages),
+    );
+    project.jobsPlanned = true;
+  }
+  await saveProject(project);
+}
+
+function renderQueue(p: { done: number; total: number; failed: number }) {
+  const online = isOnline();
+  els.queue.innerHTML = `${badge(online ? "in_cloud" : "queued")} ${escape(queueSummary(p, online))}`;
+  els.play.disabled = p.done === 0;
+  els.download.disabled = p.done < p.total || p.total === 0;
+}
+
 async function runQueue() {
-  if (!fb || !fb.uid || !current) return;
+  if (!fb || !current) return;
+  if (!fb.uid) {
+    // Not signed in yet: show what's waiting; planning happens when sign-in completes.
+    const total = planJobs(current.id, current.board.scenes.length, current.languages).length;
+    renderQueue({ done: 0, total, failed: 0 });
+    return;
+  }
+  if (current.jobsPlanned === false) await planJobsIfSignedIn(current);
   await drainQueue(fb.ai, fb.db, fb.uid, current, {
-    onProgress: ({ done, total, failed }) => {
-      els.queue.innerHTML = `${badge(isOnline() ? "in_cloud" : "queued")} ${escape(queueSummary({ done, total, failed }, isOnline()))}`;
-      els.play.disabled = done === 0;
-      els.download.disabled = done < total || total === 0;
-    },
+    onProgress: renderQueue,
     onJob: () => undefined,
   });
 }
@@ -332,7 +356,8 @@ async function boot() {
   renderNet();
   watchConnectivity((online) => {
     renderNet();
-    if (online) void runQueue();
+    // Online: sign in if that failed earlier, then run the queue. Offline: show "Queued".
+    void (online && fb && !fb.uid ? ensureSignedIn() : Promise.resolve()).then(() => runQueue());
   });
   void refreshNano();
   els.notes.addEventListener("input", () => {

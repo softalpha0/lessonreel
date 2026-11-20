@@ -71,3 +71,16 @@ export async function initFirebase(): Promise<FirebaseServices> {
   });
   return services;
 }
+
+/** Retry the anonymous sign-in (e.g. when the internet comes back after a first visit offline). */
+export async function ensureSignedIn(): Promise<string | null> {
+  if (!services) return null;
+  if (services.uid) return services.uid;
+  try {
+    const cred = await signInAnonymously(getAuth(services.app));
+    services.uid = cred.user.uid;
+  } catch {
+    /* still offline; we'll try again on the next reconnect */
+  }
+  return services.uid;
+}

@@ -26,9 +26,7 @@ export async function drainQueue(
   try {
     // Recover jobs interrupted by a closed tab or crash (TDD §17).
     const start = await listJobs(db, uid, project.id);
-    await Promise.all(
-      staleRunning(start).map((j) => updateJob(db, uid, j.id, { status: "queued" })),
-    );
+    staleRunning(start).forEach((j) => updateJob(db, uid, j.id, { status: "queued" }));
     await drainLoop(ai, db, uid, project, events);
   } finally {
     draining.delete(project.id);
@@ -45,29 +43,29 @@ async function drainLoop(
   events: RunnerEvents,
 ): Promise<void> {
   for (;;) {
-    if (!isOnline()) return;
     const jobs = await listJobs(db, uid, project.id);
-    events.onProgress(progress(jobs));
+    events.onProgress(progress(jobs)); // shown offline too: "Waiting for internet. 0 of 15 done."
+    if (!isOnline()) return;
     const batch = nextRunnable(jobs, 2);
     if (batch.length === 0) return;
 
     await Promise.all(
       batch.map(async (job) => {
-        await updateJob(db, uid, job.id, { status: "running", attempts: job.attempts + 1 });
+        updateJob(db, uid, job.id, { status: "running", attempts: job.attempts + 1 });
         events.onJob({ ...job, status: "running" });
         try {
           await runJob(ai, project, job);
-          await updateJob(db, uid, job.id, { status: "done", error: "" });
+          updateJob(db, uid, job.id, { status: "done", error: "" });
           events.onJob({ ...job, status: "done" });
         } catch (err) {
           if (!(await checkConnectivity())) {
             // Lost the internet mid-job: that's waiting, not failure. Don't use up a try.
-            await updateJob(db, uid, job.id, { status: "queued", attempts: job.attempts });
+            updateJob(db, uid, job.id, { status: "queued", attempts: job.attempts });
             events.onJob({ ...job, status: "queued" });
             return;
           }
           const message = err instanceof Error ? err.message : String(err);
-          await updateJob(db, uid, job.id, { status: "failed", error: message.slice(0, 300) });
+          updateJob(db, uid, job.id, { status: "failed", error: message.slice(0, 300) });
           events.onJob({ ...job, status: "failed", error: message });
         }
       }),
