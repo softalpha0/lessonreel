@@ -568,3 +568,50 @@ button.chip:hover:not(:disabled) {
   color: var(--color-device);
   font-weight: var(--font-weight-bold);
 }
+
+/* S-1 slow narration checkbox (docs/12 §4.3, Stage 13) */
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+}
+.check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--color-brand);
+}
+.check label {
+  font-size: var(--text-md);
+}
+.check-help {
+  margin: 0 0 var(--space-4);
+}
+
+/* S-2 scene item + editor (docs/12 §4.8, Stage 12) */
+.scene-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+.scene-head .scene-edit {
+  margin-left: auto;
+  min-height: 44px;
+}
+.scene-editor {
+  display: grid;
+  gap: var(--space-1);
+  margin: var(--space-2) 0;
+}
+.scene-editor label {
+  margin-top: var(--space-2);
+}
+.scene-editor textarea,
+.scene-editor input {
+  margin-top: 0;
+}
+.scene-editor .actions {
+  margin-top: var(--space-2);
+}

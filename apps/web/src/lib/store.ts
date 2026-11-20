@@ -31,6 +31,8 @@ export interface Project {
   storyboardSource: "on_device" | "in_cloud";
   /** false when the storyboard was made before sign-in (first visit offline). Missing = true. */
   jobsPlanned?: boolean;
+  /** "Slow, clear narration" was ticked (F4.4). Missing = false. */
+  slow?: boolean;
 }
 
 const projectKey = (id: string) => `project:${id}`;

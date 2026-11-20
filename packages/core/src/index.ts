@@ -8,3 +8,4 @@ export * from "./form";
 export * from "./audio";
 export * from "./production";
 export * from "./video";
+export * from "./edit";

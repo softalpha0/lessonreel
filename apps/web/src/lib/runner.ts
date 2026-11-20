@@ -106,7 +106,7 @@ async function runJob(ai: AI, project: Project, job: CloudJob): Promise<void> {
 
   if (job.kind === "tts") {
     const lang = job.languageCode ?? "en-US";
-    const wav = await synthesizeNarration(ai, scene, lang, project.audience);
+    const wav = await synthesizeNarration(ai, scene, lang, project.audience, project.slow ?? false);
     await saveAsset(assetKey(project.id, scene.index, "tts", lang), wav);
     return;
   }

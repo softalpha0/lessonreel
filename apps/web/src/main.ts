@@ -16,6 +16,9 @@ import {
   productionRows,
   shouldAnnounce,
   findLanguage,
+  sceneBusy,
+  sceneEditError,
+  voiceJobsForScene,
   optionLetter,
   parseSceneCount,
   planJobs,
@@ -35,6 +38,7 @@ import { checkDeviceModel, generateStoryboard, warmUpDeviceModel } from "./ai/st
 import { imagesEnabled } from "./ai/cloud-media";
 import {
   assetKey,
+  deleteAsset,
   enqueueJobs,
   latestProject,
   loadAsset,
@@ -88,6 +92,7 @@ const els = {
   quiz: $("quiz"),
   quizList: $("quiz-list"),
   copyQuiz: $<HTMLButtonElement>("copy-quiz"),
+  slow: $<HTMLInputElement>("slow"),
 };
 
 let fb: FirebaseServices | null = null;
@@ -163,10 +168,16 @@ function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: n
     <ol class="scenes">
       ${board.scenes
         .map(
-          (s) => `<li>
-            <strong>${escape(s.title)}</strong> <small>${s.durationSec}s</small>
-            <p>${escape(s.narration)}</p>
-            <p class="muted">Image: ${escape(s.imagePrompt)}</p>
+          (s) => `<li data-scene="${s.index}">
+            <div class="scene-head">
+              <strong>${escape(s.title)}</strong> <small>${s.durationSec}s</small>
+              <button type="button" class="tertiary scene-edit" data-edit="${s.index}" aria-label="Edit scene ${s.index}">Edit</button>
+            </div>
+            <div class="scene-body">
+              <p>${escape(s.narration)}</p>
+              ${s.onScreenText ? `<p class="muted">On screen: ${escape(s.onScreenText)}</p>` : ""}
+              <p class="muted">Image: ${escape(s.imagePrompt)}</p>
+            </div>
           </li>`,
         )
         .join("")}
@@ -196,6 +207,105 @@ function renderQuiz(board: Storyboard) {
       return li;
     }),
   );
+}
+
+/** S-2 scene editor (Stage 12, F2.6): narration + on-screen text, then that scene's voice is redone. */
+function openEditor(sceneIndex: number) {
+  if (!current) return;
+  const scene = current.board.scenes.find((x) => x.index === sceneIndex);
+  const li = els.board.querySelector<HTMLLIElement>(`li[data-scene="${sceneIndex}"]`);
+  const body = li?.querySelector<HTMLElement>(".scene-body");
+  const editBtn = li?.querySelector<HTMLButtonElement>(".scene-edit");
+  if (!scene || !li || !body || !editBtn) return;
+  editBtn.hidden = true;
+  const id = `edit-${sceneIndex}`;
+  body.innerHTML = `
+    <div class="scene-editor">
+      <label for="${id}-narration">Narration</label>
+      <textarea id="${id}-narration" rows="4" aria-describedby="${id}-error"></textarea>
+      <label for="${id}-screen">On-screen text</label>
+      <input id="${id}-screen" />
+      <p id="${id}-error" class="field-error" hidden></p>
+      <div class="actions">
+        <button type="button" data-save="${sceneIndex}">Save scene</button>
+        <button type="button" class="tertiary" data-cancel="${sceneIndex}">Cancel</button>
+      </div>
+    </div>`;
+  const narration = body.querySelector<HTMLTextAreaElement>("textarea")!;
+  const screen = body.querySelector<HTMLInputElement>("input")!;
+  const error = body.querySelector<HTMLElement>(".field-error")!;
+  const save = body.querySelector<HTMLButtonElement>("[data-save]")!;
+  narration.value = scene.narration;
+  screen.value = scene.onScreenText;
+  const check = () => {
+    const msg = sceneEditError(narration.value, screen.value);
+    error.textContent = msg ?? "";
+    error.hidden = !msg;
+    narration.setAttribute("aria-invalid", String(Boolean(msg)));
+    save.disabled = Boolean(msg);
+  };
+  narration.addEventListener("input", check);
+  screen.addEventListener("input", check);
+  check();
+  narration.focus();
+}
+
+function closeEditor(sceneIndex: number) {
+  if (!current) return;
+  renderBoard(current.board, current.storyboardSource);
+  els.board.querySelector<HTMLButtonElement>(`[data-edit="${sceneIndex}"]`)?.focus();
+}
+
+async function saveScene(sceneIndex: number) {
+  if (!current) return;
+  const li = els.board.querySelector<HTMLLIElement>(`li[data-scene="${sceneIndex}"]`);
+  const narration = li?.querySelector<HTMLTextAreaElement>("textarea")?.value ?? "";
+  const screen = li?.querySelector<HTMLInputElement>(".scene-editor input")?.value ?? "";
+  const error = li?.querySelector<HTMLElement>(".field-error");
+  const msg = sceneEditError(narration, screen);
+  if (msg || !error) return;
+  if (sceneBusy(lastJobs, sceneIndex)) {
+    error.textContent = "This scene's voice is being made right now. Save again in a moment.";
+    error.hidden = false;
+    return;
+  }
+  const scene = current.board.scenes.find((x) => x.index === sceneIndex);
+  if (!scene) return;
+  scene.narration = narration.trim();
+  scene.onScreenText = screen.trim();
+  await saveProject(current);
+
+  // Its voice must match the new words: forget the old clips and queue the voice jobs again.
+  const reset = voiceJobsForScene(lastJobs, sceneIndex);
+  await Promise.all(
+    reset.map((j) => deleteAsset(assetKey(current!.id, sceneIndex, "tts", j.languageCode))),
+  );
+  if (fb?.uid) {
+    reset.forEach((j) =>
+      updateJob(fb!.db, fb!.uid!, j.id, { status: "queued", attempts: 0, error: "" }),
+    );
+  }
+  lastJobs = lastJobs.map((j) =>
+    reset.some((r) => r.id === j.id) ? { ...j, status: "queued", attempts: 0, error: "" } : j,
+  );
+  closeEditor(sceneIndex);
+  renderQueue({
+    done: lastJobs.filter((j) => j.status === "done").length,
+    total: lastJobs.length,
+    failed: lastProgress.failed,
+  });
+  showToast(`Scene ${sceneIndex} updated. Its voice will be made again.`);
+  void runQueue();
+}
+
+function onBoardClick(e: MouseEvent) {
+  const target = (e.target as HTMLElement).closest<HTMLElement>(
+    "[data-edit],[data-save],[data-cancel]",
+  );
+  if (!target) return;
+  if (target.dataset.edit) openEditor(Number(target.dataset.edit));
+  else if (target.dataset.save) void saveScene(Number(target.dataset.save));
+  else if (target.dataset.cancel) closeEditor(Number(target.dataset.cancel));
 }
 
 async function onCopyQuiz() {
@@ -274,6 +384,7 @@ async function onMake() {
       board: res.board,
       storyboardSource: res.source,
       jobsPlanned: false,
+      slow: els.slow.checked,
     };
     current = project;
     renderVideoControls(project);
@@ -628,6 +739,7 @@ async function boot() {
   els.download.addEventListener("click", () => void onDownload());
   els.retry.addEventListener("click", () => void onRetry());
   els.copyQuiz.addEventListener("click", () => void onCopyQuiz());
+  els.board.addEventListener("click", onBoardClick);
   els.videoLang.addEventListener("change", () => renderQueue(lastProgress));
 }
 
