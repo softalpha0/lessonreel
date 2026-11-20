@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lessonreel">
+  <path d="M12 6h30l10 10v38a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4z" fill="#2f6f4f"/>
+  <path d="M42 6v10h10z" fill="#faf7f0" opacity=".6"/>
+  <path d="M26 24v20l16-10z" fill="#faf7f0"/>
+</svg>

@@ -24,6 +24,7 @@ import { drainQueue } from "./lib/runner";
 import { checkConnectivity, isOnline, watchConnectivity } from "./lib/connectivity";
 import { playPreview } from "./lib/player";
 import { downloadBlob, exportVideo } from "./lib/exporter";
+import { startInstallBanner, startOfflineCache } from "./lib/pwa";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
@@ -45,10 +46,26 @@ const els = {
   play: $<HTMLButtonElement>("play"),
   download: $<HTMLButtonElement>("download"),
   stage: $("stage"),
+  offlineReady: $("offline-ready"),
+  installBanner: $("install-banner"),
+  install: $<HTMLButtonElement>("install"),
+  installDismiss: $<HTMLButtonElement>("install-dismiss"),
+  updateBanner: $("update-banner"),
+  update: $<HTMLButtonElement>("update"),
+  toast: $("toast"),
 };
 
 let fb: FirebaseServices | null = null;
 let current: Project | null = null;
+
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+/** Confirmations only (docs/12 §4.12); errors stay in the status line. */
+function showToast(msg: string) {
+  els.toast.textContent = msg;
+  els.toast.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (els.toast.hidden = true), 4000);
+}
 
 function setStatus(msg: string, tone: "info" | "ok" | "warn" = "info") {
   els.status.textContent = msg;
@@ -325,6 +342,25 @@ async function boot() {
   els.sample.addEventListener("click", onSample);
   renderCounter();
 
+  // Stage 4B: open without internet, install, update (docs/13 §10 wording).
+  startOfflineCache({
+    offlineReady: (firstTime) => {
+      els.offlineReady.hidden = false;
+      if (firstTime) showToast("Lessonreel now works offline on this device.");
+    },
+    updateReady: (reload) => {
+      els.updateBanner.hidden = false;
+      els.update.onclick = reload;
+    },
+  });
+  startInstallBanner({
+    banner: els.installBanner,
+    install: els.install,
+    dismiss: els.installDismiss,
+    onInstalled: () =>
+      showToast("Lessonreel is installed. You can open it from your desktop or home screen."),
+  });
+
   try {
     fb = await initFirebase();
   } catch (err) {
@@ -334,6 +370,11 @@ async function boot() {
     els.warm.disabled = true;
     return;
   }
+
+  // First visit offline: sign-in finishes later; start the queue when it does.
+  void fb.signedIn.then((uid) => {
+    if (uid) void runQueue();
+  });
 
   current = (await latestProject()) ?? null;
   if (current) {

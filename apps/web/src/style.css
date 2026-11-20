@@ -53,6 +53,9 @@
   --duration-fast: 120ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --z-sticky: 10;
+  --z-toast: 50;
+  --duration-base: 200ms;
+  --shadow-overlay: 0 8px 24px rgba(29, 27, 22, 0.18);
   --content-max: 1200px;
 
   font-family: var(--font-sans);
@@ -347,4 +350,66 @@ select:focus-visible {
   background: var(--color-overlay);
   font-size: var(--text-lg);
   font-weight: var(--font-weight-bold);
+}
+
+/* Tertiary button: text only (docs/12 §4.1) */
+button.tertiary {
+  background: transparent;
+  color: var(--color-brand);
+  text-decoration: underline;
+  padding-inline: var(--space-2);
+}
+button.tertiary:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-brand-strong);
+}
+
+/* Install / new-version banner under S-0 (docs/12 §4.14) */
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--content-max);
+  margin: var(--space-4) auto 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.banner[hidden],
+.toast[hidden],
+.pill[hidden] {
+  display: none;
+}
+.banner p {
+  margin: 0;
+}
+@media (max-width: 1247px) {
+  .banner {
+    margin-inline: var(--space-5);
+  }
+}
+
+/* Toast: confirmations only, never errors (docs/12 §4.12) */
+.toast {
+  position: fixed;
+  z-index: var(--z-toast);
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  max-width: min(90vw, 420px);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-overlay);
+}
+@media (min-width: 900px) {
+  .toast {
+    left: auto;
+    right: var(--space-5);
+    transform: none;
+  }
 }

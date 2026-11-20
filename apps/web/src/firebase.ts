@@ -18,7 +18,10 @@ export interface FirebaseServices {
   app: FirebaseApp;
   ai: AI;
   db: Firestore;
+  /** Known at once for returning users (saved in the browser); null until a first sign-in. */
   uid: string | null;
+  /** Resolves with the uid once signed in (or null if sign-in failed, e.g. offline). */
+  signedIn: Promise<string | null>;
 }
 
 let services: FirebaseServices | null = null;
@@ -50,15 +53,21 @@ export async function initFirebase(): Promise<FirebaseServices> {
 
   const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-  let uid: string | null = null;
-  try {
-    const cred = await signInAnonymously(getAuth(app));
-    uid = cred.user.uid;
-  } catch {
-    // Offline on first load: auth retries later; on-device features still work.
-    uid = null;
-  }
+  // Don't block start-up on the network (offline it waits ~30 s before failing).
+  // A returning browser already has its anonymous user saved locally: use it at once.
+  const auth = getAuth(app);
+  await auth.authStateReady();
+  const known = auth.currentUser?.uid ?? null;
+  const signedIn: Promise<string | null> = known
+    ? Promise.resolve(known)
+    : signInAnonymously(auth).then(
+        (cred) => cred.user.uid,
+        () => null, // offline first visit: on-device work still runs; the queue waits
+      );
 
-  services = { app, ai, db, uid };
+  services = { app, ai, db, uid: known, signedIn };
+  void signedIn.then((uid) => {
+    if (services && uid) services.uid = uid;
+  });
   return services;
 }

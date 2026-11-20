@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lessonreel: lesson notes to explainer video, even offline</title>
+    <meta name="theme-color" content="#2f6f4f" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta
       name="description"
       content="Turn your lesson notes into a narrated explainer video, even with no internet."
@@ -19,10 +22,25 @@
         <div class="pills">
           <span id="net" class="pill">…</span>
           <span id="nano" class="pill">Nano: checking…</span>
+          <span id="offline-ready" class="pill" data-state="on" hidden>Works offline ✓</span>
           <button id="warm" class="ghost" type="button">Prepare offline model</button>
         </div>
       </div>
     </header>
+
+    <div id="install-banner" class="banner" hidden>
+      <p>Install Lessonreel to open it without internet.</p>
+      <div class="actions">
+        <button id="install" class="ghost" type="button">Install app</button>
+        <button id="install-dismiss" class="tertiary" type="button">Not now</button>
+      </div>
+    </div>
+    <div id="update-banner" class="banner" hidden>
+      <p>A new version is ready. Reload to update.</p>
+      <div class="actions">
+        <button id="update" class="ghost" type="button">Reload</button>
+      </div>
+    </div>
 
     <main class="grid">
       <section class="card" aria-labelledby="lesson-heading">
@@ -87,6 +105,7 @@
       </section>
     </main>
 
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
