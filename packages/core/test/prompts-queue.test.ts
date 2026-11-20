@@ -17,7 +17,7 @@ describe("buildStoryboardPrompt", () => {
       audience: "kids",
       targetScenes: 50,
     });
-    expect(p).toContain("exactly 8 scenes");
+    expect(p).toContain("up to 8 scenes, and at least 3");
     expect(p).toContain("Water boils at 100C.");
   });
 

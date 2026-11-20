@@ -88,7 +88,7 @@ flowchart TD
 
 ## 4. Prompts (v1)
 
-Source of truth: `packages/core/src/prompts.ts`. Version: **prompt v1 (2026-11-18)**.
+Source of truth: `packages/core/src/prompts.ts`. Version: **prompt v2 (2026-11-20)**. v2 changes one line of §4.2: "Make exactly N scenes" became "Make up to N scenes, and at least 3. Use fewer when the notes are short." Reason: v1 contradicted the system prompt ("If the notes are thin, make fewer scenes") and pushed small models to pad thin notes with invented facts (§14 #1). Evaluate per §8 before relying on it.
 
 ### 4.1 Storyboard system prompt (`STORYBOARD_SYSTEM_PROMPT`)
 
@@ -98,7 +98,7 @@ On-device it's passed as an `initialPrompts` system message; in the cloud as `sy
 
 ### 4.2 Storyboard user prompt (`buildStoryboardPrompt`)
 
-Lines: audience → "Make exactly N scenes. Each narration is at most 400 characters." → quiz instruction (3 questions × 3 options, 0-based answer) → JSON shape hint → notes inside `"""` fences.
+Lines: audience → "Make up to N scenes, and at least 3. Use fewer when the notes are short. Each narration is at most 400 characters." → quiz instruction (3 questions × 3 options, 0-based answer) → JSON shape hint → notes inside `"""` fences.
 
 ### 4.3 Repair prompt (`buildRepairPrompt`)
 
@@ -246,11 +246,11 @@ Per 5-scene video in English + 1 language:
 
 ## 14. Open questions and recommendations
 
-| #   | Item                                                                                                      | Type                 | Proposal                                                                                         |
-| --- | --------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------ |
-| 1   | System prompt says "make fewer scenes if notes are thin" but user prompt says "Make **exactly** N scenes" | Conflict found       | **[RECOMMENDATION]** prompt v2: "Make up to N scenes (at least 3)". Validate during Stage 3 eval |
-| 2   | Is `responseConstraint` honoured by Nano on Benjamin's Chrome?                                            | [NEEDS CONFIRMATION] | Measure first-try validity in §8                                                                 |
-| 3   | Does `PREFER_ON_DEVICE` use cloud while Nano is downloading?                                              | [ASSUMED]            | Verify in Stage 1                                                                                |
-| 4   | Translation output can be empty                                                                           | Gap                  | **[RECOMMENDATION]** reject empty translation → job fails → retry                                |
-| 5   | Image model name + free limits                                                                            | [NEEDS CONFIRMATION] | Check docs/console in Stage 7                                                                    |
-| 6   | Should durations come from audio length instead of the model?                                             | Design               | Already done for export/preview (audio length wins); model duration is a fallback                |
+| #   | Item                                                                                                          | Type                 | Proposal                                                                                        |
+| --- | ------------------------------------------------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------- |
+| 1   | ~~System prompt says "make fewer scenes if notes are thin" but user prompt says "Make **exactly** N scenes"~~ | **Done: prompt v2**  | "Make up to N scenes, and at least 3." Validate during the Stage 3 eval (`evidence/ai-eval.md`) |
+| 2   | Is `responseConstraint` honoured by Nano on Benjamin's Chrome?                                                | [NEEDS CONFIRMATION] | Measure first-try validity in §8                                                                |
+| 3   | Does `PREFER_ON_DEVICE` use cloud while Nano is downloading?                                                  | [ASSUMED]            | Verify in Stage 1                                                                               |
+| 4   | Translation output can be empty                                                                               | Gap                  | **[RECOMMENDATION]** reject empty translation → job fails → retry                               |
+| 5   | Image model name + free limits                                                                                | [NEEDS CONFIRMATION] | Check docs/console in Stage 7                                                                   |
+| 6   | Should durations come from audio length instead of the model?                                                 | Design               | Already done for export/preview (audio length wins); model duration is a fallback               |

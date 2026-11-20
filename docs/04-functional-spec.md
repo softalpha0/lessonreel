@@ -178,7 +178,7 @@ Written as Given / When / Then. Each maps to a test (unit = `packages/core/test`
 
 | ID      | Req        | Criterion                                                                                                                  | Test                      |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| AC-1.1  | F1.3       | Given scenes = 50, when the prompt is built, then it asks for exactly 8 scenes                                             | Unit ✅                   |
+| AC-1.1  | F1.3       | Given scenes = 50, when the prompt is built, then it asks for up to 8 scenes (at least 3, prompt v2)                       | Unit ✅                   |
 | AC-1.2  | BR-1       | Given 12,001 characters of notes, when Make is clicked, then E-2 shows and no model is called                              | Unit ✅ (prompt) + manual |
 | AC-2.1  | F2.2       | Given model JSON wrapped in prose or a code fence, when parsed, then the storyboard is extracted                           | Unit ✅                   |
 | AC-2.2  | F2.4       | Given scene indexes 7, 2, 9, when parsed, then they become 1, 2, 3                                                         | Unit ✅                   |

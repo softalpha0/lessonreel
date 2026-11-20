@@ -147,6 +147,8 @@ export async function generateStoryboard(
     };
   } catch (err) {
     if (!(err instanceof StoryboardParseError)) throw err;
+    // Logged so the Stage 3 evaluation can count "valid first try" (evidence/ai-eval.md).
+    console.warn(`Storyboard output rejected on ${source}; repairing once:`, err.message, raw);
     // One repair pass on the same route. Small models sometimes drop a field.
     const second = await withBusyRetry(() =>
       m.generateContent(buildRepairPrompt(raw, err.message)),

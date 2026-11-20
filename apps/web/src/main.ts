@@ -103,6 +103,11 @@ function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: n
   const time = ms ? ` in ${(ms / 1000).toFixed(1)}s` : "";
   els.board.innerHTML = `
     <h3 class="board-title">${escape(board.title)} ${badge(source)} <small>${time}</small></h3>
+    ${
+      source === "in_cloud"
+        ? `<p class="muted">This device doesn't have Gemini Nano, so the storyboard was written in the cloud.</p>`
+        : ""
+    }
     <ol class="scenes">
       ${board.scenes
         .map(

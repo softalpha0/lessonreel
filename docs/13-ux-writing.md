@@ -83,7 +83,7 @@
 | On-device                                          | On-device                                                                         | ✅     |
 | Cloud                                              | Cloud                                                                             | ✅     |
 | Queued                                             | Queued                                                                            | ✅     |
-| Cloud explainer (shown under the Cloud badge, S-2) | This device doesn't have Gemini Nano, so the storyboard was written in the cloud. | 🆕     |
+| Cloud explainer (shown under the Cloud badge, S-2) | This device doesn't have Gemini Nano, so the storyboard was written in the cloud. | ✅     |
 
 ## 7. Progress and system messages
 

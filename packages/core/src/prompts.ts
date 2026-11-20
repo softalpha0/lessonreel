@@ -41,7 +41,7 @@ export function buildStoryboardPrompt(req: StoryboardRequest): string {
   const quiz = req.includeQuiz ?? true;
   return [
     `Audience: ${req.audience.trim() || "secondary school students"}`,
-    `Make exactly ${scenes} scenes. Each narration is at most ${LIMITS.maxNarrationChars} characters.`,
+    `Make up to ${scenes} scenes, and at least ${LIMITS.minScenes}. Use fewer when the notes are short. Each narration is at most ${LIMITS.maxNarrationChars} characters.`,
     quiz
       ? "Add a quiz of 3 multiple-choice questions, 3 options each, answerIndex is 0-based."
       : "Set quiz to an empty array.",
