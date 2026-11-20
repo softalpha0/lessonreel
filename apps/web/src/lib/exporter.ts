@@ -22,7 +22,7 @@ const MIME_CANDIDATES = [
 
 export function pickMimeType(): string {
   const found = MIME_CANDIDATES.find((t) => MediaRecorder.isTypeSupported(t));
-  if (!found) throw new Error("This browser can't record video. Use a recent version of Chrome.");
+  if (!found) throw new Error("This browser can't record video. Use a recent Chrome.");
   return found;
 }
 
@@ -45,7 +45,9 @@ export async function exportVideo(
   languageCode: string,
   onProgress: (pct: number) => void,
 ): Promise<ExportResult> {
-  const mimeType = pickMimeType();
+  const mimeType = pickMimeType(); // E-6 if none
+  // The caption font is bundled; make sure it's loaded before the first canvas frame.
+  await document.fonts.load("700 40px 'Atkinson Hyperlegible'").catch(() => undefined);
   const audioCtx = new AudioContext();
   const scenes = await prepareScenes(project, languageCode, audioCtx);
   const total = scenes.reduce((s, x) => s + x.seconds + GAP_SEC, 0);

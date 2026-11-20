@@ -11,7 +11,9 @@ export const firebaseConfig = {
 
 export const appConfig = {
   recaptchaSiteKey: env.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY ?? "",
-  appCheckDebug: env.VITE_APPCHECK_DEBUG === "true",
+  // Debug tokens are for local development only: a deployed build (pnpm build) always uses
+  // the real reCAPTCHA Enterprise check, even if .env.local still says "true" (HACKATHON §3).
+  appCheckDebug: env.DEV && env.VITE_APPCHECK_DEBUG === "true",
   cloudTextModel: env.VITE_CLOUD_TEXT_MODEL || "gemini-3.5-flash-lite",
   ttsModel: env.VITE_TTS_MODEL || "gemini-3.8-flash-tts",
   imageModel: env.VITE_IMAGE_MODEL || "",

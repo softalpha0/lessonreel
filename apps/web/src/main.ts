@@ -15,8 +15,13 @@ import {
   notesCounter,
   productionRows,
   shouldAnnounce,
+  findLanguage,
+  optionLetter,
   parseSceneCount,
   planJobs,
+  quizText,
+  videoFileName,
+  videoLanguages,
   queueSummary,
   SAMPLE_LESSON,
   StoryboardParseError,
@@ -76,6 +81,12 @@ const els = {
   rows: $("rows"),
   retry: $<HTMLButtonElement>("retry"),
   downloadHint: $("download-hint"),
+  video: $("video"),
+  videoLang: $<HTMLSelectElement>("video-lang"),
+  renderTip: $("render-tip"),
+  quiz: $("quiz"),
+  quizList: $("quiz-list"),
+  copyQuiz: $<HTMLButtonElement>("copy-quiz"),
 };
 
 let fb: FirebaseServices | null = null;
@@ -158,17 +169,68 @@ function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: n
           </li>`,
         )
         .join("")}
-    </ol>
-    ${
-      board.quiz.length
-        ? `<h4>Quiz</h4><ol>${board.quiz
-            .map(
-              (q) =>
-                `<li>${escape(q.question)} <span class="muted">(${q.options.map(escape).join(" / ")})</span></li>`,
-            )
-            .join("")}</ol>`
-        : ""
-    }`;
+    </ol>`;
+  renderQuiz(board);
+}
+
+/** S-5 quiz panel (F2.5): correct option marked with text, not colour only. */
+function renderQuiz(board: Storyboard) {
+  els.quiz.hidden = board.quiz.length === 0;
+  els.quizList.replaceChildren(
+    ...board.quiz.map((q) => {
+      const li = document.createElement("li");
+      li.textContent = q.question;
+      const opts = document.createElement("ul");
+      opts.className = "quiz__options";
+      q.options.forEach((o, i) => {
+        const item = document.createElement("li");
+        item.textContent = `${optionLetter(i)}) ${o}`;
+        if (i === q.answerIndex) {
+          item.className = "quiz__answer";
+          item.append(" ✓ Answer");
+        }
+        opts.append(item);
+      });
+      li.append(opts);
+      return li;
+    }),
+  );
+}
+
+async function onCopyQuiz() {
+  if (!current) return;
+  const text = quizText(current.board);
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    // Clipboard API is blocked on plain http (phone LAN testing): fall back to a hidden textarea.
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.append(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+  }
+  showToast("Quiz copied.");
+}
+
+/** S-4/S-5: show the video controls for a lesson; one video per narration language. */
+function renderVideoControls(project: Project) {
+  els.video.hidden = false;
+  els.videoLang.replaceChildren(
+    ...videoLanguages(project.languages).map((code) => {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = findLanguage(code)?.label ?? code;
+      return opt;
+    }),
+  );
+  // Default to the second language: that's the one the teacher picked.
+  els.videoLang.value = videoLanguages(project.languages).at(-1) ?? "en-US";
+  els.stage.innerHTML = `<p class="muted">Press "Preview video" to watch it here.</p>`;
 }
 
 async function onMake() {
@@ -213,10 +275,11 @@ async function onMake() {
       jobsPlanned: false,
     };
     current = project;
+    renderVideoControls(project);
     await planJobsIfSignedIn(project); // also saves the lesson
     setStatus(
       isOnline()
-        ? `Storyboard ready (${res.source === "on_device" ? "on-device" : "cloud"}). Making voice and pictures…`
+        ? `Storyboard ready (${res.source === "on_device" ? "on-device" : "cloud"}). ${imagesEnabled() ? "Making voice and pictures…" : "Making the voice…"}`
         : "Storyboard ready on this device. Voice and pictures will be made when you're back online.",
       "ok",
     );
@@ -304,9 +367,9 @@ function renderQueue(p: { done: number; total: number; failed: number }, jobs?: 
   els.imagesOff.hidden = imagesEnabled();
   renderRows();
   els.retry.hidden = p.failed === 0;
-  els.play.disabled = p.done === 0;
+  els.play.disabled = busyVideo || p.done === 0;
   const ready = p.done === p.total && p.total > 0;
-  els.download.disabled = !ready;
+  els.download.disabled = busyVideo || !ready;
   els.downloadHint.hidden = ready;
 }
 
@@ -445,30 +508,43 @@ async function onWarm() {
   }
 }
 
+let busyVideo = false; // preview and export share the stage and the speakers
+
 async function onPlay() {
-  if (!current) return;
+  if (!current || busyVideo) return;
+  busyVideo = true;
   els.play.disabled = true;
-  await playPreview(current, els.lang.value, els.stage, () => undefined);
-  els.play.disabled = false;
+  els.download.disabled = true;
+  try {
+    await playPreview(current, els.videoLang.value, els.stage, () => undefined);
+  } finally {
+    busyVideo = false;
+    renderQueue(lastProgress); // restores Preview/Download to what the queue allows
+  }
 }
 
 async function onDownload() {
-  if (!current) return;
+  if (!current || busyVideo) return;
+  busyVideo = true;
+  const lesson = current;
+  const lang = els.videoLang.value;
   els.download.disabled = true;
+  els.play.disabled = true;
+  els.renderTip.hidden = false;
   try {
-    const res = await exportVideo(current, els.lang.value, (pct) =>
-      setStatus(`Making your video… ${pct}%`),
-    );
-    const name = current.board.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "lesson";
-    downloadBlob(res.blob, `${name}-${els.lang.value}.${res.extension}`);
+    const res = await exportVideo(lesson, lang, (pct) => setStatus(`Making your video… ${pct}%`));
+    downloadBlob(res.blob, videoFileName(lesson.board.title, lang, res.extension));
     setStatus(
       `Video ready (${Math.round(res.durationSec)}s, ${res.extension.toUpperCase()}).`,
       "ok",
     );
   } catch (err) {
-    setStatus(err instanceof Error ? err.message : String(err), "warn");
+    console.warn("Video export failed:", err);
+    setStatus(err instanceof Error ? err.message : String(err), "warn"); // E-6
   } finally {
-    els.download.disabled = false;
+    busyVideo = false;
+    els.renderTip.hidden = true;
+    renderQueue(lastProgress);
   }
 }
 
@@ -541,6 +617,7 @@ async function boot() {
   current = (await latestProject()) ?? null;
   if (current) {
     renderBoard(current.board, current.storyboardSource);
+    renderVideoControls(current);
     void runQueue();
   }
 
@@ -549,6 +626,7 @@ async function boot() {
   els.play.addEventListener("click", () => void onPlay());
   els.download.addEventListener("click", () => void onDownload());
   els.retry.addEventListener("click", () => void onRetry());
+  els.copyQuiz.addEventListener("click", () => void onCopyQuiz());
 }
 
 void boot();

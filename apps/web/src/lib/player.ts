@@ -28,9 +28,13 @@ function renderFrame(stage: HTMLElement, scene: Scene, img?: Blob): void {
   stage.replaceChildren();
   const frame = document.createElement("div");
   frame.className = "frame";
+  frame.setAttribute("role", "img");
+  frame.setAttribute("aria-label", `Scene ${scene.index}: ${scene.onScreenText || scene.title}`);
   if (img) {
     const el = document.createElement("img");
-    el.src = URL.createObjectURL(img);
+    const url = URL.createObjectURL(img);
+    el.src = url;
+    el.onload = () => URL.revokeObjectURL(url);
     el.alt = scene.imagePrompt;
     frame.append(el);
   } else {
