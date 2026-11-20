@@ -276,7 +276,7 @@ TTS languages we offer: English, French, Spanish, Hindi (stable), Swahili (previ
 | --- | ------------------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | 11  | Unzip `lessonreel.zip` into e.g. `C:\dev\lessonreel` and open PowerShell there | `cd C:\dev\lessonreel`                                  | `git log --oneline` shows the existing commits                                            |
 | 12  | Install libraries                                                              | `pnpm install`                                          | Finishes without errors                                                                   |
-| 13  | Run all checks                                                                 | `pnpm run ci`                                           | Lint, format, typecheck, **14 tests passing**, build OK                                   |
+| 13  | Run all checks                                                                 | `pnpm run ci`                                           | Lint, format, typecheck, **19 tests passing**, build OK                                   |
 | 14  | Create my local settings file                                                  | `Copy-Item apps\web\.env.example apps\web\.env.local`   | File exists; it's ignored by Git (`git check-ignore apps\web\.env.local` prints the path) |
 | 15  | Fill `.env.local`                                                              | After §8. Never paste its contents into chat or commits | n/a                                                                                       |
 | 16  | Start the app                                                                  | `pnpm dev`                                              | http://localhost:5173 opens                                                               |
@@ -308,7 +308,7 @@ These rules apply from the first hour until submission. They're part of developm
 
 - Check Git is installed (§7 step 2) and whether this folder is already a Git repo (`git status`). **It already is**: the zip includes the history.
 - **Fix the commit author before the first push.** The existing commits use a placeholder email. After setting my identity (§7 step 3), rewrite the authors (safe because nothing is pushed yet):
-  `git rebase -r --root --exec "git commit --amend --no-edit --reset-author"`
+  `git rebase -r --root --autostash --exec "git commit --amend --no-edit --author='NAME <EMAIL>'"` (keeps the original dates, which prove the work was done during the event; `--reset-author` would change them all to today)
   Verify: `git log --format="%an <%ae>"` shows my name and email on every commit.
 - Check for an existing remote first: `git remote -v`. **Never overwrite an existing remote without asking me.**
 - Create the GitHub repo and connect it (private for now is fine; it must be **public before submitting**):

@@ -2,7 +2,7 @@
 
 **Turn your lesson notes into a narrated explainer video, even with no internet.**
 
-[![CI](https://github.com/OWNER/lessonreel/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/lessonreel/actions/workflows/ci.yml)
+[![CI](https://github.com/softalpha0/lessonreel/actions/workflows/ci.yml/badge.svg)](https://github.com/softalpha0/lessonreel/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Firebase AI Logic](https://img.shields.io/badge/Firebase%20AI%20Logic-hybrid-orange)
 
