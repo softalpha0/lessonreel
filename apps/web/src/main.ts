@@ -1,3 +1,5 @@
+import "@fontsource/atkinson-hyperlegible/400.css";
+import "@fontsource/atkinson-hyperlegible/700.css";
 import "./style.css";
 import {
   buildStoryboardPrompt,
@@ -100,7 +102,7 @@ function badge(source: "on_device" | "in_cloud" | "queued"): string {
 function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: number) {
   const time = ms ? ` in ${(ms / 1000).toFixed(1)}s` : "";
   els.board.innerHTML = `
-    <h2>${escape(board.title)} ${badge(source)}<small>${time}</small></h2>
+    <h3 class="board-title">${escape(board.title)} ${badge(source)} <small>${time}</small></h3>
     <ol class="scenes">
       ${board.scenes
         .map(
@@ -114,7 +116,7 @@ function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: n
     </ol>
     ${
       board.quiz.length
-        ? `<h3>Quiz</h3><ol>${board.quiz
+        ? `<h4>Quiz</h4><ol>${board.quiz
             .map(
               (q) =>
                 `<li>${escape(q.question)} <span class="muted">(${q.options.map(escape).join(" / ")})</span></li>`,

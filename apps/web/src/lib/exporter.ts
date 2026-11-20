@@ -159,7 +159,8 @@ export function drawFrame(ctx: CanvasRenderingContext2D, item: PreparedScene, pr
   ctx.fillStyle = "rgba(0,0,0,0.55)";
   ctx.fillRect(0, HEIGHT - 120, WIDTH, 120);
   ctx.fillStyle = "#ffffff";
-  ctx.font = "600 40px system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
+  ctx.font =
+    "700 40px 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
   ctx.textBaseline = "middle";
   ctx.fillText(fit(ctx, text, WIDTH - 96), 48, HEIGHT - 60);
 

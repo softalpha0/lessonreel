@@ -10,17 +10,23 @@
     />
   </head>
   <body>
-    <header class="top">
-      <h1>Lessonreel</h1>
-      <div class="pills">
-        <span id="net" class="pill">…</span>
-        <span id="nano" class="pill">Nano: checking…</span>
-        <button id="warm" class="ghost" type="button">Prepare offline model</button>
+    <header class="top-bar">
+      <div class="top">
+        <div class="brand">
+          <h1>Lessonreel</h1>
+          <p class="tagline">Lesson notes to explainer video, even with no internet.</p>
+        </div>
+        <div class="pills">
+          <span id="net" class="pill">…</span>
+          <span id="nano" class="pill">Nano: checking…</span>
+          <button id="warm" class="ghost" type="button">Prepare offline model</button>
+        </div>
       </div>
     </header>
 
     <main class="grid">
-      <section class="card">
+      <section class="card" aria-labelledby="lesson-heading">
+        <h2 id="lesson-heading" class="card-title">Your lesson</h2>
         <label for="notes">Your lesson notes</label>
         <textarea
           id="notes"
@@ -69,7 +75,8 @@
         <p id="status" class="status" role="status" aria-live="polite"></p>
       </section>
 
-      <section class="card">
+      <section class="card" aria-labelledby="board-heading">
+        <h2 id="board-heading" class="card-title">Storyboard</h2>
         <div id="board" class="board"><p class="muted">Your storyboard appears here.</p></div>
         <p id="queue" class="queue"></p>
         <div class="actions">
