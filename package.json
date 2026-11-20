@@ -18,7 +18,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build"
+    "ci": "pnpm lint && pnpm format:check && pnpm typecheck && pnpm test && pnpm build",
+    "preview": "pnpm --filter @lessonreel/web preview"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

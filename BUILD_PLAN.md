@@ -26,11 +26,11 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 | 0     | Setup, GitHub backup, Firebase project                 | §7–§9 of HACKATHON.md              | n/a        | ✅     | Nov 19    |
 | 1     | App shell + connection and Nano status                 | S-0, F3.2, F3.3                    | 0          | ✅     | Nov 20    |
 | 2A    | Lesson form: sample notes, counter, hints, errors      | S-1, F1, BR-1, E-2                 | 1          | ✅     | Nov 20    |
-| 2B    | Look and accessibility: tokens, font, headings         | docs/12, 14 (V1, V2, V7, R1)       | 2A         | ⬜     | Nov 20    |
-| 3     | Storyboard: on-device with cloud fallback              | S-2, F2.1–F2.4, F3, F7.1, E-1, E-3 | 2          | 🟡     | Nov 20    |
-| 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | 🟡     | Nov 21    |
-| 4B    | Installable offline app (PWA) + brand icon             | F12, UF-6, UF-7, S-0b, ADR-012     | 4          | ⬜     | Nov 21    |
-| 5     | Plan jobs + offline queue                              | F6.1–F6.3, F7.2, BR-8, D-3         | 4          | 🟡     | Nov 21    |
+| 2B    | Look and accessibility: tokens, font, headings         | docs/12, 14 (V1, V2, V7, R1)       | 2A         | ✅     | Nov 20    |
+| 3     | Storyboard: on-device with cloud fallback              | S-2, F2.1–F2.4, F3, F7.1, E-1, E-3 | 2          | ✅     | Nov 20    |
+| 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | ✅     | Nov 21    |
+| 4B    | Installable offline app (PWA) + brand icon             | F12, UF-6, UF-7, S-0b, ADR-012     | 4          | ✅     | Nov 21    |
+| 5     | Plan jobs + offline queue                              | F6.1–F6.3, F7.2, BR-8, D-3         | 4          | ✅     | Nov 21    |
 | 6     | Narration (translate + voice)                          | F4.1–F4.3, ADR-007                 | 5          | 🟡     | Nov 21    |
 | 7     | Scene images                                           | F5                                 | 5          | 🟡     | Nov 22    |
 | 8     | Per-scene progress + retry failed                      | S-3, F6.4–F6.6, E-5                | 6, 7       | ⬜     | Nov 22    |
@@ -97,13 +97,13 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Test:** valid notes → button works. Sample notes fills the box.
 - **Break tests:** empty notes; only spaces; 12,001+ characters; emoji and symbols (`<script>`, `& " '`); scenes = 0, 99, -3, blank; double-click Make; phone width 390 px.
 
-### Stage 2B: Look and accessibility ⬜
+### Stage 2B: Look and accessibility ✅ (approved 2026-11-20)
 
 - **What it does:** design tokens renamed to docs/12 names; input-border and amber contrast fixes (docs/14 V1, V2); Atkinson Hyperlegible font bundled (`@fontsource/atkinson-hyperlegible`, works offline); section headings ("Your lesson", "Storyboard") for screen readers (R1).
 - **Test:** docs/15 rows D1, L3–L4, C2; Lighthouse contrast; offline reload keeps the font.
 - **Break tests:** 200% zoom; 320 px; keyboard-only tab through the form.
 
-### Stage 3: Storyboard, on-device with cloud fallback 🟡
+### Stage 3: Storyboard, on-device with cloud fallback ✅ (approved 2026-11-20; on-device eval waits for Nano, see `evidence/ai-eval.md`)
 
 - **What it does:** turns notes into scenes + quiz using Gemini Nano (offline) or the cloud model, validates the result, repairs it once if broken, shows the On-device/Cloud badge and time taken.
 - **What Benjamin can do:** see a storyboard appear with Wi-Fi **off**.
@@ -112,23 +112,24 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Test (riskiest stage):** run **5 real lesson notes** with Wi-Fi off; record time and whether JSON was valid in `evidence/`. Then the same with Nano disabled → Cloud badge.
 - **Break tests:** very short notes ("Water boils."); notes in French; notes with a list of 30 bullets; offline on a machine without Nano (E-1 message, notes kept).
 
-### Stage 4: Save and reload the lesson 🟡
+### Stage 4: Save and reload the lesson ✅ (approved 2026-11-20)
 
 - **What it does:** saves the storyboard in the browser (IndexedDB) so a refresh doesn't lose it.
 - **Missing today:** S-6 "My lessons" list is a Could (not planned unless time allows).
 - **Test:** make a storyboard, refresh → it's still there.
 - **Break tests:** refresh while generating; open in a second tab; clear site data → app still loads with an empty state.
 
-### Stage 4B: Installable offline app (PWA) + brand icon ⬜
+### Stage 4B: Installable offline app (PWA) + brand icon ✅ (approved 2026-11-20)
 
 - **What it does:** the app's own files are saved on the device so Lessonreel opens with no internet, even after Chrome was closed. Adds the Lessonreel icon, "Works offline ✓" pill and install banner.
 - **Why:** found in the design audit. Without it, "offline" only works while the tab stays open.
 - **Build:** `vite-plugin-pwa` (ADR-012), manifest (name, icons from [11 §3](docs/11-brand-guidelines.md#3-visual-identity)), precache app shell + font, **never cache Firebase/Gemini calls**, update prompt ([13 §10](docs/13-ux-writing.md#10-onboarding-install-and-offline)).
+- **How to test the built app:** `pnpm build` then `pnpm preview` (same localhost:5173, so the App Check debug token still works). Back on `pnpm dev`, press Ctrl+Shift+R once.
 - **Test:** TC-4B.1–4B.5 in [09](docs/09-test-cases.md). Open once online → close Chrome → Wi-Fi off → open from icon → app + last lesson load.
 - **Break tests:** deploy a new version → "new version" message; clear site data → reload online re-caches; check Network tab that AI calls aren't served from cache.
-- **Known bug to fix here (found 2026-11-19, Stage 1 testing):** when the page is _opened_ with no internet, Firebase sign-in waits ~30 s before giving up, and the buttons stay dead until then (`boot()` awaits `initFirebase()`, which awaits `signInAnonymously`). Fix: wire the buttons first and sign in in the background (uid arrives later; the queue starts when it does).
+- **Fixed here (found 2026-11-19, Stage 1 testing):** when the page was _opened_ with no internet, Firebase sign-in waits ~30 s before giving up, and the buttons stay dead until then (`boot()` awaits `initFirebase()`, which awaits `signInAnonymously`). Fix: wire the buttons first and sign in in the background (uid arrives later; the queue starts when it does).
 
-### Stage 5: Plan jobs + offline queue 🟡
+### Stage 5: Plan jobs + offline queue ✅ (approved 2026-11-20)
 
 - **What it does:** after a storyboard, plans one image job per scene and one voice job per scene per language, saved in Firestore's offline cache; runs them automatically when online, 2 at a time.
 - **Test:** create a storyboard offline → "Queued … 0/n". Refresh → still queued. Go online → count rises without clicking anything.
@@ -208,6 +209,7 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-20: **Stages 2B, 3, 4, 4B and 5 approved** (one batch at Benjamin's request, one commit per stage). Prompt v2; installable offline app; offline storyboard no longer hangs on Firestore. Stage 3 on-device evaluation waits for free disk space (Nano).
 - 2026-11-20: **Stage 2A approved.** Stage 2 split into 2A (form features) and 2B (tokens, font, headings). Testing found and fixed two bugs (scenes "0" became 5; E-2b number format).
 - 2026-11-19: **Stages 0 and 1 approved.** Firebase project `lessonreel-7234f` (Spark), AI Logic (Gemini Developer API), App Check (Fraud Defense, enforced on AI Logic), Anonymous Auth, Firestore europe-west1 + rules. Stage 1 testing found and fixed 3 bugs (DEBUGGING.md bug log) and one environment issue (Nano needs ~22 GB free disk). Opening the app offline hangs ~30 s: logged under Stage 4B.
 - 2026-11-19: Design pack (docs/11–15) added. New Stage 4B (PWA) from the design audit; Stage 2 now includes the token/font/wording fixes.

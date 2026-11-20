@@ -67,48 +67,48 @@
 
 ## Stage 3: Storyboard (hybrid)
 
-| ID     | Type | Preconditions           | Steps                                                                                              | Expected                                                                               | Actual | Status | Sev |
-| ------ | ---- | ----------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-3.1 | N    | Nano ready, **offline** | Paste SN-1 → Make                                                                                  | Storyboard with **On-device** badge, seconds shown, 5 scenes + quiz (AC-3.1)           |        | ⬜     | 🔴  |
-| TC-3.2 | N    | No Nano, online         | Paste SN-1 → Make                                                                                  | Storyboard with **Cloud** badge (AC-3.2)                                               |        | ⬜     | 🔴  |
-| TC-3.3 | F    | No Nano, offline        | Paste SN-1 → Make                                                                                  | E-1 message; notes still in box (AC-3.3)                                               |        | ⬜     | 🔴  |
-| TC-3.4 | E    | Any route               | Paste SN-2 → Make                                                                                  | Storyboard with ≥ 3 scenes and **no invented facts** (or fewer scenes after prompt v2) |        | ⬜     | 🟠  |
-| TC-3.5 | S    | Any route               | Paste SN-3 → Make                                                                                  | Text shows literally; **no alert pops up** (escaping works)                            |        | ⬜     | 🔴  |
-| TC-3.6 | N    | Any route               | Run the 5 eval notes ([08 §8](08-ai-architecture.md#8-evaluation-plan))                            | ≥ 4/5 valid first try on-device; all < 60 s; record in `evidence/ai-eval.md`           |        | ⬜     | 🔴  |
-| TC-3.7 | F    | DevTools open           | Force invalid output (temporarily set scenes limit in a test build) or observe a repair in console | One repair request; then storyboard or E-3 (AC-2.4)                                    |        | ⬜     | 🟡  |
-| TC-3.8 | N    | Storyboard shown        | Read quiz                                                                                          | 3 questions, 3 options each, answers match notes                                       |        | ⬜     | 🟠  |
+| ID     | Type | Preconditions           | Steps                                                                                              | Expected                                                                               | Actual                                                                              | Status | Sev |
+| ------ | ---- | ----------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------ | --- |
+| TC-3.1 | N    | Nano ready, **offline** | Paste SN-1 → Make                                                                                  | Storyboard with **On-device** badge, seconds shown, 5 scenes + quiz (AC-3.1)           | Not possible yet: Nano refused (2.1 GB free disk). Simulated on-device route passes | ⏭      | 🔴  |
+| TC-3.2 | N    | No Nano, online         | Paste SN-1 → Make                                                                                  | Storyboard with **Cloud** badge (AC-3.2)                                               | Cloud badge, 8.3 s, 5 scenes + quiz (Stage 1); cloud explainer shown                | ✅     | 🔴  |
+| TC-3.3 | F    | No Nano, offline        | Paste SN-1 → Make                                                                                  | E-1 message; notes still in box (AC-3.3)                                               | E-1 at once, notes kept (Stage 1 + Benjamin, installed app offline)                 | ✅     | 🔴  |
+| TC-3.4 | E    | Any route               | Paste SN-2 → Make                                                                                  | Storyboard with ≥ 3 scenes and **no invented facts** (or fewer scenes after prompt v2) | Pending eval note 5 (prompt v2 should give 3 scenes)                                | ⬜     | 🟠  |
+| TC-3.5 | S    | Any route               | Paste SN-3 → Make                                                                                  | Text shows literally; **no alert pops up** (escaping works)                            | Notes and model output with <script>/<img onerror>: shown as text, no alert         | ✅     | 🔴  |
+| TC-3.6 | N    | Any route               | Run the 5 eval notes ([08 §8](08-ai-architecture.md#8-evaluation-plan))                            | ≥ 4/5 valid first try on-device; all < 60 s; record in `evidence/ai-eval.md`           | Pending: evidence/ai-eval.md needs Nano                                             | ⏭      | 🔴  |
+| TC-3.7 | F    | DevTools open           | Force invalid output (temporarily set scenes limit in a test build) or observe a repair in console | One repair request; then storyboard or E-3 (AC-2.4)                                    | Simulated: 1 repair then storyboard; twice invalid → E-3, raw logged                | ✅     | 🟡  |
+| TC-3.8 | N    | Storyboard shown        | Read quiz                                                                                          | 3 questions, 3 options each, answers match notes                                       | 3 questions × 3 options, from the notes (Stage 1 run)                               | ✅     | 🟠  |
 
 ## Stage 4: Save and reload
 
-| ID     | Type | Preconditions         | Steps                                             | Expected                                                                | Actual | Status | Sev |
-| ------ | ---- | --------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-4.1 | N    | Storyboard shown      | Refresh page                                      | Same storyboard and badge reappear                                      |        | ⬜     | 🔴  |
-| TC-4.2 | E    | Storyboard generating | Refresh mid-generation                            | App loads cleanly; previous lesson (if any) shown; no half-saved lesson |        | ⬜     | 🟡  |
-| TC-4.3 | E    | n/a                   | DevTools → Application → Clear site data → reload | Empty state "Your storyboard appears here."                             |        | ⬜     | 🟡  |
-| TC-4.4 | E    | Two tabs open         | Make a storyboard in tab 1; reload tab 2          | Tab 2 shows the new lesson; no errors                                   |        | ⬜     | 🟡  |
+| ID     | Type | Preconditions         | Steps                                             | Expected                                                                | Actual                                      | Status | Sev |
+| ------ | ---- | --------------------- | ------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------- | ------ | --- |
+| TC-4.1 | N    | Storyboard shown      | Refresh page                                      | Same storyboard and badge reappear                                      | Same storyboard + badge after reload        | ✅     | 🔴  |
+| TC-4.2 | E    | Storyboard generating | Refresh mid-generation                            | App loads cleanly; previous lesson (if any) shown; no half-saved lesson | Previous lesson shown, no half-saved lesson | ✅     | 🟡  |
+| TC-4.3 | E    | n/a                   | DevTools → Application → Clear site data → reload | Empty state "Your storyboard appears here."                             | "Your storyboard appears here."             | ✅     | 🟡  |
+| TC-4.4 | E    | Two tabs open         | Make a storyboard in tab 1; reload tab 2          | Tab 2 shows the new lesson; no errors                                   | Tab 2 shows the new lesson                  | ✅     | 🟡  |
 
 ## Stage 4B: Installable offline app (PWA)
 
-| ID      | Type | Preconditions                      | Steps                                                             | Expected                                                                      | Actual | Status | Sev |
-| ------- | ---- | ---------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-4B.1 | N    | Fresh profile, online              | Open the live link; wait 5 s                                      | "Works offline ✓" pill; toast once                                            |        | ⬜     | 🔴  |
-| TC-4B.2 | F    | After TC-4B.1                      | Close Chrome completely; Wi-Fi off; reopen the link (or app icon) | App loads from cache with the last lesson; pill "Offline" (AC-12.1)           |        | ⬜     | 🔴  |
-| TC-4B.3 | N    | Browser supports install           | Click "Install app" → accept                                      | App icon on desktop/home screen; opens in its own window                      |        | ⬜     | 🟠  |
-| TC-4B.4 | S    | Online, DevTools Network           | Make a storyboard via cloud                                       | AI/Firestore requests go to the network, **not** "(ServiceWorker)" from cache |        | ⬜     | 🔴  |
-| TC-4B.5 | E    | New build deployed                 | Reopen the app                                                    | "A new version is ready. Reload to update." Reload works                      |        | ⬜     | 🟠  |
-| TC-4B.6 | N    | Installed app, Nano ready, offline | Make storyboard from the installed window                         | On-device badge (TDD §24 #10)                                                 |        | ⬜     | 🟠  |
+| ID      | Type | Preconditions                      | Steps                                                             | Expected                                                                      | Actual                                                                | Status | Sev |
+| ------- | ---- | ---------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------ | --- |
+| TC-4B.1 | N    | Fresh profile, online              | Open the live link; wait 5 s                                      | "Works offline ✓" pill; toast once                                            | "Works offline ✓" + toast (Benjamin)                                  | ✅     | 🔴  |
+| TC-4B.2 | F    | After TC-4B.1                      | Close Chrome completely; Wi-Fi off; reopen the link (or app icon) | App loads from cache with the last lesson; pill "Offline" (AC-12.1)           | Opened from desktop icon with Wi-Fi off, last lesson shown (Benjamin) | ✅     | 🔴  |
+| TC-4B.3 | N    | Browser supports install           | Click "Install app" → accept                                      | App icon on desktop/home screen; opens in its own window                      | Installed; own window with Uninstall button (Benjamin)                | ✅     | 🟠  |
+| TC-4B.4 | S    | Online, DevTools Network           | Make a storyboard via cloud                                       | AI/Firestore requests go to the network, **not** "(ServiceWorker)" from cache | AI responses not from service worker (browser test)                   | ✅     | 🔴  |
+| TC-4B.5 | E    | New build deployed                 | Reopen the app                                                    | "A new version is ready. Reload to update." Reload works                      | Banner shown; Reload switches to the new build (browser test)         | ✅     | 🟠  |
+| TC-4B.6 | N    | Installed app, Nano ready, offline | Make storyboard from the installed window                         | On-device badge (TDD §24 #10)                                                 | Needs Nano (disk space)                                               | ⏭      | 🟠  |
 
 ## Stage 5: Queue
 
-| ID     | Type | Preconditions       | Steps                                                                       | Expected                                                             | Actual | Status | Sev |
-| ------ | ---- | ------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-5.1 | N    | Offline, Nano ready | Make storyboard (SN-1, French)                                              | "Queued … 0/15" (5 images + 10 voice)                                |        | ⬜     | 🔴  |
-| TC-5.2 | N    | After TC-5.1        | Go online                                                                   | Count rises automatically, no click needed                           |        | ⬜     | 🔴  |
-| TC-5.3 | F    | Jobs running        | Go offline mid-way                                                          | Badge → Queued; no error popup; resumes when online (AC-6.2)         |        | ⬜     | 🔴  |
-| TC-5.4 | F    | Jobs running        | Close tab mid-way, reopen online                                            | Jobs resume; none stuck "running" (stale-job fix)                    |        | ⬜     | 🔴  |
-| TC-5.5 | S    | Jobs exist          | Firebase console → Firestore `users/{uid}/jobs`                             | Only job metadata (ids, status, attempts, error); **no lesson text** |        | ⬜     | 🟠  |
-| TC-5.6 | S    | Rules deployed      | Second browser/incognito tries to read first user's jobs (Rules Playground) | Denied                                                               |        | ⬜     | 🔴  |
-| TC-5.7 | E    | n/a                 | Make the same storyboard twice                                              | Two lessons, no duplicate job ids within a lesson                    |        | ⬜     | 🟡  |
+| ID     | Type | Preconditions       | Steps                                                                       | Expected                                                             | Actual                                                                                      | Status | Sev |
+| ------ | ---- | ------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------ | --- |
+| TC-5.1 | N    | Offline, Nano ready | Make storyboard (SN-1, French)                                              | "Queued … 0/15" (5 images + 10 voice)                                | "Queued · Waiting for internet. 0 of 15 done." (simulated Nano); was hanging before the fix | ✅     | 🔴  |
+| TC-5.2 | N    | After TC-5.1        | Go online                                                                   | Count rises automatically, no click needed                           | Count rises by itself (Benjamin)                                                            | ✅     | 🔴  |
+| TC-5.3 | F    | Jobs running        | Go offline mid-way                                                          | Badge → Queued; no error popup; resumes when online (AC-6.2)         | Queued while offline, resumed online (Benjamin)                                             | ✅     | 🔴  |
+| TC-5.4 | F    | Jobs running        | Close tab mid-way, reopen online                                            | Jobs resume; none stuck "running" (stale-job fix)                    | Not run separately (stale-job recovery has a unit test)                                     | ⬜     | 🔴  |
+| TC-5.5 | S    | Jobs exist          | Firebase console → Firestore `users/{uid}/jobs`                             | Only job metadata (ids, status, attempts, error); **no lesson text** | Not run                                                                                     | ⬜     | 🟠  |
+| TC-5.6 | S    | Rules deployed      | Second browser/incognito tries to read first user's jobs (Rules Playground) | Denied                                                               | Not run                                                                                     | ⬜     | 🔴  |
+| TC-5.7 | E    | n/a                 | Make the same storyboard twice                                              | Two lessons, no duplicate job ids within a lesson                    | Not run                                                                                     | ⬜     | 🟡  |
 
 ## Stage 6: Narration
 
@@ -199,10 +199,10 @@
 | 0     | 6     | 6   |     |                    | 2026-11-19 | Benjamin    |
 | 1     | 7     | 6   |     | 1 ⏭ (TC-1.3: disk) | 2026-11-19 | Benjamin    |
 | 2     | 10    | 10  |     |                    | 2026-11-20 | Benjamin    |
-| 3     | 8     |     |     | 8                  |            |             |
-| 4     | 4     |     |     | 4                  |            |             |
-| 4B    | 6     |     |     | 6                  |            |             |
-| 5     | 7     |     |     | 7                  |            |             |
+| 3     | 8     | 5   |     | 1 ⬜ 2 ⏭ (Nano)    | 2026-11-20 | Benjamin    |
+| 4     | 4     | 4   |     |                    | 2026-11-20 | Benjamin    |
+| 4B    | 6     | 5   |     | 1 ⏭ (Nano)         | 2026-11-20 | Benjamin    |
+| 5     | 7     | 3   |     | 4 ⬜               | 2026-11-20 | Benjamin    |
 | 6     | 4     |     |     | 4                  |            |             |
 | 7     | 2     |     |     | 2                  |            |             |
 | 8     | 3     |     |     | 3                  |            |             |

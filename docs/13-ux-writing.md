@@ -23,23 +23,23 @@
 
 ## 2. Page and headings
 
-| Where                         | Text                                                      | Status                |
-| ----------------------------- | --------------------------------------------------------- | --------------------- |
-| `<title>`                     | Lessonreel: lesson notes to explainer video, even offline | ✅                    |
-| App name (S-0)                | Lessonreel                                                | ✅                    |
-| Tagline under name (≥ 600 px) | Lesson notes to explainer video, even with no internet.   | 🆕                    |
-| S-1 heading                   | Your lesson                                               | 🆕                    |
-| S-2 heading                   | Storyboard _(then the generated title)_                   | 🆕 (title only today) |
-| S-3 heading                   | Voice and pictures                                        | 🆕                    |
-| S-5 quiz heading              | Quiz                                                      | ✅                    |
+| Where                         | Text                                                      | Status |
+| ----------------------------- | --------------------------------------------------------- | ------ |
+| `<title>`                     | Lessonreel: lesson notes to explainer video, even offline | ✅     |
+| App name (S-0)                | Lessonreel                                                | ✅     |
+| Tagline under name (≥ 600 px) | Lesson notes to explainer video, even with no internet.   | ✅     |
+| S-1 heading                   | Your lesson                                               | ✅     |
+| S-2 heading                   | Storyboard _(then the generated title)_                   | ✅     |
+| S-3 heading                   | Voice and pictures                                        | 🆕     |
+| S-5 quiz heading              | Quiz                                                      | ✅     |
 
 ## 3. Buttons and controls
 
 | ID                  | Label                            | Screen     | Status |
 | ------------------- | -------------------------------- | ---------- | ------ |
 | BTN-warm            | Prepare offline model            | S-0        | ✅     |
-| BTN-install         | Install app                      | S-0 banner | 🆕     |
-| BTN-install-dismiss | Not now                          | S-0 banner | 🆕     |
+| BTN-install         | Install app                      | S-0 banner | ✅     |
+| BTN-install-dismiss | Not now                          | S-0 banner | ✅     |
 | BTN-sample          | Try sample notes                 | S-1        | ✅     |
 | BTN-make            | Make storyboard                  | S-1        | ✅     |
 | BTN-edit            | Edit scene _n_ (visible: "Edit") | S-2        | 🆕     |
@@ -74,7 +74,7 @@
 | Nano downloading  | Nano: downloading {n}% (on load, % unknown: "Nano: downloading…") | ✅                                       |
 | Nano ready        | Nano: ready                                                       | ✅                                       |
 | Nano unavailable  | Nano: not available here (cloud fallback)                         | ✅                                       |
-| App cached        | Works offline ✓                                                   | 🆕 (PWA)                                 |
+| App cached        | Works offline ✓                                                   | ✅                                       |
 
 ## 6. Badges
 
@@ -135,10 +135,10 @@
 | Moment                                      | Text                                                                                                    | Status |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------ |
 | First visit hint (above notes, dismissible) | Paste your notes and press "Make storyboard". With Gemini Nano on this computer, it works even offline. | 🆕     |
-| Install banner                              | Install Lessonreel to open it without internet.                                                         | 🆕     |
-| Installed toast                             | Lessonreel is installed. You can open it from your desktop or home screen.                              | 🆕     |
-| Offline-ready toast (first cache)           | Lessonreel now works offline on this device.                                                            | 🆕     |
-| New version available                       | A new version is ready. Reload to update. [Reload]                                                      | 🆕     |
+| Install banner                              | Install Lessonreel to open it without internet.                                                         | ✅     |
+| Installed toast                             | Lessonreel is installed. You can open it from your desktop or home screen.                              | ✅     |
+| Offline-ready toast (first cache)           | Lessonreel now works offline on this device.                                                            | ✅     |
+| New version available                       | A new version is ready. Reload to update. [Reload]                                                      | ✅     |
 
 ## 11. Toasts and confirmations
 

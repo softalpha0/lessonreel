@@ -7,6 +7,8 @@
 | Inputs       | [11 Brand guidelines](11-brand-guidelines.md)                                                                                                                                                                    |
 | Used by      | [03 UI spec](03-screen-design.md) · [07 Frontend](07-frontend.md) · [14 Accessibility](14-accessibility.md) · [15 Design QA](15-design-qa.md) · code: `apps/web/src/style.css` · Index: [docs/README](README.md) |
 
+**Update 2026-11-20 (Stage 2B):** all §2 tokens are now defined in `style.css` under these names, including the 🔧 fixes (amber `#8c6010`, input borders `--color-border-control`, 700 weight, type scale, 12 px stage radius). Components marked 🆕 are built in later stages.
+
 **Status column:** ✅ in `style.css` today · 🔧 change needed (value differs) · 🆕 not in code yet. Changes are built in [BUILD_PLAN](../BUILD_PLAN.md) Stage 2 (tokens + font) and later stages (new components). Nothing here is "implemented" until it passes [15 Design QA](15-design-qa.md).
 
 ## Contents

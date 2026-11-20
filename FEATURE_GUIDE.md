@@ -6,7 +6,7 @@
 | Updated      | After each feature is approved (see [`BUILD_PLAN.md`](BUILD_PLAN.md)) |
 | Last updated | 2026-11-19                                                            |
 
-> **Status:** Stages 0, 1 and 2A approved (entries below). The "Already in the code" notes explain what exists for later stages; each gets a full entry once you approve it.
+> **Status:** Stages 0–5 approved, including 2A/2B and 4B (entries below). The "Already in the code" notes explain what exists for later stages; each gets a full entry once you approve it.
 
 ## How the whole thing fits together (one minute)
 
@@ -82,17 +82,79 @@ There's **no server of our own**. The app runs in the browser. Firebase gives us
 9. **Limitations:** no first-visit hint yet; colours and font get their final values in Stage 2B.
 10. **Before demoing:** use "Try sample notes" so the demo is identical every time (it's DEMO-1 from docs/10).
 
+### Stage 2B: Look and accessibility ✅ (approved 2026-11-20)
+
+1. **What we built:** the brand font (Atkinson Hyperlegible, bundled), darker input borders and amber, section headings, the tagline, and every colour/size/space as a named design token.
+2. **Why it's needed:** teachers read on cheap screens in bright rooms; low-vision users need borders and text that meet WCAG contrast; screen-reader users navigate by headings.
+3. **What happens when you use it:** the app looks the same layout-wise but clearer: rounder legible letters, visible input boxes, bold buttons with a darker hover.
+4. **How it works behind the scenes:** `style.css` defines tokens on `:root` (docs/12 §2) and uses only those; the font files are imported in `main.ts` and bundled by Vite, so they're cached for offline use.
+5. **Important files:** `apps/web/src/style.css`, `apps/web/index.html` (headings, tagline), `apps/web/src/main.ts` (font import).
+6. **How the app talks to services:** none.
+7. **Data in → data out:** n/a.
+8. **Terms to know:** _design token_ = a named value like `--color-brand`; _contrast ratio_ = how much text stands out (4.5:1 for text, 3:1 for borders).
+9. **Limitations:** the counter's zeros are slashed (a feature of the font).
+10. **Before demoing:** nothing special.
+
+### Stage 3: Storyboard ✅ (approved 2026-11-20)
+
+1. **What we built:** prompt v2 (up to N scenes, at least 3), a sentence explaining cloud storyboards, a console note when a broken answer was repaired, and an evaluation sheet (`evidence/ai-eval.md`).
+2. **Why it's needed:** v1 told the model "exactly N scenes" and "fewer if thin" at the same time, which invites padding with invented facts. The evaluation proves the on-device claim.
+3. **What happens when you use it:** a storyboard appears with On-device or Cloud badge and seconds; cloud ones say why. Broken AI output is repaired once, then E-3.
+4. **How it works behind the scenes:** `generateStoryboard` (`ai/storyboard.ts`) tries Nano, retries in the cloud if Nano fails, checks the JSON with Zod, repairs once.
+5. **Important files:** `packages/core/src/prompts.ts` (prompt v2), `apps/web/src/ai/storyboard.ts`, `apps/web/src/main.ts` (`renderBoard`), `docs/08` §4 (prompt history).
+6. **How the app talks to services:** Firebase AI Logic, `PREFER_ON_DEVICE` (Nano) with a cloud model fallback.
+7. **Data in → data out:** notes + audience + scenes → title, scenes, image ideas, quiz.
+8. **Terms to know:** _repair pass_ = asking the model once to fix its own broken JSON.
+9. **Limitations:** the 5-note on-device evaluation needs Nano, which needs ~22 GB free disk.
+10. **Before demoing:** run the evaluation and record the seconds; those are your "results" numbers.
+
+### Stage 4: Save and reload ✅ (approved 2026-11-20)
+
+1. **What we built:** nothing new; the existing save (IndexedDB) passed all four tests.
+2. **Why it's needed:** a power cut or refresh must not lose the lesson.
+3. **What happens when you use it:** reload and the newest lesson comes back with its badge.
+4. **How it works behind the scenes:** `saveProject`/`latestProject` in `lib/store.ts` keep lessons in the browser's IndexedDB.
+5. **Important files:** `apps/web/src/lib/store.ts`.
+6. **How the app talks to services:** none; it's all in the browser.
+7. **Data in → data out:** lesson → saved; on start → newest lesson.
+8. **Terms to know:** _IndexedDB_ = the browser's own database.
+9. **Limitations:** only the newest lesson is shown ("My lessons" list is a Could).
+10. **Before demoing:** nothing.
+
+### Stage 4B: Installable offline app ✅ (approved 2026-11-20)
+
+1. **What we built:** a service worker that keeps the app's own files on the device, "Works offline ✓", an install banner and icon, and a "new version" prompt. Start-up no longer waits on sign-in.
+2. **Why it's needed:** without it, "offline" only worked while the tab stayed open; with it, a teacher can open Lessonreel during a power cut after closing Chrome.
+3. **What happens when you use it:** the first online visit caches the app. After that it opens with no internet, from the browser or its own desktop icon.
+4. **How it works behind the scenes:** `vite-plugin-pwa` (Workbox) precaches HTML/JS/CSS/font/icons; it caches nothing from the network, so AI and Firebase calls always go live. A returning browser's saved anonymous user is used immediately; first-time sign-in happens in the background.
+5. **Important files:** `apps/web/vite.config.ts` (PWA + manifest), `apps/web/src/lib/pwa.ts` (offline-ready, update, install), `apps/web/public/` (icons), `apps/web/src/firebase.ts` (background sign-in), `firebase.json` (no-cache headers for `sw.js`).
+6. **How the app talks to services:** none new; it makes sure the app itself doesn't need the network to start.
+7. **Data in → data out:** first visit → app saved on device; later visits → app loads from the device.
+8. **Terms to know:** _PWA_ = a website that installs like an app; _service worker_ = a small script that serves the saved app files.
+9. **Limitations:** a new deploy shows "A new version is ready" instead of updating silently (by design). Test with `pnpm build` + `pnpm preview`; after that press Ctrl+Shift+R on `pnpm dev`.
+10. **Before demoing:** open the live link once online on the demo laptop so it's cached, then show it opening from the desktop icon with Wi-Fi off.
+
+### Stage 5: Offline queue ✅ (approved 2026-11-20)
+
+1. **What we built:** fixes so the queue really works offline: no more hang, "Queued · Waiting for internet. 0 of 15 done.", survives reload, resumes by itself, and plans jobs later if there was no sign-in yet.
+2. **Why it's needed:** this is the core hybrid promise: plan on the device now, finish in the cloud later.
+3. **What happens when you use it:** offline, the storyboard is followed by "Voice and pictures will be made when you're back online." and the Queued line; online, the count rises without a click.
+4. **How it works behind the scenes:** jobs are written to Firestore's local cache and synced later; the app no longer waits for the server's confirmation (which never comes offline), reads the local copy when offline, and retries sign-in on reconnect.
+5. **Important files:** `apps/web/src/lib/store.ts` (writes, cache reads), `apps/web/src/lib/runner.ts` (progress offline), `apps/web/src/main.ts` (`planJobsIfSignedIn`, `renderQueue`), `apps/web/src/firebase.ts` (`ensureSignedIn`).
+6. **How the app talks to services:** Firestore (persistent local cache), Anonymous Auth; the runner calls Firebase AI Logic for voice/images when online.
+7. **Data in → data out:** storyboard → 1 picture + 1 voice per language per scene as job records → done/failed.
+8. **Terms to know:** _latency compensation_ = Firestore shows your own writes immediately, before the server confirms them.
+9. **Limitations:** jobs only run while Lessonreel is open (no background sync).
+10. **Before demoing:** have Nano working (disk space) so the offline storyboard → Queued → online finish is real on camera.
+
 ## Already in the code (waiting for your test)
 
-| Stage        | What exists                                                                   | Main files                                                            | What you'll see                                               |
-| ------------ | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------- |
-| 3 Storyboard | Hybrid model call, JSON check, one repair try, badge                          | `src/ai/storyboard.ts`, `packages/core/src/storyboard.ts`             | Scenes + quiz with On-device or Cloud badge and seconds taken |
-| 4 Save       | Lesson saved in the browser, reloads after refresh                            | `src/lib/store.ts`                                                    | Storyboard still there after refresh                          |
-| 5 Queue      | Jobs planned and saved in Firestore, run 2 at a time when online, max 3 tries | `packages/core/src/queue.ts`, `src/lib/store.ts`, `src/lib/runner.ts` | "Queued … 0/n" offline, count rises online                    |
-| 6 Voice      | Translate then speak with Gemini TTS                                          | `src/ai/cloud-media.ts`                                               | Audio per scene and language                                  |
-| 7 Images     | Gemini image per scene (if model set)                                         | `src/ai/cloud-media.ts`                                               | Picture per scene, or a coloured placeholder                  |
-| 9 Preview    | Plays scenes with image, caption and voice                                    | `src/lib/player.ts`                                                   | Video plays inside the page                                   |
-| 10 Download  | Renders MP4/WebM in the browser                                               | `src/lib/exporter.ts`                                                 | Progress % then a file downloads                              |
+| Stage       | What exists                                | Main files              | What you'll see                              |
+| ----------- | ------------------------------------------ | ----------------------- | -------------------------------------------- |
+| 6 Voice     | Translate then speak with Gemini TTS       | `src/ai/cloud-media.ts` | Audio per scene and language                 |
+| 7 Images    | Gemini image per scene (if model set)      | `src/ai/cloud-media.ts` | Picture per scene, or a coloured placeholder |
+| 9 Preview   | Plays scenes with image, caption and voice | `src/lib/player.ts`     | Video plays inside the page                  |
+| 10 Download | Renders MP4/WebM in the browser            | `src/lib/exporter.ts`   | Progress % then a file downloads             |
 
 How they connect: `main.ts` is the conductor. It reads the form, asks `storyboard.ts` for a storyboard, saves it with `store.ts`, plans jobs with `core/queue.ts`, and lets `runner.ts` do the cloud work through `cloud-media.ts`. `player.ts` and `exporter.ts` read the saved storyboard and assets to play or render the video. `firebase.ts` starts Firebase (App Check first) before anything else.
 

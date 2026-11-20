@@ -156,6 +156,8 @@ cp apps/web/.env.example apps/web/.env.local   # fill in your Firebase web confi
 pnpm dev            # or: pnpm dev:lan to open it from a phone on the same Wi-Fi
 ```
 
+To try the installable offline app, run the built version: `pnpm build` then `pnpm preview` (same localhost:5173). After that, press Ctrl+Shift+R once when you go back to `pnpm dev`.
+
 Firebase setup: create a project → enable **Firebase AI Logic** (Gemini Developer API) → register a Web app → enable **App Check** with reCAPTCHA Enterprise (register your debug token for localhost) → enable **Anonymous** sign-in → create **Firestore** and deploy `firestore.rules`.
 
 Chrome: version 139+, enable `chrome://flags/#prompt-api-for-gemini-nano-multimodal-input`, restart.
@@ -197,6 +199,7 @@ AGENTS.md            Coding rules, verified SDK facts, status log
 ## Build log
 
 - **2026-11-18:** Idea locked. Monorepo scaffolded, core logic + tests, hybrid storyboard, cloud TTS/translate/image, offline queue, preview player.
+- **2026-11-20:** Lesson form (sample notes, counter, hints), brand font and contrast fixes, prompt v2, installable offline app (opens with no internet), offline queue fixes.
 - **2026-11-19:** Architecture doc. In-browser video export (canvas + Web Audio + MediaRecorder). Decided to build everything new, no reused code.
 
 ## Credits
