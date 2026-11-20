@@ -34,7 +34,7 @@ export function buildStoryboardPrompt(req: StoryboardRequest): string {
   if (!notes) throw new NotesEmptyError();
   if (notes.length > LIMITS.maxNotesChars) {
     throw new NotesTooLongError(
-      `Notes are ${notes.length} characters; the limit is ${LIMITS.maxNotesChars}. Split the lesson.`,
+      `Notes are ${notes.length.toLocaleString("en-US")} characters; the limit is ${LIMITS.maxNotesChars.toLocaleString("en-US")}. Split the lesson.`,
     );
   }
   const scenes = clamp(req.targetScenes ?? 5, LIMITS.minScenes, LIMITS.maxScenes);

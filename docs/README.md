@@ -66,7 +66,6 @@ The docs describe the MVP we will submit. Where the code doesn't match yet, it's
 | "My lessons" list                                                                            | S-6, F11          | Latest lesson reloads only              | Could                |
 | Quiz shown with answers + copy                                                               | S-5, F2.5         | Questions listed, no answer reveal      | Nov 24               |
 | Slow narration toggle                                                                        | S-1, F4.4         | Function exists, no UI control          | Should               |
-| "Try sample notes" + character counter                                                       | S-1, F1.5–F1.6    | Not built                               | Nov 21               |
 | Retry failed scenes button                                                                   | S-3, F6.6, E-5    | Not built                               | Nov 22               |
 | E-8 App Check and E-9 storage-full messages                                                  | 04 §6             | Generic error text                      | Nov 24               |
 | Form row stacks on phones                                                                    | 03 §6             | Stays 3 columns                         | Nov 24               |

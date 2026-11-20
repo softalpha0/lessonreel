@@ -52,18 +52,18 @@
 
 ## Stage 2: Lesson form
 
-| ID      | Type | Preconditions       | Steps                                           | Expected                                                                                           | Actual | Status        | Sev |
-| ------- | ---- | ------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------ | ------------- | --- |
-| TC-2.1  | I    | App ready           | Leave notes empty → Make                        | "Add your lesson notes first." Notes box still focused/usable                                      |        | ⬜            | 🟠  |
-| TC-2.2  | I    | n/a                 | Notes = only spaces → Make                      | Same as TC-2.1                                                                                     |        | ⬜            | 🟠  |
-| TC-2.3  | I    | n/a                 | Paste SN-4 → Make                               | "Notes are N characters; the limit is 12,000. Split the lesson." No model call (Network tab quiet) |        | ⬜            | 🟠  |
-| TC-2.4  | E    | n/a                 | Exactly 12,000 chars → Make                     | Accepted                                                                                           |        | ⬜            | 🟡  |
-| TC-2.5  | I    | n/a                 | Scenes = 0, then 99, then -3, then blank → Make | Clamped to 3–8 (blank → 5); no error                                                               |        | ⬜            | 🟡  |
-| TC-2.6  | E    | n/a                 | Audience blank → Make                           | Uses "secondary school students"                                                                   |        | ⬜            | 🟡  |
-| TC-2.7  | E    | n/a                 | Double-click Make fast                          | Only one storyboard request; button disabled while working                                         |        | ⬜            | 🟠  |
-| TC-2.8  | N    | n/a                 | Open language select                            | Shows French, Spanish, Hindi, Swahili (preview); no Yoruba/Igbo/Hausa                              |        | ⬜            | 🟡  |
-| TC-2.9  | M    | Phone, 390 px       | View the form                                   | No sideways scroll; fields full width (row stacks: planned)                                        |        | ⬜            | 🟠  |
-| TC-2.10 | N    | Planned (F1.5/F1.6) | Type notes; click "Try sample notes"            | Counter updates; sample fills box                                                                  |        | ⏭ until built | 🟡  |
+| ID      | Type | Preconditions     | Steps                                           | Expected                                                                                           | Actual                                                                              | Status | Sev |
+| ------- | ---- | ----------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------ | --- |
+| TC-2.1  | I    | App ready         | Leave notes empty → Make                        | "Add your lesson notes first." Notes box still focused/usable                                      | "Add your lesson notes first." under the box, amber outline, focus back             | ✅     | 🟠  |
+| TC-2.2  | I    | n/a               | Notes = only spaces → Make                      | Same as TC-2.1                                                                                     | Same message                                                                        | ✅     | 🟠  |
+| TC-2.3  | I    | n/a               | Paste SN-4 → Make                               | "Notes are N characters; the limit is 12,000. Split the lesson." No model call (Network tab quiet) | "Notes are 12,001 characters; the limit is 12,000. Split the lesson." No AI request | ✅     | 🟠  |
+| TC-2.4  | E    | n/a               | Exactly 12,000 chars → Make                     | Accepted                                                                                           | Accepted (1 AI request)                                                             | ✅     | 🟡  |
+| TC-2.5  | I    | n/a               | Scenes = 0, then 99, then -3, then blank → Make | Clamped to 3–8 (blank → 5); no error                                                               | 0→3, 99→8, -3→3, blank→5 (0 was a bug, fixed)                                       | ✅     | 🟡  |
+| TC-2.6  | E    | n/a               | Audience blank → Make                           | Uses "secondary school students"                                                                   | Default used                                                                        | ✅     | 🟡  |
+| TC-2.7  | E    | n/a               | Double-click Make fast                          | Only one storyboard request; button disabled while working                                         | 1 request; button disabled while working                                            | ✅     | 🟠  |
+| TC-2.8  | N    | n/a               | Open language select                            | Shows French, Spanish, Hindi, Swahili (preview); no Yoruba/Igbo/Hausa                              | French, Spanish, Hindi, Swahili (preview) only                                      | ✅     | 🟡  |
+| TC-2.9  | M    | Phone, 390 px     | View the form                                   | No sideways scroll; fields full width (row stacks: planned)                                        | 320/390 px: stacks, no sideways scroll, buttons 44 px                               | ✅     | 🟠  |
+| TC-2.10 | N    | Built (F1.5/F1.6) | Type notes; click "Try sample notes"            | Counter updates; sample fills box                                                                  | Counter updates; sample fills notes + audience; asks before replacing typed notes   | ✅     | 🟡  |
 
 ## Stage 3: Storyboard (hybrid)
 
@@ -198,7 +198,7 @@
 | ----- | ----- | --- | --- | ------------------ | ---------- | ----------- |
 | 0     | 6     | 6   |     |                    | 2026-11-19 | Benjamin    |
 | 1     | 7     | 6   |     | 1 ⏭ (TC-1.3: disk) | 2026-11-19 | Benjamin    |
-| 2     | 10    |     |     | 10                 |            |             |
+| 2     | 10    | 10  |     |                    | 2026-11-20 | Benjamin    |
 | 3     | 8     |     |     | 8                  |            |             |
 | 4     | 4     |     |     | 4                  |            |             |
 | 4B    | 6     |     |     | 6                  |            |             |

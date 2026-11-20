@@ -40,7 +40,7 @@
 | BTN-warm            | Prepare offline model            | S-0        | ✅     |
 | BTN-install         | Install app                      | S-0 banner | 🆕     |
 | BTN-install-dismiss | Not now                          | S-0 banner | 🆕     |
-| BTN-sample          | Try sample notes                 | S-1        | 🆕     |
+| BTN-sample          | Try sample notes                 | S-1        | ✅     |
 | BTN-make            | Make storyboard                  | S-1        | ✅     |
 | BTN-edit            | Edit scene _n_ (visible: "Edit") | S-2        | 🆕     |
 | BTN-save-scene      | Save scene                       | S-2        | 🆕     |
@@ -53,15 +53,15 @@
 
 ## 4. Form labels, placeholders, helper text
 
-| Field            | Label                                                                         | Placeholder                                       | Helper text                                                   | Status                           |
-| ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- | -------------------------------- |
-| Notes            | Your lesson notes                                                             | Paste or type your notes. Bullet points are fine. | Your notes stay on this device when Gemini Nano is available. | label/placeholder ✅ · helper 🆕 |
-| Counter          | n/a                                                                           | n/a                                               | {n} / 12,000 characters                                       | 🆕                               |
-| Audience         | Who is it for                                                                 | JSS2 students                                     | e.g. "Primary 5", "nursing students", "farmers' group"        | label ✅ · helper 🆕             |
-| Scenes           | Scenes                                                                        | n/a                                               | 3 to 8                                                        | label ✅ · helper 🆕             |
-| Language         | Second language                                                               | n/a                                               | English narration is always included.                         | label ✅ · helper 🆕             |
-| Language options | French (France) · Spanish (Spain) · Hindi (India) · Swahili (Kenya) (preview) | n/a                                               | n/a                                                           | ✅                               |
-| Slow narration   | Slow, clear narration                                                         | n/a                                               | Good for younger learners.                                    | 🆕                               |
+| Field            | Label                                                                         | Placeholder                                       | Helper text                                                   | Status |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------- | ------ |
+| Notes            | Your lesson notes                                                             | Paste or type your notes. Bullet points are fine. | Your notes stay on this device when Gemini Nano is available. | ✅     |
+| Counter          | n/a                                                                           | n/a                                               | {n} / 12,000 characters                                       | ✅     |
+| Audience         | Who is it for                                                                 | JSS2 students                                     | e.g. "Primary 5", "nursing students", "farmers' group"        | ✅     |
+| Scenes           | Scenes                                                                        | n/a                                               | 3 to 8                                                        | ✅     |
+| Language         | Second language                                                               | n/a                                               | English narration is always included.                         | ✅     |
+| Language options | French (France) · Spanish (Spain) · Hindi (India) · Swahili (Kenya) (preview) | n/a                                               | n/a                                                           | ✅     |
+| Slow narration   | Slow, clear narration                                                         | n/a                                               | Good for younger learners.                                    | 🆕     |
 
 ## 5. Status pills (S-0)
 
@@ -87,22 +87,22 @@
 
 ## 7. Progress and system messages
 
-| Moment                   | Text                                                                                      | Status                                            |
-| ------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| Generating, online       | Writing storyboard…                                                                       | ✅                                                |
-| Generating, offline      | Offline: writing storyboard on this device…                                               | ✅                                                |
-| Storyboard done, online  | Storyboard ready ({on-device / cloud}). Making voice and pictures…                        | 🔧 (code: "Generating voice and images…")         |
-| Storyboard done, offline | Storyboard ready on this device. Voice and pictures will be made when you're back online. | 🔧 (code: "…queued for when you're back online.") |
-| Seconds taken            | in {n.n}s                                                                                 | ✅                                                |
-| Queue summary, online    | {done} of {total} done                                                                    | 🔧 (code: "{done}/{total} cloud jobs done")       |
-| Queue summary, offline   | Waiting for internet. {done} of {total} done.                                             | 🆕                                                |
-| Queue failed count       | {n} couldn't be made                                                                      | 🔧 (code: ", {n} failed")                         |
-| Download disabled hint   | Available when all scenes are ready.                                                      | 🆕                                                |
-| Rendering                | Making your video… {n}%                                                                   | 🔧 (code: "Rendering video… {n}%")                |
-| Render done              | Video ready ({n}s, {MP4/WEBM}).                                                           | ✅                                                |
-| Render tip               | Keep this tab open until it finishes.                                                     | 🆕                                                |
-| Prepare clicked offline  | You're offline. Connect to the internet to download the offline model.                    | ✅ (added Stage 1)                                |
-| Scene edited             | Scene {n} updated. Its voice will be made again.                                          | 🆕                                                |
+| Moment                   | Text                                                                                      | Status             |
+| ------------------------ | ----------------------------------------------------------------------------------------- | ------------------ |
+| Generating, online       | Writing storyboard…                                                                       | ✅                 |
+| Generating, offline      | Offline: writing storyboard on this device…                                               | ✅                 |
+| Storyboard done, online  | Storyboard ready ({on-device / cloud}). Making voice and pictures…                        | ✅ (Stage 2A)      |
+| Storyboard done, offline | Storyboard ready on this device. Voice and pictures will be made when you're back online. | ✅ (Stage 2A)      |
+| Seconds taken            | in {n.n}s                                                                                 | ✅                 |
+| Queue summary, online    | {done} of {total} done                                                                    | ✅ (Stage 2A)      |
+| Queue summary, offline   | Waiting for internet. {done} of {total} done.                                             | ✅ (Stage 2A)      |
+| Queue failed count       | {n} couldn't be made                                                                      | ✅ (Stage 2A)      |
+| Download disabled hint   | Available when all scenes are ready.                                                      | 🆕                 |
+| Rendering                | Making your video… {n}%                                                                   | ✅ (Stage 2A)      |
+| Render done              | Video ready ({n}s, {MP4/WEBM}).                                                           | ✅                 |
+| Render tip               | Keep this tab open until it finishes.                                                     | 🆕                 |
+| Prepare clicked offline  | You're offline. Connect to the internet to download the offline model.                    | ✅ (added Stage 1) |
+| Scene edited             | Scene {n} updated. Its voice will be made again.                                          | 🆕                 |
 
 ## 8. Empty states
 
@@ -115,20 +115,20 @@
 
 ## 9. Validation and errors (IDs from [04 §6](04-functional-spec.md#6-error-handling))
 
-| ID                 | Text                                                                                               | Where       | Status                                                             |
-| ------------------ | -------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------ |
-| E-1                | This device can't run Gemini Nano offline. Connect to the internet to use the cloud instead.       | status line | ✅                                                                 |
-| E-2a               | Add your lesson notes first.                                                                       | under notes | ✅ text · 🔧 position (status line today)                          |
-| E-2b               | Notes are {n} characters; the limit is 12,000. Split the lesson.                                   | under notes | ✅ text · 🔧 position                                              |
-| E-3                | We couldn't build a storyboard from these notes. Try again, or shorten them.                       | status line | ✅                                                                 |
-| E-4                | Lessonreel can't start right now. Check your connection and reload.                                | status line | 🔧 (code adds a developer hint; keep the hint in the console only) |
-| E-5                | Scene {n}: couldn't make the {French voice / picture} after 3 tries.                               | S-3 row     | 🆕                                                                 |
-| E-6                | This browser can't record video. Use a recent version of Chrome.                                   | status line | 🔧 (code: "Use a recent Chrome.")                                  |
-| E-7                | (no error) Queued badge + "Waiting for internet."                                                  | S-3         | 🆕                                                                 |
-| E-8                | Lessonreel can't reach the AI service right now. Turn off ad blockers for this site and try again. | status line | ✅                                                                 |
-| E-9                | Your browser is out of space. Delete old lessons and try again.                                    | status line | 🆕                                                                 |
-| E-10               | The AI service is busy right now. Wait a minute and try again.                                     | status line | ✅ (added Stage 1 debugging)                                       |
-| Edit scene invalid | Narration must be 1 to 400 characters.                                                             | under field | 🆕                                                                 |
+| ID                 | Text                                                                                               | Where       | Status                       |
+| ------------------ | -------------------------------------------------------------------------------------------------- | ----------- | ---------------------------- |
+| E-1                | This device can't run Gemini Nano offline. Connect to the internet to use the cloud instead.       | status line | ✅                           |
+| E-2a               | Add your lesson notes first.                                                                       | under notes | ✅ (under notes, Stage 2A)   |
+| E-2b               | Notes are {n} characters; the limit is 12,000. Split the lesson.                                   | under notes | ✅ (under notes, Stage 2A)   |
+| E-3                | We couldn't build a storyboard from these notes. Try again, or shorten them.                       | status line | ✅                           |
+| E-4                | Lessonreel can't start right now. Check your connection and reload.                                | status line | ✅ (Stage 2A)                |
+| E-5                | Scene {n}: couldn't make the {French voice / picture} after 3 tries.                               | S-3 row     | 🆕                           |
+| E-6                | This browser can't record video. Use a recent version of Chrome.                                   | status line | ✅ (Stage 2A)                |
+| E-7                | (no error) Queued badge + "Waiting for internet."                                                  | S-3         | 🆕                           |
+| E-8                | Lessonreel can't reach the AI service right now. Turn off ad blockers for this site and try again. | status line | ✅                           |
+| E-9                | Your browser is out of space. Delete old lessons and try again.                                    | status line | 🆕                           |
+| E-10               | The AI service is busy right now. Wait a minute and try again.                                     | status line | ✅ (added Stage 1 debugging) |
+| Edit scene invalid | Narration must be 1 to 400 characters.                                                             | under field | 🆕                           |
 
 ## 10. Onboarding, install and offline
 
@@ -142,11 +142,12 @@
 
 ## 11. Toasts and confirmations
 
-| Moment                 | Text                                                                                                                               | Status |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| Quiz copied            | Quiz copied.                                                                                                                       | 🆕     |
-| Delete confirm (Could) | Title: "Delete this lesson?" Body: "Its storyboard, voice and pictures will be removed from this device." Buttons: Cancel · Delete | 🆕     |
-| Deleted                | Lesson deleted.                                                                                                                    | 🆕     |
+| Moment                 | Text                                                                                                                               | Status        |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| Quiz copied            | Quiz copied.                                                                                                                       | 🆕            |
+| Sample over own notes  | Confirm: "Replace your notes with the sample lesson?" (OK · Cancel)                                                                | ✅ (Stage 2A) |
+| Delete confirm (Could) | Title: "Delete this lesson?" Body: "Its storyboard, voice and pictures will be removed from this device." Buttons: Cancel · Delete | 🆕            |
+| Deleted                | Lesson deleted.                                                                                                                    | 🆕            |
 
 ## 12. Copy for exported files
 

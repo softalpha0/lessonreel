@@ -95,9 +95,51 @@ select {
 }
 .row {
   display: grid;
-  grid-template-columns: 2fr 1fr 2fr;
+  grid-template-columns: 1fr;
   gap: 12px;
-  margin: 12px 0;
+  margin: 12px 0 16px;
+}
+/* Phones stack the three options; side by side from 600 px (docs/03 §6, docs/14 V5). */
+@media (min-width: 600px) {
+  .row {
+    grid-template-columns: 2fr 1fr 2fr;
+  }
+}
+.field {
+  min-width: 0;
+}
+
+/* Helper text, counter and inline errors (docs/12 §4.2). */
+.helper,
+.counter,
+.field-error {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+}
+.helper,
+.counter {
+  color: var(--muted);
+}
+.field-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.counter {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.counter[data-warn="true"] {
+  color: var(--queued);
+  font-weight: 600;
+}
+.field-error {
+  color: var(--queued);
+  font-weight: 600;
+}
+textarea[aria-invalid="true"] {
+  border-color: var(--queued);
 }
 
 button {

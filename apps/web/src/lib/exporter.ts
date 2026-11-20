@@ -22,7 +22,7 @@ const MIME_CANDIDATES = [
 
 export function pickMimeType(): string {
   const found = MIME_CANDIDATES.find((t) => MediaRecorder.isTypeSupported(t));
-  if (!found) throw new Error("This browser can't record video. Use a recent Chrome.");
+  if (!found) throw new Error("This browser can't record video. Use a recent version of Chrome.");
   return found;
 }
 

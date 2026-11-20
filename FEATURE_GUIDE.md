@@ -6,7 +6,7 @@
 | Updated      | After each feature is approved (see [`BUILD_PLAN.md`](BUILD_PLAN.md)) |
 | Last updated | 2026-11-19                                                            |
 
-> **Status:** Stages 0 and 1 approved (2026-11-19, entries below). The "Already in the code" notes explain what exists for later stages; each gets a full entry once you approve it.
+> **Status:** Stages 0, 1 and 2A approved (entries below). The "Already in the code" notes explain what exists for later stages; each gets a full entry once you approve it.
 
 ## How the whole thing fits together (one minute)
 
@@ -69,11 +69,23 @@ There's **no server of our own**. The app runs in the browser. Firebase gives us
 9. **Limitations:** the Online pill can take up to 15 s to notice a change by itself. The connectivity check uses about 0.1 MB per hour while the tab is visible. Opening the app with no internet hangs ~30 s (fixed in Stage 4B). The Nano download progress could not be re-tested because Chrome removed Nano when the disk filled up.
 10. **Before demoing to judges:** with Wi-Fi off, wait for the pill to say Offline (or click Make once) before talking about it on camera.
 
+### Stage 2A: Lesson form ✅ (approved 2026-11-20)
+
+1. **What we built:** the left card where the teacher describes the lesson: "Try sample notes", a live character counter, a hint under every field, error messages right under the notes box, and a phone layout where the fields stack.
+2. **Why it's needed:** judges must be able to try the app in one click; teachers need to know the limit before they hit it, and to see exactly what's wrong and where.
+3. **What happens when you use it:** "Try sample notes" fills the photosynthesis lesson (asking first if you typed your own). The counter updates as you type and turns amber above 11,000. Empty or too-long notes show the message under the box, outline it in amber and put the cursor back. Scenes outside 3–8 are quietly corrected.
+4. **How it works behind the scenes:** the rules live in `packages/core/src/form.ts` (sample lesson, counter text, scene count, queue wording) and `prompts.ts` (empty/too long), each unit-tested. `main.ts` only displays the results.
+5. **Important files:** `apps/web/index.html` (fields, hints, counter, error slot linked with `aria-describedby`), `apps/web/src/style.css` (hints, counter, amber error, stacking below 600 px), `apps/web/src/main.ts` (counter, sample, errors), `packages/core/src/form.ts`.
+6. **How the app talks to services:** none new. Validation happens before any AI call, so a mistake costs no data.
+7. **Data in → data out:** notes and options in → a valid request (or a plain message under the box).
+8. **Terms to know:** _helper text_ = the small grey hint under a field; _`aria-invalid` / `aria-describedby`_ = labels that tell screen readers a field has an error and which text explains it.
+9. **Limitations:** no first-visit hint yet; colours and font get their final values in Stage 2B.
+10. **Before demoing:** use "Try sample notes" so the demo is identical every time (it's DEMO-1 from docs/10).
+
 ## Already in the code (waiting for your test)
 
 | Stage        | What exists                                                                   | Main files                                                            | What you'll see                                               |
 | ------------ | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------- |
-| 2 Form       | Notes box, audience, scenes, second language                                  | `index.html`, `src/main.ts`, `packages/core/src/prompts.ts`           | Clear message if notes are empty or too long                  |
 | 3 Storyboard | Hybrid model call, JSON check, one repair try, badge                          | `src/ai/storyboard.ts`, `packages/core/src/storyboard.ts`             | Scenes + quiz with On-device or Cloud badge and seconds taken |
 | 4 Save       | Lesson saved in the browser, reloads after refresh                            | `src/lib/store.ts`                                                    | Storyboard still there after refresh                          |
 | 5 Queue      | Jobs planned and saved in Firestore, run 2 at a time when online, max 3 tries | `packages/core/src/queue.ts`, `src/lib/store.ts`, `src/lib/runner.ts` | "Queued … 0/n" offline, count rises online                    |

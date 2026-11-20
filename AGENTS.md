@@ -90,6 +90,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-20: **Stage 2A approved** (sample notes, counter, helpers, inline E-2, stacked options < 600 px, docs/13 wording). Stage 2 split: 2B = tokens, font, headings. 25 tests.
 - 2026-11-19: **Stages 0 + 1 approved.** Firebase `lessonreel-7234f`: AI Logic (Gemini Developer API), App Check = "Fraud Defense (formerly reCAPTCHA Enterprise)" enforced on AI Logic, Anonymous Auth, Firestore europe-west1 + rules. Stage 1: Nano check on load, real connectivity check, cloud retry on Nano runtime failure, busy retry, E-10. 19 tests. Installed SDK is `@firebase/ai` 3.1.0 (firebase 13.4.0).
 - 2026-11-19: Added HACKATHON_LANDING_PAGE_AND_FRONTEND_TOOLING.md (nothing installed; decisions pending). Ignored .mcp.json (may hold API keys).
 - 2026-11-19: Design pack: docs/11 brand, 12 design system, 13 UX writing, 14 accessibility, 15 design QA; expanded 02 (principles P1–P11, UF-6/7, states) and 03 (per-control UI spec, responsive). Found: page can't open offline → PWA (F12, ADR-012, Stage 4B); amber and input-border contrast fixes.

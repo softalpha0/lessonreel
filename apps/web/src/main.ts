@@ -6,7 +6,11 @@ import {
   NARRATION_LANGUAGES,
   NotesEmptyError,
   NotesTooLongError,
+  notesCounter,
+  parseSceneCount,
   planJobs,
+  queueSummary,
+  SAMPLE_LESSON,
   StoryboardParseError,
   type NanoStatus,
   type Storyboard,
@@ -30,6 +34,9 @@ const els = {
   lang: $<HTMLSelectElement>("lang"),
   warm: $<HTMLButtonElement>("warm"),
   make: $<HTMLButtonElement>("make"),
+  sample: $<HTMLButtonElement>("sample"),
+  notesError: $("notes-error"),
+  notesCount: $("notes-count"),
   status: $("status"),
   board: $("board"),
   queue: $("queue"),
@@ -44,6 +51,39 @@ let current: Project | null = null;
 function setStatus(msg: string, tone: "info" | "ok" | "warn" = "info") {
   els.status.textContent = msg;
   els.status.dataset.tone = tone;
+}
+
+/** F1.5: live character counter under the notes box. */
+function renderCounter() {
+  const c = notesCounter(els.notes.value);
+  els.notesCount.textContent = c.text;
+  els.notesCount.dataset.warn = String(c.warn);
+}
+
+/** E-2 messages go under the notes box, linked to it for screen readers (docs/14 R4). */
+function showNotesError(msg: string | null) {
+  els.notesError.textContent = msg ?? "";
+  els.notesError.hidden = !msg;
+  if (msg) els.notes.setAttribute("aria-invalid", "true");
+  else els.notes.removeAttribute("aria-invalid");
+}
+
+/** F1.6: fill DEMO-1 so anyone can try the app without typing. */
+function onSample() {
+  const typed = els.notes.value.trim();
+  // Never silently throw away a teacher's own notes (docs/14 I5).
+  if (
+    typed &&
+    typed !== SAMPLE_LESSON.notes &&
+    !confirm("Replace your notes with the sample lesson?")
+  ) {
+    return;
+  }
+  els.notes.value = SAMPLE_LESSON.notes;
+  els.audience.value = SAMPLE_LESSON.audience;
+  renderCounter();
+  showNotesError(null);
+  els.make.focus();
 }
 
 function renderNet() {
@@ -92,10 +132,11 @@ async function onMake() {
   const request = {
     notes,
     audience,
-    targetScenes: Number(els.scenes.value) || 5,
+    targetScenes: parseSceneCount(els.scenes.value),
     includeQuiz: true,
   };
   els.make.disabled = true;
+  showNotesError(null);
 
   try {
     buildStoryboardPrompt(request); // E-2 checks first (empty / too long), before anything else
@@ -129,12 +170,18 @@ async function onMake() {
     }
     setStatus(
       isOnline()
-        ? `Storyboard ready (${res.source === "on_device" ? "on-device" : "cloud"}). Generating voice and images…`
-        : "Storyboard ready on-device. Voice and images are queued for when you're back online.",
+        ? `Storyboard ready (${res.source === "on_device" ? "on-device" : "cloud"}). Making voice and pictures…`
+        : "Storyboard ready on this device. Voice and pictures will be made when you're back online.",
       "ok",
     );
     void runQueue();
   } catch (err) {
+    if (err instanceof NotesEmptyError || err instanceof NotesTooLongError) {
+      setStatus("");
+      showNotesError(err.message); // E-2, under the notes box
+      els.notes.focus();
+      return;
+    }
     await checkConnectivity(); // a failed request may mean the internet just went away
     setStatus(storyboardErrorMessage(err), "warn");
   } finally {
@@ -143,11 +190,10 @@ async function onMake() {
 }
 
 /**
- * User-facing copy for E-1 / E-2 / E-3 / E-8 / E-10 (wording: docs/13-ux-writing.md §9).
+ * User-facing copy for E-1 / E-3 / E-8 / E-10 (wording: docs/13-ux-writing.md §9).
  * Raw browser/SDK errors never reach the screen; they go to the console for debugging.
  */
 function storyboardErrorMessage(err: unknown): string {
-  if (err instanceof NotesEmptyError || err instanceof NotesTooLongError) return err.message; // E-2
   if (err instanceof StoryboardParseError) {
     console.warn("Storyboard output rejected:", err.raw);
     return "We couldn't build a storyboard from these notes. Try again, or shorten them."; // E-3
@@ -168,7 +214,7 @@ async function runQueue() {
   if (!fb || !fb.uid || !current) return;
   await drainQueue(fb.ai, fb.db, fb.uid, current, {
     onProgress: ({ done, total, failed }) => {
-      els.queue.innerHTML = `${badge(isOnline() ? "in_cloud" : "queued")} ${done}/${total} cloud jobs done${failed ? `, ${failed} failed` : ""}`;
+      els.queue.innerHTML = `${badge(isOnline() ? "in_cloud" : "queued")} ${escape(queueSummary({ done, total, failed }, isOnline()))}`;
       els.play.disabled = done === 0;
       els.download.disabled = done < total || total === 0;
     },
@@ -226,7 +272,7 @@ async function onDownload() {
   els.download.disabled = true;
   try {
     const res = await exportVideo(current, els.lang.value, (pct) =>
-      setStatus(`Rendering video… ${pct}%`),
+      setStatus(`Making your video… ${pct}%`),
     );
     const name = current.board.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "lesson";
     downloadBlob(res.blob, `${name}-${els.lang.value}.${res.extension}`);
@@ -265,12 +311,18 @@ async function boot() {
     if (online) void runQueue();
   });
   void refreshNano();
+  els.notes.addEventListener("input", () => {
+    renderCounter();
+    showNotesError(null);
+  });
+  els.sample.addEventListener("click", onSample);
+  renderCounter();
 
   try {
     fb = await initFirebase();
   } catch (err) {
-    console.error(err);
-    setStatus("Lessonreel can't start right now. (Developers: check apps/web/.env.local.)", "warn");
+    console.error("Firebase failed to start (developers: check apps/web/.env.local).", err);
+    setStatus("Lessonreel can't start right now. Check your connection and reload.", "warn"); // E-4
     els.make.disabled = true;
     els.warm.disabled = true;
     return;

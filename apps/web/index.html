@@ -26,16 +26,46 @@
           id="notes"
           rows="12"
           placeholder="Paste or type your notes. Bullet points are fine."
+          aria-describedby="notes-error notes-help notes-count"
         ></textarea>
-        <div class="row">
-          <label>Who is it for <input id="audience" placeholder="JSS2 students" /></label>
-          <label>Scenes <input id="scenes" type="number" min="3" max="8" value="5" /></label>
-          <label
-            >Second language
-            <select id="lang"></select
-          ></label>
+        <p id="notes-error" class="field-error" hidden></p>
+        <div class="field-meta">
+          <p id="notes-help" class="helper">
+            Your notes stay on this device when Gemini Nano is available.
+          </p>
+          <p id="notes-count" class="counter">0 / 12,000 characters</p>
         </div>
-        <button id="make" type="button">Make storyboard</button>
+        <div class="row">
+          <div class="field">
+            <label for="audience">Who is it for</label>
+            <input id="audience" placeholder="JSS2 students" aria-describedby="audience-help" />
+            <p id="audience-help" class="helper">
+              e.g. "Primary 5", "nursing students", "farmers' group"
+            </p>
+          </div>
+          <div class="field">
+            <label for="scenes">Scenes</label>
+            <input
+              id="scenes"
+              type="number"
+              min="3"
+              max="8"
+              value="5"
+              inputmode="numeric"
+              aria-describedby="scenes-help"
+            />
+            <p id="scenes-help" class="helper">3 to 8</p>
+          </div>
+          <div class="field">
+            <label for="lang">Second language</label>
+            <select id="lang" aria-describedby="lang-help"></select>
+            <p id="lang-help" class="helper">English narration is always included.</p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="make" type="button">Make storyboard</button>
+          <button id="sample" class="ghost" type="button">Try sample notes</button>
+        </div>
         <p id="status" class="status" role="status" aria-live="polite"></p>
       </section>
 

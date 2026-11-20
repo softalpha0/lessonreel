@@ -25,7 +25,8 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 | ----- | ------------------------------------------------------ | ---------------------------------- | ---------- | ------ | --------- |
 | 0     | Setup, GitHub backup, Firebase project                 | §7–§9 of HACKATHON.md              | n/a        | ✅     | Nov 19    |
 | 1     | App shell + connection and Nano status                 | S-0, F3.2, F3.3                    | 0          | ✅     | Nov 20    |
-| 2     | Lesson form + validation                               | S-1, F1, BR-1, E-2                 | 1          | 🟡     | Nov 20    |
+| 2A    | Lesson form: sample notes, counter, hints, errors      | S-1, F1, BR-1, E-2                 | 1          | ✅     | Nov 20    |
+| 2B    | Look and accessibility: tokens, font, headings         | docs/12, 14 (V1, V2, V7, R1)       | 2A         | ⬜     | Nov 20    |
 | 3     | Storyboard: on-device with cloud fallback              | S-2, F2.1–F2.4, F3, F7.1, E-1, E-3 | 2          | 🟡     | Nov 20    |
 | 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | 🟡     | Nov 21    |
 | 4B    | Installable offline app (PWA) + brand icon             | F12, UF-6, UF-7, S-0b, ADR-012     | 4          | ⬜     | Nov 21    |
@@ -45,7 +46,7 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 
 ```mermaid
 flowchart LR
-  S0[0 Setup] --> S1[1 Shell] --> S2[2 Form] --> S3[3 Storyboard] --> S4[4 Save]
+  S0[0 Setup] --> S1[1 Shell] --> S2[2A Form] --> S2B[2B Look] --> S3[3 Storyboard] --> S4[4 Save]
   S4 --> S4B[4B PWA] --> S5[5 Queue]
   S5 --> S6[6 Voice]
   S5 --> S7[7 Images]
@@ -87,13 +88,20 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Test:** turn Wi-Fi off/on and watch the pill change. Click Prepare: % rises to "ready" (or "not available here" on unsupported machines).
 - **Break tests:** click Prepare twice quickly; click it while offline; reload during download.
 
-### Stage 2: Lesson form + validation 🟡
+### Stage 2A: Lesson form + validation ✅ (approved 2026-11-20)
 
 - **What it does:** S-1 form: notes, audience, scenes (3–8), second language.
-- **Missing today:** character counter (F1.5), "Try sample notes" (F1.6), phone layout where the form row stacks, privacy line under the notes box.
+- **Built:** "Try sample notes" (F1.6, asks before replacing typed notes), live character counter (F1.5, amber above 11,000), helper text under every field incl. the privacy line, E-2 errors under the notes box (`aria-invalid`, focus), options stack below 600 px, status/queue/render wording matches docs/13, E-4 dev hint moved to the console.
+- **Not in 2A:** first-visit hint (docs/13 §10), slow narration (Stage 13).
 - **What Benjamin can do:** fill in a lesson and see clear messages when something is wrong.
 - **Test:** valid notes → button works. Sample notes fills the box.
 - **Break tests:** empty notes; only spaces; 12,001+ characters; emoji and symbols (`<script>`, `& " '`); scenes = 0, 99, -3, blank; double-click Make; phone width 390 px.
+
+### Stage 2B: Look and accessibility ⬜
+
+- **What it does:** design tokens renamed to docs/12 names; input-border and amber contrast fixes (docs/14 V1, V2); Atkinson Hyperlegible font bundled (`@fontsource/atkinson-hyperlegible`, works offline); section headings ("Your lesson", "Storyboard") for screen readers (R1).
+- **Test:** docs/15 rows D1, L3–L4, C2; Lighthouse contrast; offline reload keeps the font.
+- **Break tests:** 200% zoom; 320 px; keyboard-only tab through the form.
 
 ### Stage 3: Storyboard, on-device with cloud fallback 🟡
 
@@ -200,6 +208,7 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-20: **Stage 2A approved.** Stage 2 split into 2A (form features) and 2B (tokens, font, headings). Testing found and fixed two bugs (scenes "0" became 5; E-2b number format).
 - 2026-11-19: **Stages 0 and 1 approved.** Firebase project `lessonreel-7234f` (Spark), AI Logic (Gemini Developer API), App Check (Fraud Defense, enforced on AI Logic), Anonymous Auth, Firestore europe-west1 + rules. Stage 1 testing found and fixed 3 bugs (DEBUGGING.md bug log) and one environment issue (Nano needs ~22 GB free disk). Opening the app offline hangs ~30 s: logged under Stage 4B.
 - 2026-11-19: Design pack (docs/11–15) added. New Stage 4B (PWA) from the design audit; Stage 2 now includes the token/font/wording fixes.
 - 2026-11-19: TDD.md added. Stale `running` job recovery fixed early (was planned for Stage 8).
