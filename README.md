@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 ![Firebase AI Logic](https://img.shields.io/badge/Firebase%20AI%20Logic-hybrid-orange)
 
-🎬 **Demo video:** _coming_ · 🌐 **Live app:** _coming_ · 🏁 Built for [#BuildHybridAI 2026](https://firebasehybridaihackathon.devpost.com/)
+🎬 **Demo video:** _coming_ · 🌐 **Live app:** [lessonreel-7234f.web.app](https://lessonreel-7234f.web.app) · 🏁 Built for [#BuildHybridAI 2026](https://firebasehybridaihackathon.devpost.com/)
 
 ---
 
@@ -199,6 +199,7 @@ AGENTS.md            Coding rules, verified SDK facts, status log
 ## Build log
 
 - **2026-11-18:** Idea locked. Monorepo scaffolded, core logic + tests, hybrid storyboard, cloud TTS/translate/image, offline queue, preview player.
+- **2026-11-20 (later):** Voice narration with an honest free-limit wait, per-scene progress and retry, preview, MP4 download per language, quiz panel with copy. Deployed to Firebase Hosting with real App Check.
 - **2026-11-20:** Lesson form (sample notes, counter, hints), brand font and contrast fixes, prompt v2, installable offline app (opens with no internet), offline queue fixes.
 - **2026-11-19:** Architecture doc. In-browser video export (canvas + Web Audio + MediaRecorder). Decided to build everything new, no reused code.
 

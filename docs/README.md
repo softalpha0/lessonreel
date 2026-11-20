@@ -59,22 +59,22 @@ The order in which these gaps get built (and how each is tested) is in [`BUILD_P
 
 The docs describe the MVP we will submit. Where the code doesn't match yet, it's listed here and in the "Status" column of the screen inventory (02 §6). Update this table when you close a gap.
 
-| Gap                                                                                          | Docs              | Code today                              | Target               |
-| -------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------- | -------------------- |
-| Edit a scene before cloud jobs run                                                           | S-2, F2.6         | Read-only storyboard                    | Nov 23 (Should)      |
-| Per-scene job progress                                                                       | S-3, F6.4         | Total count only                        | Nov 22               |
-| "My lessons" list                                                                            | S-6, F11          | Latest lesson reloads only              | Could                |
-| Quiz shown with answers + copy                                                               | S-5, F2.5         | Questions listed, no answer reveal      | Nov 24               |
-| Slow narration toggle                                                                        | S-1, F4.4         | Function exists, no UI control          | Should               |
-| Retry failed scenes button                                                                   | S-3, F6.6, E-5    | Not built                               | Nov 22               |
-| E-8 App Check and E-9 storage-full messages                                                  | 04 §6             | Generic error text                      | Nov 24               |
-| Form row stacks on phones                                                                    | 03 §6             | Stays 3 columns                         | Nov 24               |
-| Privacy line under notes box                                                                 | 05 §7             | Not shown                               | Nov 24               |
-| Design-system token refactor + fixes (amber `#8c6010`, input borders `#948c7c`, h2 headings) | 12, 14            | Old variable names; 2 contrast failures | Stage 2              |
-| Atkinson Hyperlegible font bundled                                                           | 11, 12            | System fonts                            | Stage 2              |
-| Wording changes marked 🔧 in 13                                                              | 13                | Older strings                           | Stage 2 + each stage |
-| Installable offline app (PWA), icon, install banner, Works offline pill                      | F12, UF-6/7, S-0b | Not built                               | Stage 4B             |
-| Field-level error messages (aria-invalid)                                                    | 14 R4             | Errors only in status line              | Stage 2              |
+| Gap                                                                                          | Docs              | Code today                     | Target               |
+| -------------------------------------------------------------------------------------------- | ----------------- | ------------------------------ | -------------------- |
+| Edit a scene before cloud jobs run                                                           | S-2, F2.6         | Read-only storyboard           | Nov 23 (Should)      |
+| Per-scene job progress                                                                       | S-3, F6.4         | ✅ Closed Stage 8              | Nov 22               |
+| "My lessons" list                                                                            | S-6, F11          | Latest lesson reloads only     | Could                |
+| Quiz shown with answers + copy                                                               | S-5, F2.5         | ✅ Closed Stage 11             | Nov 24               |
+| Slow narration toggle                                                                        | S-1, F4.4         | Function exists, no UI control | Should               |
+| Retry failed scenes button                                                                   | S-3, F6.6, E-5    | ✅ Closed Stage 8              | Nov 22               |
+| E-8 App Check and E-9 storage-full messages                                                  | 04 §6             | E-8 ✅ Stage 1 · E-9 open      | Nov 24               |
+| Form row stacks on phones                                                                    | 03 §6             | ✅ Closed Stage 2A             | Nov 24               |
+| Privacy line under notes box                                                                 | 05 §7             | ✅ Closed Stage 2A             | Nov 24               |
+| Design-system token refactor + fixes (amber `#8c6010`, input borders `#948c7c`, h2 headings) | 12, 14            | ✅ Closed Stage 2B             | Stage 2              |
+| Atkinson Hyperlegible font bundled                                                           | 11, 12            | ✅ Closed Stage 2B             | Stage 2              |
+| Wording changes marked 🔧 in 13                                                              | 13                | Older strings                  | Stage 2 + each stage |
+| Installable offline app (PWA), icon, install banner, Works offline pill                      | F12, UF-6/7, S-0b | Not built                      | Stage 4B             |
+| Field-level error messages (aria-invalid)                                                    | 14 R4             | Errors only in status line     | Stage 2              |
 
 ## Change rules
 

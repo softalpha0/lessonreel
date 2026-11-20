@@ -61,6 +61,8 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 - **Nano needs ~22 GB free disk.** Below that Chrome may still say "available" but refuse to create a session, and may remove the model.
 - **`navigator.onLine` is unreliable on Windows** (Hyper-V/WSL/VPN adapters keep it true). Use `isOnline()`/`checkConnectivity()` from `lib/connectivity.ts`, never `navigator.onLine` directly.
 - **Firestore write promises (`setDoc`, `updateDoc`, `batch.commit`) only resolve when the server confirms.** Never `await` them in UI paths: offline they hang forever. The local cache applies them immediately.
+- **Gemini free tier allows only a handful of TTS calls per day for the whole project** (hit at ~7 clips on 2026-11-20; resets midnight PT). Handle 429 as "wait", never as failure.
+- Built (production) app uses real reCAPTCHA Enterprise App Check: the key's domains must include `lessonreel-7234f.web.app` and `lessonreel-7234f.firebaseapp.com`.
 - Firebase AI errors read `AI: Error fetching from <url>: [STATUS ] message (AI/fetch-error)`. Use `classifyAiError` (core) to sort them.
 
 ## Unverified / to check before relying on it
@@ -91,6 +93,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-20: **Stages 6–11 approved; live at https://lessonreel-7234f.web.app** (Stage 14 in progress). Voice (empty-translation guard), pictures off on Spark (no picture jobs), S-3 rows + Retry, 429 waits with backoff (one job at a time), preview language menu, MP4 download per language, quiz panel + Copy. Built app never uses App Check debug tokens (`config.ts`: `env.DEV &&`). 44 tests.
 - 2026-11-20: **Stages 2B, 3, 4, 4B, 5 approved.** Prompt v2; PWA (vite-plugin-pwa 2.0.0, icons in `apps/web/public`, `pnpm build && pnpm preview` on :5173); background sign-in; offline queue fixes. 25 tests. Stage 3 on-device eval pending (Nano needs disk).
 - 2026-11-20: **Stage 2A approved** (sample notes, counter, helpers, inline E-2, stacked options < 600 px, docs/13 wording). Stage 2 split: 2B = tokens, font, headings. 25 tests.
 - 2026-11-19: **Stages 0 + 1 approved.** Firebase `lessonreel-7234f`: AI Logic (Gemini Developer API), App Check = "Fraud Defense (formerly reCAPTCHA Enterprise)" enforced on AI Logic, Anonymous Auth, Firestore europe-west1 + rules. Stage 1: Nano check on load, real connectivity check, cloud retry on Nano runtime failure, busy retry, E-10. 19 tests. Installed SDK is `@firebase/ai` 3.1.0 (firebase 13.4.0).

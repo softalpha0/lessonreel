@@ -87,7 +87,7 @@ Words: **must** = required for the MVP; **should** = planned if time allows; **m
 - **F9.1** The system must render one video file in the browser with images, captions and narration.
 - **F9.2** The file must be MP4 when the browser can record it, otherwise WebM.
 - **F9.3** The system must show render progress as a percentage.
-- **F9.4** Download must be enabled only when all jobs for the lesson are done.
+- **F9.4** Download must be enabled only when all jobs for that video are done: every picture plus the voice in the chosen video language (refined 2026-11-20 so a waiting French clip doesn't block the English video).
 - **F9.5** The file name must be `<title-slug>-<language>.<ext>`.
 
 ### F10 Android app (Could)

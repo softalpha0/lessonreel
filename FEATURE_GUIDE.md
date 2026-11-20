@@ -147,14 +147,91 @@ There's **no server of our own**. The app runs in the browser. Firebase gives us
 9. **Limitations:** jobs only run while Lessonreel is open (no background sync).
 10. **Before demoing:** have Nano working (disk space) so the offline storyboard → Queued → online finish is real on camera.
 
-## Already in the code (waiting for your test)
+### Stage 6: Narration (voice) ✅ (approved 2026-11-20, commit `2698abc`)
 
-| Stage       | What exists                                | Main files              | What you'll see                              |
-| ----------- | ------------------------------------------ | ----------------------- | -------------------------------------------- |
-| 6 Voice     | Translate then speak with Gemini TTS       | `src/ai/cloud-media.ts` | Audio per scene and language                 |
-| 7 Images    | Gemini image per scene (if model set)      | `src/ai/cloud-media.ts` | Picture per scene, or a coloured placeholder |
-| 9 Preview   | Plays scenes with image, caption and voice | `src/lib/player.ts`     | Video plays inside the page                  |
-| 10 Download | Renders MP4/WebM in the browser            | `src/lib/exporter.ts`   | Progress % then a file downloads             |
+1. **What we built:** each scene's narration becomes a voice clip in English and the second language (other languages are translated first).
+2. **Why it's needed:** the video needs a voice, and Nano can't make audio, so this is the cloud half of "hybrid".
+3. **What happens when you use it:** after the storyboard, clips are made one by one; ✓ English ▶ / ✓ French ▶ let you listen.
+4. **How it works behind the scenes:** the cloud text model translates; Gemini TTS (`gemini-3.8-flash-tts`, voice Kore) speaks; the WAV is saved in the browser (IndexedDB). An empty translation now counts as a failure (it used to make a silent clip marked done).
+5. **Important files:** `apps/web/src/ai/cloud-media.ts` (translate + speak), `packages/core/src/audio.ts` (WAV checks, empty-translation guard), `lib/runner.ts` (runs the jobs).
+6. **How the app talks to services:** Firebase AI Logic, `ONLY_IN_CLOUD`, protected by App Check.
+7. **Data in → data out:** narration text + language code → WAV file on the device.
+8. **Terms to know:** _TTS_ = text-to-speech; _WAV_ = a plain audio file.
+9. **Limitations:** Google's free tier allows only a handful of voice clips a day for the whole project; the queue waits and finishes later (resets 9 AM Lagos). Spanish, Hindi and Swahili not listened to yet.
+10. **Before demoing:** make the demo lesson early in the day, or on a plan with more quota.
+
+### Stage 7: Pictures ✅ (approved 2026-11-20, commit `2698abc`)
+
+1. **What we built:** one illustration per scene **when an image model is set**; on the free plan, a deliberate coloured background instead.
+2. **Why it's needed:** pictures make the video clearer, but Google's image models need the paid Blaze plan, and the app must stay free.
+3. **What happens when you use it:** "Pictures are off, so each scene uses a coloured background." shows under Voice and pictures, and no picture jobs are counted.
+4. **How it works behind the scenes:** `imagesEnabled()` checks `VITE_IMAGE_MODEL`; if empty, `planJobs` skips picture jobs.
+5. **Important files:** `ai/cloud-media.ts` (`generateSceneImage`, `imagesEnabled`), `core/queue.ts` (`planJobs`).
+6. **How the app talks to services:** Firebase AI Logic image model (only if set).
+7. **Data in → data out:** the scene's image idea → a PNG on the device (or nothing).
+8. **Terms to know:** _Blaze_ = Firebase's pay-as-you-go plan; _Spark_ = the free plan.
+9. **Limitations:** no pictures on the free plan. Decision pending: stay free, Blaze with a cap, or the quota account for the demo video.
+10. **Before demoing:** say plainly that pictures need a paid model; the coloured scenes are intended.
+
+### Stage 8: Per-scene progress + retry ✅ (approved 2026-11-20, commits `e7cba7d`, `42bb66e`)
+
+1. **What we built:** the "Voice and pictures" section: summary, progress bar, one row per scene with chips (○ waiting, … being made, ✓ done, ✕ failed), ▶ to listen, and "Retry failed scenes".
+2. **Why it's needed:** the teacher can see what's done, what's waiting and what failed, instead of one number.
+3. **What happens when you use it:** chips change live; a failure shows "Scene 1: couldn't make the French voice after 3 tries."; Retry gives failed jobs 3 fresh tries.
+4. **How it works behind the scenes:** the runner reports each job; `productionRows` turns jobs into rows. When Google says "limit reached" or "busy" (429/500/503), the job goes back to waiting without using a try and the queue pauses 1, 2, 4, 8, then 15 minutes, showing "Google's free limit is reached, so the rest continues in N minutes." Jobs run one at a time.
+5. **Important files:** `core/production.ts` (rows, chips, E-5 text), `core/queue.ts` (`busyPauseMs`), `core/errors.ts` (`classifyAiError`), `lib/runner.ts`, `main.ts` (`renderQueue`, `renderRows`, `onRetry`).
+6. **How the app talks to services:** Firestore keeps job status (and the last error); Firebase AI Logic does the work.
+7. **Data in → data out:** job records → rows on screen.
+8. **Terms to know:** _429_ = Google's "you've used your quota"; _backoff_ = waiting longer after each refusal.
+9. **Limitations:** jobs only run while the page is open.
+10. **Before demoing:** if the free limit is reached, the waiting message is honest and expected.
+
+### Stage 9: Preview ✅ (approved 2026-11-20, commit `528d494`)
+
+1. **What we built:** "Preview video" plays the scenes in the page with caption and voice, in the language chosen under "Video language".
+2. **Why it's needed:** the teacher checks the video before downloading.
+3. **What happens when you use it:** the stage shows each scene and plays its clip; scenes without a clip show for their planned length.
+4. **How it works behind the scenes:** `playPreview` loads each scene's clip (and picture) from IndexedDB and plays them in order.
+5. **Important files:** `lib/player.ts`, `main.ts` (`onPlay`, `renderVideoControls`), `core/video.ts` (`videoLanguages`).
+6. **How the app talks to services:** none: everything is already on the device.
+7. **Data in → data out:** saved clips → sound and pictures on screen.
+8. **Terms to know:** _stage_ = the 16:9 video box.
+9. **Limitations:** no pause/seek.
+10. **Before demoing:** pick the language under "Video language" first.
+
+### Stage 10: Download ✅ (approved 2026-11-20, commit `528d494` + per-language fix)
+
+1. **What we built:** "Download video" makes one MP4 file in the browser, named like `how-plants-make-food-fr-FR.mp4`.
+2. **Why it's needed:** teachers share the video on WhatsApp or play it in class offline.
+3. **What happens when you use it:** "Making your video… n%" and "Keep this tab open until it finishes.", then the file downloads and "Video ready (40s, MP4)." shows.
+4. **How it works behind the scenes:** a hidden canvas draws each scene (with a slow zoom and caption bar), Web Audio plays the clips into it, and MediaRecorder records both into one file. Download unlocks when every clip **for that language** is done.
+5. **Important files:** `lib/exporter.ts`, `core/video.ts` (`videoFileName`, `videoReady`), `main.ts` (`onDownload`).
+6. **How the app talks to services:** none: it all happens on the device.
+7. **Data in → data out:** clips + captions → one MP4 (or WebM) file.
+8. **Terms to know:** _MediaRecorder_ = the browser's built-in recorder.
+9. **Limitations:** recording runs in real time (a 1-minute video takes ~1 minute); switching tabs can slow it.
+10. **Before demoing:** download before recording, and play the file once.
+
+### Stage 11: Quiz ✅ (approved 2026-11-20, commit `528d494`)
+
+1. **What we built:** a quiz panel with the right answer marked "✓ Answer" and a "Copy quiz" button.
+2. **Why it's needed:** teachers check understanding after the video.
+3. **What happens when you use it:** Copy quiz puts plain text on the clipboard and shows "Quiz copied."
+4. **How it works behind the scenes:** the quiz comes with the storyboard; `quizText` formats it ("Answer: a").
+5. **Important files:** `core/video.ts` (`quizText`, `optionLetter`), `main.ts` (`renderQuiz`, `onCopyQuiz`).
+6. **How the app talks to services:** none.
+7. **Data in → data out:** quiz → text on the clipboard.
+8. **Terms to know:** _clipboard_ = what Ctrl + V pastes.
+9. **Limitations:** 3 questions, as the storyboard makes them.
+10. **Before demoing:** paste it into WhatsApp on camera.
+
+## Still to build
+
+| Stage                   | What it adds                                                |
+| ----------------------- | ----------------------------------------------------------- |
+| 12 Edit scene (Should)  | Change a scene's words before the voice is made             |
+| 13 Slow voice (Should)  | Slower, clearer narration for younger learners              |
+| 14 Deploy (in progress) | Live at https://lessonreel-7234f.web.app; final checks left |
 
 How they connect: `main.ts` is the conductor. It reads the form, asks `storyboard.ts` for a storyboard, saves it with `store.ts`, plans jobs with `core/queue.ts`, and lets `runner.ts` do the cloud work through `cloud-media.ts`. `player.ts` and `exporter.ts` read the saved storyboard and assets to play or render the video. `firebase.ts` starts Firebase (App Check first) before anything else.
 

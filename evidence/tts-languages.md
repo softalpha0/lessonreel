@@ -6,17 +6,18 @@ How to test each language: **Try sample notes** → pick the language → **Make
 
 Pass = spoken **in that language** (not English with an accent), clear, numbers read sensibly.
 
-| Date | Language (code)           | Scene 1 | Scene 2 | Right language? | Clear? | Notes |
-| ---- | ------------------------- | ------- | ------- | --------------- | ------ | ----- |
-|      | English (en-US)           |         |         |                 |        |       |
-|      | French (fr-FR)            |         |         |                 |        |       |
-|      | Spanish (es-ES)           |         |         |                 |        |       |
-|      | Hindi (hi-IN)             |         |         |                 |        |       |
-|      | Swahili (sw-KE) — preview |         |         |                 |        |       |
+| Date       | Language (code)           | Scene 1 | Scene 2 | Right language? | Clear? | Notes                                      |
+| ---------- | ------------------------- | ------- | ------- | --------------- | ------ | ------------------------------------------ |
+| 2026-11-20 | English (en-US)           | ✓       | ✓       | ✓               | ✓      | Live site                                  |
+| 2026-11-20 | French (fr-FR)            | ✓       | ✓       | ✓               | ✓      | Live site: "French sounds good" (Benjamin) |
+|            | Spanish (es-ES)           |         |         |                 |        |                                            |
+|            | Hindi (hi-IN)             |         |         |                 |        |                                            |
+|            | Swahili (sw-KE) — preview |         |         |                 |        |                                            |
 
 Break tests (BUILD_PLAN Stage 6):
 
-| Test                                          | Expected                                            | Result |
-| --------------------------------------------- | --------------------------------------------------- | ------ |
-| Notes with numbers/symbols: "₦500, 3.14, H₂O" | Read sensibly, no failure                           |        |
-| Go offline while voice jobs run               | Jobs wait ("Queued"), resume online, no try used up |        |
+| Test                                          | Expected                                            | Result                                  |
+| --------------------------------------------- | --------------------------------------------------- | --------------------------------------- |
+| Notes with numbers/symbols: "₦500, 3.14, H₂O" | Read sensibly, no failure                           |                                         |
+| Go offline while voice jobs run               | Jobs wait ("Queued"), resume online, no try used up | ✅ browser test                         |
+| Google's free limit (429)                     | Queue waits and finishes later, no try used up      | ✅ live: paused at 7 of 8 (daily limit) |

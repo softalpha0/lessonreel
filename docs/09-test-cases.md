@@ -112,55 +112,55 @@
 
 ## Stage 6: Narration
 
-| ID     | Type | Preconditions                      | Steps                                                | Expected                                                             | Actual | Status | Sev |
-| ------ | ---- | ---------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-6.1 | N    | Online                             | Generate SN-1 with French; play scene 1 French audio | Spoken **French**, not English with an accent (AC-4.1)               |        | ⬜     | 🔴  |
-| TC-6.2 | N    | Online                             | Repeat for es-ES, hi-IN, sw-KE                       | Each in the right language; record in `evidence/tts-languages.txt`   |        | ⬜     | 🟠  |
-| TC-6.3 | E    | n/a                                | Notes with numbers/symbols ("₦500, 3.14, H₂O")       | Audio reads them sensibly; no failure                                |        | ⬜     | 🟡  |
-| TC-6.4 | F    | Wrong `VITE_TTS_MODEL` (test only) | Generate                                             | Voice jobs fail after 3 tries with error recorded; app keeps working |        | ⬜     | 🟠  |
+| ID     | Type | Preconditions                      | Steps                                                | Expected                                                             | Actual                                                          | Status | Sev |
+| ------ | ---- | ---------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------- | ------ | --- |
+| TC-6.1 | N    | Online                             | Generate SN-1 with French; play scene 1 French audio | Spoken **French**, not English with an accent (AC-4.1)               | 2026-11-20 live: French clips spoken in French (Benjamin)       | ✅     | 🔴  |
+| TC-6.2 | N    | Online                             | Repeat for es-ES, hi-IN, sw-KE                       | Each in the right language; record in `evidence/tts-languages.txt`   | French ✅; Spanish, Hindi, Swahili not yet (daily voice limit)  | 🔵     | 🟠  |
+| TC-6.3 | E    | n/a                                | Notes with numbers/symbols ("₦500, 3.14, H₂O")       | Audio reads them sensibly; no failure                                |                                                                 | ⬜     | 🟡  |
+| TC-6.4 | F    | Wrong `VITE_TTS_MODEL` (test only) | Generate                                             | Voice jobs fail after 3 tries with error recorded; app keeps working | Browser test: errors recorded; 429 now waits instead of failing | ✅     | 🟠  |
 
 ## Stage 7: Images
 
-| ID     | Type | Preconditions            | Steps         | Expected                                                                  | Actual | Status | Sev |
-| ------ | ---- | ------------------------ | ------------- | ------------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-7.1 | N    | `VITE_IMAGE_MODEL` set   | Generate SN-1 | One image per scene; no text in images                                    |        | ⬜     | 🟠  |
-| TC-7.2 | E    | `VITE_IMAGE_MODEL` empty | Generate      | Placeholder frames; image jobs complete as "done" without image; no crash |        | ⬜     | 🟠  |
+| ID     | Type | Preconditions            | Steps         | Expected                                                                  | Actual                                                         | Status | Sev |
+| ------ | ---- | ------------------------ | ------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------- | ------ | --- |
+| TC-7.1 | N    | `VITE_IMAGE_MODEL` set   | Generate SN-1 | One image per scene; no text in images                                    |                                                                | ⬜     | 🟠  |
+| TC-7.2 | E    | `VITE_IMAGE_MODEL` empty | Generate      | Placeholder frames; image jobs complete as "done" without image; no crash | Free plan: no picture jobs planned, coloured background + note | ✅     | 🟠  |
 
 ## Stage 8: Progress and retry (planned)
 
-| ID     | Type | Preconditions   | Steps                                  | Expected                         | Actual | Status        | Sev |
-| ------ | ---- | --------------- | -------------------------------------- | -------------------------------- | ------ | ------------- | --- |
-| TC-8.1 | N    | Jobs running    | Watch S-3                              | Per-scene rows update ○ → … → ✓  |        | ⏭ until built | 🟠  |
-| TC-8.2 | F    | A job failed 3× | Fix cause, click "Retry failed scenes" | Failed jobs requeue and complete |        | ⏭ until built | 🟠  |
-| TC-8.3 | E    | n/a             | Click Retry repeatedly / while offline | No duplicates; waits for online  |        | ⏭ until built | 🟡  |
+| ID     | Type | Preconditions   | Steps                                  | Expected                         | Actual                                               | Status | Sev |
+| ------ | ---- | --------------- | -------------------------------------- | -------------------------------- | ---------------------------------------------------- | ------ | --- |
+| TC-8.1 | N    | Jobs running    | Watch S-3                              | Per-scene rows update ○ → … → ✓  | Live: rows ○ → … → ✓ (Benjamin)                      | ✅     | 🟠  |
+| TC-8.2 | F    | A job failed 3× | Fix cause, click "Retry failed scenes" | Failed jobs requeue and complete | Browser test: Retry → 6 of 6 done                    | ✅     | 🟠  |
+| TC-8.3 | E    | n/a             | Click Retry repeatedly / while offline | No duplicates; waits for online  | Browser test: Retry offline waits; no duplicate jobs | ✅     | 🟡  |
 
 ## Stage 9: Preview
 
-| ID     | Type | Preconditions      | Steps               | Expected                                            | Actual | Status | Sev |
-| ------ | ---- | ------------------ | ------------------- | --------------------------------------------------- | ------ | ------ | --- |
-| TC-9.1 | N    | All jobs done      | Click Preview       | Scenes play in order with image, caption, narration |        | ⬜     | 🔴  |
-| TC-9.2 | E    | Some audio missing | Preview             | Silent scenes last their planned duration (AC-8.1)  |        | ⬜     | 🟡  |
-| TC-9.3 | E    | Preview playing    | Click Preview again | Button disabled while playing                       |        | ⬜     | 🟡  |
-| TC-9.4 | M    | Phone              | Preview             | Stage fits width; audio plays after tap             |        | ⬜     | 🟠  |
+| ID     | Type | Preconditions      | Steps               | Expected                                            | Actual                                                 | Status | Sev |
+| ------ | ---- | ------------------ | ------------------- | --------------------------------------------------- | ------------------------------------------------------ | ------ | --- |
+| TC-9.1 | N    | All jobs done      | Click Preview       | Scenes play in order with image, caption, narration | Live: plays in order with caption and voice (Benjamin) | ✅     | 🔴  |
+| TC-9.2 | E    | Some audio missing | Preview             | Silent scenes last their planned duration (AC-8.1)  |                                                        | ⬜     | 🟡  |
+| TC-9.3 | E    | Preview playing    | Click Preview again | Button disabled while playing                       | Preview and Download disabled while playing            | ✅     | 🟡  |
+| TC-9.4 | M    | Phone              | Preview             | Stage fits width; audio plays after tap             |                                                        | ⬜     | 🟠  |
 
 ## Stage 10: Download
 
-| ID      | Type | Preconditions         | Steps                          | Expected                                                                 | Actual | Status | Sev |
-| ------- | ---- | --------------------- | ------------------------------ | ------------------------------------------------------------------------ | ------ | ------ | --- |
-| TC-10.1 | N    | All jobs done         | Click Download                 | "Rendering video… n%" → file `title-fr-FR.mp4` (or .webm) saved (AC-9.1) |        | ⬜     | 🔴  |
-| TC-10.2 | N    | File saved            | Play in VLC; send to WhatsApp  | Plays; captions and voice in sync within 0.5 s (AC-9.3)                  |        | ⬜     | 🔴  |
-| TC-10.3 | I    | One job still running | Try Download                   | Button disabled (AC-9.2)                                                 |        | ⬜     | 🟠  |
-| TC-10.4 | E    | 8 scenes (~2 min)     | Download, keep tab visible     | Completes; length ≈ sum of audio                                         |        | ⬜     | 🟠  |
-| TC-10.5 | F    | Rendering             | Switch to another tab for 20 s | Note result (timers throttle); document limitation if out of sync        |        | ⬜     | 🟡  |
+| ID      | Type | Preconditions         | Steps                          | Expected                                                                 | Actual                                                                      | Status | Sev |
+| ------- | ---- | --------------------- | ------------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------------------------- | ------ | --- |
+| TC-10.1 | N    | All jobs done         | Click Download                 | "Rendering video… n%" → file `title-fr-FR.mp4` (or .webm) saved (AC-9.1) | Browser test: `how-plants-make-food-fr-FR.mp4`; live: waits for daily limit | 🔵     | 🔴  |
+| TC-10.2 | N    | File saved            | Play in VLC; send to WhatsApp  | Plays; captions and voice in sync within 0.5 s (AC-9.3)                  |                                                                             | ⬜     | 🔴  |
+| TC-10.3 | I    | One job still running | Try Download                   | Button disabled (AC-9.2)                                                 | Live: disabled at 7 of 8 with hint; per-language since fix                  | ✅     | 🟠  |
+| TC-10.4 | E    | 8 scenes (~2 min)     | Download, keep tab visible     | Completes; length ≈ sum of audio                                         |                                                                             | ⬜     | 🟠  |
+| TC-10.5 | F    | Rendering             | Switch to another tab for 20 s | Note result (timers throttle); document limitation if out of sync        |                                                                             | ⬜     | 🟡  |
 
 ## Stages 11–13 (planned features)
 
-| ID      | Type | Steps                                      | Expected                                                | Status        | Sev |
-| ------- | ---- | ------------------------------------------ | ------------------------------------------------------- | ------------- | --- |
-| TC-11.1 | N    | Click "Copy quiz", paste in Notes/WhatsApp | Readable questions with answers                         | ⏭ until built | 🟡  |
-| TC-12.1 | I    | Edit a scene to empty / 401 chars          | Save disabled with hint                                 | ⏭ until built | 🟡  |
-| TC-12.2 | N    | Edit narration after voice made            | That scene's voice jobs requeue; new audio matches edit | ⏭ until built | 🟠  |
-| TC-13.1 | N    | Tick "Slow narration", generate            | Noticeably slower, clearer audio                        | ⏭ until built | 🟡  |
+| ID      | Type | Steps                                      | Expected                                                | Status                                                               | Sev |
+| ------- | ---- | ------------------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------- | --- |
+| TC-11.1 | N    | Click "Copy quiz", paste in Notes/WhatsApp | Readable questions with answers                         | ✅ — Browser test: docs/13 format on clipboard, "Quiz copied." toast | 🟡  |
+| TC-12.1 | I    | Edit a scene to empty / 401 chars          | Save disabled with hint                                 | ⏭ until built                                                        | 🟡  |
+| TC-12.2 | N    | Edit narration after voice made            | That scene's voice jobs requeue; new audio matches edit | ⏭ until built                                                        | 🟠  |
+| TC-13.1 | N    | Tick "Slow narration", generate            | Noticeably slower, clearer audio                        | ⏭ until built                                                        | 🟡  |
 
 ## Stage 14: Deploy and judge path
 

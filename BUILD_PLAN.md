@@ -7,7 +7,7 @@
 | What each feature must do              | [`docs/04-functional-spec.md`](docs/04-functional-spec.md) (F-n, BR-n, AC-n)                                                                                             |
 | How it's built technically             | [`TDD.md`](TDD.md)                                                                                                                                                       |
 | What each feature does, in plain words | [`FEATURE_GUIDE.md`](FEATURE_GUIDE.md)                                                                                                                                   |
-| Last updated                           | 2026-11-19                                                                                                                                                               |
+| Last updated                           | 2026-11-20                                                                                                                                                               |
 
 ## Project overview
 
@@ -31,15 +31,15 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 | 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | ✅     | Nov 21    |
 | 4B    | Installable offline app (PWA) + brand icon             | F12, UF-6, UF-7, S-0b, ADR-012     | 4          | ✅     | Nov 21    |
 | 5     | Plan jobs + offline queue                              | F6.1–F6.3, F7.2, BR-8, D-3         | 4          | ✅     | Nov 21    |
-| 6     | Narration (translate + voice)                          | F4.1–F4.3, ADR-007                 | 5          | 🟡     | Nov 21    |
-| 7     | Scene images                                           | F5                                 | 5          | 🟡     | Nov 22    |
-| 8     | Per-scene progress + retry failed                      | S-3, F6.4–F6.6, E-5                | 6, 7       | ⬜     | Nov 22    |
-| 9     | Preview player                                         | S-4, F8                            | 6, 7       | 🟡     | Nov 22    |
-| 10    | Download the video                                     | S-5, F9, E-6                       | 9          | 🟡     | Nov 23    |
-| 11    | Quiz panel + copy                                      | F2.5                               | 3          | ⬜     | Nov 23    |
+| 6     | Narration (translate + voice)                          | F4.1–F4.3, ADR-007                 | 5          | ✅     | Nov 21    |
+| 7     | Scene images                                           | F5                                 | 5          | ✅     | Nov 22    |
+| 8     | Per-scene progress + retry failed                      | S-3, F6.4–F6.6, E-5                | 6, 7       | ✅     | Nov 22    |
+| 9     | Preview player                                         | S-4, F8                            | 6, 7       | ✅     | Nov 22    |
+| 10    | Download the video                                     | S-5, F9, E-6                       | 9          | ✅     | Nov 23    |
+| 11    | Quiz panel + copy                                      | F2.5                               | 3          | ✅     | Nov 23    |
 | 12    | Edit a scene before voice (Should)                     | F2.6, UF-4                         | 5, 6       | ⬜     | Nov 24    |
 | 13    | Slow narration toggle (Should)                         | F4.4                               | 6          | ⬜     | Nov 24    |
-| 14    | Deploy + App Check enforcement + judge path            | N4, N5, N7                         | 1–10       | ⬜     | Nov 25    |
+| 14    | Deploy + App Check enforcement + judge path            | N4, N5, N7                         | 1–10       | 🔵     | Nov 25    |
 | 15    | Final end-to-end test, polish, evidence, video, submit | §11 of HACKATHON.md                | all        | ⬜     | Nov 26–29 |
 
 **Feature freeze: Nov 26.** Stages 12–13 are cut first if time runs short. Order follows "riskiest first": Stage 3 (Nano JSON), Stage 6 (TTS model/languages) and Stage 10 (export in real Chrome) are the big unknowns.
@@ -135,39 +135,51 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Test:** create a storyboard offline → "Queued … 0/n". Refresh → still queued. Go online → count rises without clicking anything.
 - **Break tests:** go offline mid-way; close the tab mid-way and reopen; check in Firestore console that only job metadata (no lesson text) is stored; confirm another browser can't read the jobs (rules).
 
-### Stage 6: Narration (translate + voice) 🟡
+### Stage 6: Narration (translate + voice) ✅ (approved 2026-11-20, `2698abc`)
+
+- **Result:** French sounds right (Benjamin, live site). An empty translation no longer makes a silent "done" clip. Free-tier voice limit hit after ~7 clips a day: the queue now waits instead of failing (`42bb66e`).
 
 - **What it does:** for each scene: translate (if not English) → Gemini TTS → WAV saved on the device.
 - **First task:** confirm the current TTS model name and that each language code works; record results in `evidence/tts-languages.txt`.
 - **Test:** play a French or Swahili clip; it must be spoken in that language.
 - **Break tests:** a narration with numbers/symbols; a language marked preview (Swahili); go offline mid-generation.
 
-### Stage 7: Scene images 🟡
+### Stage 7: Scene images ✅ (approved 2026-11-20, `2698abc`)
+
+- **Result:** image models need the Blaze plan; on the free (Spark) plan pictures are off, no picture jobs are planned, and each scene uses the coloured background with a plain note. Setting `VITE_IMAGE_MODEL` turns pictures on.
 
 - **What it does:** one illustration per scene from the cloud; skipped with a placeholder if no image model is set.
 - **First task:** confirm the current image model name for Firebase AI Logic; check free-tier limits (quota form by Nov 25 if needed).
 - **Test:** images appear for each scene, no text in the images.
 - **Break tests:** unset `VITE_IMAGE_MODEL` → placeholders, no crash.
 
-### Stage 8: Per-scene progress + retry failed ⬜
+### Stage 8: Per-scene progress + retry failed ✅ (approved 2026-11-20, `e7cba7d`, `42bb66e`)
+
+- **Result:** "Voice and pictures" section: progress bar, one row per scene with ○ … ✓ ✕ chips, ▶ to listen, E-5 lines and Retry. Google's 429/500/503 pause the queue (1, 2, 4, 8, 15 min) without using a try.
 
 - **What it does:** S-3 shows each scene's image/voice status (○ … ✓ ✕) and a "Retry failed scenes" button.
 - **Test:** watch rows update live. Force a failure (e.g. a bad model name) → ✕ after 3 tries → Retry works after fixing it.
 - **Break tests:** click Retry repeatedly; retry while offline.
 
-### Stage 9: Preview player 🟡
+### Stage 9: Preview player ✅ (approved 2026-11-20, `528d494`)
+
+- **Result:** "Video language" menu (one video per narration language); empty-stage text; Preview and Download never run together.
 
 - **What it does:** plays the scenes in the page with image, caption and voice.
 - **Test:** full preview plays in order with sound; scenes without audio use their duration.
 - **Break tests:** click Preview twice; change language mid-preview; preview on a phone.
 
-### Stage 10: Download the video 🟡
+### Stage 10: Download the video ✅ (approved 2026-11-20, `528d494`; per-language fix after)
+
+- **Result:** MP4 in Chrome, file `title-slug-fr-FR.mp4`, "Keep this tab open" tip. Each language's video can download when its own clips are done (F9.4 refined), so a waiting French clip doesn't block the English video.
 
 - **What it does:** renders one MP4 (or WebM) file in the browser with progress %.
 - **Test:** download a 5-scene video; play it in VLC and send it to WhatsApp; check audio/caption sync.
 - **Break tests:** click Download while jobs are still running (must be disabled); switch tabs during rendering; a 2-minute video.
 
-### Stage 11: Quiz panel + copy ⬜
+### Stage 11: Quiz panel + copy ✅ (approved 2026-11-20, `528d494`)
+
+- **Result:** quiz panel with "✓ Answer" (text, not colour only) and Copy quiz in the docs/13 format; textarea fallback where the clipboard is blocked.
 
 - **What it does:** shows the 3 quiz questions with the right answer marked and a "Copy quiz" button.
 - **Test:** copy and paste into WhatsApp/Notes; formatting is readable.
@@ -183,7 +195,9 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **What it does:** a checkbox for slower, clearer narration for younger learners.
 - **Test:** compare a normal and slow clip.
 
-### Stage 14: Deploy + App Check enforcement + judge path ⬜
+### Stage 14: Deploy + App Check enforcement + judge path 🔵 (live since 2026-11-20)
+
+- **Done:** https://lessonreel-7234f.web.app deployed with `firebase deploy --only hosting`; the built app always uses real reCAPTCHA Enterprise App Check (debug tokens only under `pnpm dev`); storyboard + voice work on the live site. **Left:** second computer + phone, ad-blocker break test, decide free plan vs Blaze (shared daily voice limit), rotate the debug token.
 
 - **What it does:** live on Firebase Hosting, App Check enforced, works for judges without Nano.
 - **Test:** open the `*.web.app` link in incognito on a second computer and on the phone; full journey with the Cloud badge.
@@ -209,6 +223,7 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-20: **Stages 6–11 approved** and the app is **live** at https://lessonreel-7234f.web.app (Stage 14 in progress). Found and fixed: silent clips from empty translations; Google's free limit (429) used up all 3 tries in seconds; per-language download. Pictures off on the free plan. Testing locally was confused by an old built copy (service worker + old preview server), so testing now happens on the live link.
 - 2026-11-20: **Stages 2B, 3, 4, 4B and 5 approved** (one batch at Benjamin's request, one commit per stage). Prompt v2; installable offline app; offline storyboard no longer hangs on Firestore. Stage 3 on-device evaluation waits for free disk space (Nano).
 - 2026-11-20: **Stage 2A approved.** Stage 2 split into 2A (form features) and 2B (tokens, font, headings). Testing found and fixed two bugs (scenes "0" became 5; E-2b number format).
 - 2026-11-19: **Stages 0 and 1 approved.** Firebase project `lessonreel-7234f` (Spark), AI Logic (Gemini Developer API), App Check (Fraud Defense, enforced on AI Logic), Anonymous Auth, Firestore europe-west1 + rules. Stage 1 testing found and fixed 3 bugs (DEBUGGING.md bug log) and one environment issue (Nano needs ~22 GB free disk). Opening the app offline hangs ~30 s: logged under Stage 4B.

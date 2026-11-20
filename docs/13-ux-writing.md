@@ -35,21 +35,23 @@
 
 ## 3. Buttons and controls
 
-| ID                  | Label                            | Screen     | Status |
-| ------------------- | -------------------------------- | ---------- | ------ |
-| BTN-warm            | Prepare offline model            | S-0        | ✅     |
-| BTN-install         | Install app                      | S-0 banner | ✅     |
-| BTN-install-dismiss | Not now                          | S-0 banner | ✅     |
-| BTN-sample          | Try sample notes                 | S-1        | ✅     |
-| BTN-make            | Make storyboard                  | S-1        | ✅     |
-| BTN-edit            | Edit scene _n_ (visible: "Edit") | S-2        | 🆕     |
-| BTN-save-scene      | Save scene                       | S-2        | 🆕     |
-| BTN-cancel-edit     | Cancel                           | S-2        | 🆕     |
-| BTN-retry           | Retry failed scenes              | S-3        | 🆕     |
-| BTN-play            | Preview video                    | S-4        | ✅     |
-| BTN-download        | Download video                   | S-5        | ✅     |
-| BTN-copy-quiz       | Copy quiz                        | S-5        | 🆕     |
-| BTN-delete          | Delete lesson (Could)            | S-6        | 🆕     |
+| ID                  | Label                                                            | Screen     | Status       |
+| ------------------- | ---------------------------------------------------------------- | ---------- | ------------ |
+| BTN-warm            | Prepare offline model                                            | S-0        | ✅           |
+| BTN-install         | Install app                                                      | S-0 banner | ✅           |
+| BTN-install-dismiss | Not now                                                          | S-0 banner | ✅           |
+| BTN-sample          | Try sample notes                                                 | S-1        | ✅           |
+| BTN-make            | Make storyboard                                                  | S-1        | ✅           |
+| BTN-edit            | Edit scene _n_ (visible: "Edit")                                 | S-2        | 🆕           |
+| BTN-save-scene      | Save scene                                                       | S-2        | 🆕           |
+| BTN-cancel-edit     | Cancel                                                           | S-2        | 🆕           |
+| BTN-retry           | Retry failed scenes                                              | S-3        | ✅           |
+| BTN-play            | Preview video                                                    | S-4        | ✅           |
+| BTN-download        | Download video                                                   | S-5        | ✅           |
+| BTN-copy-quiz       | Copy quiz                                                        | S-5        | ✅           |
+| BTN-play-clip       | ✓ {Language} ▶ (name: "Play: Scene {n}, {Language} voice: done") | S-3        | ✅ (Stage 8) |
+| LBL-video-lang      | Video language                                                   | S-4        | ✅ (Stage 9) |
+| BTN-delete          | Delete lesson (Could)                                            | S-6        | 🆕           |
 
 ## 4. Form labels, placeholders, helper text
 
@@ -87,22 +89,24 @@
 
 ## 7. Progress and system messages
 
-| Moment                   | Text                                                                                      | Status             |
-| ------------------------ | ----------------------------------------------------------------------------------------- | ------------------ |
-| Generating, online       | Writing storyboard…                                                                       | ✅                 |
-| Generating, offline      | Offline: writing storyboard on this device…                                               | ✅                 |
-| Storyboard done, online  | Storyboard ready ({on-device / cloud}). Making voice and pictures…                        | ✅ (Stage 2A)      |
-| Storyboard done, offline | Storyboard ready on this device. Voice and pictures will be made when you're back online. | ✅ (Stage 2A)      |
-| Seconds taken            | in {n.n}s                                                                                 | ✅                 |
-| Queue summary, online    | {done} of {total} done                                                                    | ✅ (Stage 2A)      |
-| Queue summary, offline   | Waiting for internet. {done} of {total} done.                                             | ✅ (Stage 2A)      |
-| Queue failed count       | {n} couldn't be made                                                                      | ✅ (Stage 2A)      |
-| Download disabled hint   | Available when all scenes are ready.                                                      | 🆕                 |
-| Rendering                | Making your video… {n}%                                                                   | ✅ (Stage 2A)      |
-| Render done              | Video ready ({n}s, {MP4/WEBM}).                                                           | ✅                 |
-| Render tip               | Keep this tab open until it finishes.                                                     | 🆕                 |
-| Prepare clicked offline  | You're offline. Connect to the internet to download the offline model.                    | ✅ (added Stage 1) |
-| Scene edited             | Scene {n} updated. Its voice will be made again.                                          | 🆕                 |
+| Moment                   | Text                                                                                                     | Status             |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------ |
+| Generating, online       | Writing storyboard…                                                                                      | ✅                 |
+| Generating, offline      | Offline: writing storyboard on this device…                                                              | ✅                 |
+| Storyboard done, online  | Storyboard ready ({on-device / cloud}). Making voice and pictures… (pictures off: "Making the voice…")   | ✅ (Stage 2A, 11)  |
+| Storyboard done, offline | Storyboard ready on this device. Voice and pictures will be made when you're back online.                | ✅ (Stage 2A)      |
+| Seconds taken            | in {n.n}s                                                                                                | ✅                 |
+| Queue summary, online    | {done} of {total} done                                                                                   | ✅ (Stage 2A)      |
+| Queue summary, offline   | Waiting for internet. {done} of {total} done.                                                            | ✅ (Stage 2A)      |
+| Queue failed count       | {n} couldn't be made                                                                                     | ✅ (Stage 2A)      |
+| Queue paused by Google   | {done} of {total} done. Google's free limit is reached, so the rest continues in {1 minute / n minutes}. | ✅ (Stage 8 fix)   |
+| Pictures off note        | Pictures are off, so each scene uses a coloured background.                                              | ✅ (Stage 7)       |
+| Download disabled hint   | Available when all scenes are ready.                                                                     | ✅ (Stage 8)       |
+| Rendering                | Making your video… {n}%                                                                                  | ✅ (Stage 2A)      |
+| Render done              | Video ready ({n}s, {MP4/WEBM}).                                                                          | ✅                 |
+| Render tip               | Keep this tab open until it finishes.                                                                    | ✅ (Stage 10)      |
+| Prepare clicked offline  | You're offline. Connect to the internet to download the offline model.                                   | ✅ (added Stage 1) |
+| Scene edited             | Scene {n} updated. Its voice will be made again.                                                         | 🆕                 |
 
 ## 8. Empty states
 
@@ -110,7 +114,7 @@
 | --------------------------- | ------------------------------------------------------- | ------ |
 | S-2 before first storyboard | Your storyboard appears here.                           | ✅     |
 | S-3 before first storyboard | (hidden)                                                | ✅     |
-| S-4 stage before preview    | Press "Preview video" to watch it here.                 | 🆕     |
+| S-4 stage before preview    | Press "Preview video" to watch it here.                 | ✅     |
 | S-6 no lessons (Could)      | No saved lessons yet. Make your first storyboard above. | 🆕     |
 
 ## 9. Validation and errors (IDs from [04 §6](04-functional-spec.md#6-error-handling))
@@ -122,9 +126,9 @@
 | E-2b               | Notes are {n} characters; the limit is 12,000. Split the lesson.                                   | under notes | ✅ (under notes, Stage 2A)   |
 | E-3                | We couldn't build a storyboard from these notes. Try again, or shorten them.                       | status line | ✅                           |
 | E-4                | Lessonreel can't start right now. Check your connection and reload.                                | status line | ✅ (Stage 2A)                |
-| E-5                | Scene {n}: couldn't make the {French voice / picture} after 3 tries.                               | S-3 row     | 🆕                           |
-| E-6                | This browser can't record video. Use a recent version of Chrome.                                   | status line | ✅ (Stage 2A)                |
-| E-7                | (no error) Queued badge + "Waiting for internet."                                                  | S-3         | 🆕                           |
+| E-5                | Scene {n}: couldn't make the {French voice / picture} after 3 tries.                               | S-3 row     | ✅ (Stage 8)                 |
+| E-6                | This browser can't record video. Use a recent Chrome.                                              | status line | ✅ (Stage 10, matches 04 §6) |
+| E-7                | (no error) Queued badge + "Waiting for internet."                                                  | S-3         | ✅                           |
 | E-8                | Lessonreel can't reach the AI service right now. Turn off ad blockers for this site and try again. | status line | ✅                           |
 | E-9                | Your browser is out of space. Delete old lessons and try again.                                    | status line | 🆕                           |
 | E-10               | The AI service is busy right now. Wait a minute and try again.                                     | status line | ✅ (added Stage 1 debugging) |
@@ -144,7 +148,7 @@
 
 | Moment                 | Text                                                                                                                               | Status        |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| Quiz copied            | Quiz copied.                                                                                                                       | 🆕            |
+| Quiz copied            | Quiz copied.                                                                                                                       | ✅ (Stage 11) |
 | Sample over own notes  | Confirm: "Replace your notes with the sample lesson?" (OK · Cancel)                                                                | ✅ (Stage 2A) |
 | Delete confirm (Could) | Title: "Delete this lesson?" Body: "Its storyboard, voice and pictures will be removed from this device." Buttons: Cancel · Delete | 🆕            |
 | Deleted                | Lesson deleted.                                                                                                                    | 🆕            |
@@ -154,4 +158,4 @@
 | Item               | Pattern                                                            | Status |
 | ------------------ | ------------------------------------------------------------------ | ------ |
 | Video file name    | `{title-slug}-{language}.{mp4/webm}`                               | ✅     |
-| Copied quiz format | "{title}: quiz\n1. {question}\n a) … b) … c) …\n Answer: {letter}" | 🆕     |
+| Copied quiz format | "{title}: quiz\n1. {question}\n a) … b) … c) …\n Answer: {letter}" | ✅     |
