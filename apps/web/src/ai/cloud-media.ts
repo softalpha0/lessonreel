@@ -1,5 +1,5 @@
 import { getGenerativeModel, InferenceMode, ResponseModality, type AI } from "firebase/ai";
-import { buildNarrationStyle, type Scene } from "@lessonreel/core";
+import { buildNarrationStyle, checkTranslation, ensureWav, type Scene } from "@lessonreel/core";
 import { appConfig } from "../config";
 
 /**
@@ -36,8 +36,13 @@ export async function synthesizeNarration(
   const result = await model.generateContent(`Say this as ${style}: ${text}`);
   const part = result.response.inlineDataParts()?.[0];
   if (!part) throw new Error(`No audio returned for scene ${scene.index} (${languageCode})`);
-  // Non-streaming TTS returns a complete WAV (24 kHz, 16-bit, mono), base64-encoded.
-  return base64ToBlob(part.inlineData.data, part.inlineData.mimeType || "audio/wav");
+  // Unary TTS returns a complete WAV (24 kHz, 16-bit, mono) per the Firebase docs; if raw PCM
+  // ever arrives instead, ensureWav adds the header so the clip still plays.
+  const wav = ensureWav(
+    base64ToBytes(part.inlineData.data),
+    part.inlineData.mimeType || "audio/wav",
+  );
+  return new Blob([new Uint8Array(wav)], { type: "audio/wav" });
 }
 
 export async function translateNarration(
@@ -53,16 +58,21 @@ export async function translateNarration(
     `Translate this classroom narration into the language with BCP-47 code ${languageCode}. ` +
       `Keep it simple and spoken. Reply with the translation only.\n\n${narration}`,
   );
-  return result.response.text().trim();
+  return checkTranslation(result.response.text()); // empty → job fails and retries
 }
 
-export async function generateSceneImage(ai: AI, scene: Scene): Promise<Blob | null> {
-  if (!appConfig.imageModel) return null;
+/** True when an image model is configured. Image models need the paid Blaze plan (Firebase docs). */
+export function imagesEnabled(): boolean {
+  return Boolean(appConfig.imageModel);
+}
+
+export async function generateSceneImage(ai: AI, scene: Scene): Promise<Blob> {
   const model = getGenerativeModel(ai, {
     mode: InferenceMode.ONLY_IN_CLOUD,
     inCloudParams: {
       model: appConfig.imageModel,
-      generationConfig: { responseModalities: [ResponseModality.TEXT, ResponseModality.IMAGE] },
+      // Pictures only (no text), as the Firebase image docs recommend.
+      generationConfig: { responseModalities: [ResponseModality.IMAGE] },
     },
   });
   const result = await model.generateContent(
@@ -71,10 +81,12 @@ export async function generateSceneImage(ai: AI, scene: Scene): Promise<Blob | n
   const part = result.response
     .inlineDataParts()
     ?.find((p) => p.inlineData.mimeType.startsWith("image/"));
-  return part ? base64ToBlob(part.inlineData.data, part.inlineData.mimeType) : null;
+  if (!part) throw new Error(`No picture returned for scene ${scene.index}`);
+  return new Blob([new Uint8Array(base64ToBytes(part.inlineData.data))], {
+    type: part.inlineData.mimeType,
+  });
 }
 
-function base64ToBlob(b64: string, mime: string): Blob {
-  const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  return new Blob([bytes], { type: mime });
+function base64ToBytes(b64: string): Uint8Array {
+  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }

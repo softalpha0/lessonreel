@@ -19,6 +19,7 @@ import {
 } from "@lessonreel/core";
 import { ensureSignedIn, initFirebase, type FirebaseServices } from "./firebase";
 import { checkDeviceModel, generateStoryboard, warmUpDeviceModel } from "./ai/storyboard";
+import { imagesEnabled } from "./ai/cloud-media";
 import { enqueueJobs, latestProject, saveProject, type Project } from "./lib/store";
 import { drainQueue } from "./lib/runner";
 import { checkConnectivity, isOnline, watchConnectivity } from "./lib/connectivity";
@@ -241,7 +242,13 @@ async function planJobsIfSignedIn(project: Project) {
     enqueueJobs(
       fb.db,
       fb.uid,
-      planJobs(project.id, project.board.scenes.length, project.languages),
+      planJobs(
+        project.id,
+        project.board.scenes.length,
+        project.languages,
+        Date.now(),
+        imagesEnabled(),
+      ),
     );
     project.jobsPlanned = true;
   }
@@ -259,7 +266,13 @@ async function runQueue() {
   if (!fb || !current) return;
   if (!fb.uid) {
     // Not signed in yet: show what's waiting; planning happens when sign-in completes.
-    const total = planJobs(current.id, current.board.scenes.length, current.languages).length;
+    const total = planJobs(
+      current.id,
+      current.board.scenes.length,
+      current.languages,
+      Date.now(),
+      imagesEnabled(),
+    ).length;
     renderQueue({ done: 0, total, failed: 0 });
     return;
   }

@@ -39,6 +39,12 @@ describe("queue", () => {
     expect(new Set(jobs.map((j) => j.id)).size).toBe(9);
   });
 
+  it("skips picture jobs when images are off (no image model on the free plan)", () => {
+    const jobs = planJobs("p1", 3, ["en-US", "fr-FR"], 0, false);
+    expect(jobs).toHaveLength(6);
+    expect(jobs.every((j) => j.kind === "tts")).toBe(true);
+  });
+
   it("retries failed jobs only under the cap", () => {
     const jobs: CloudJob[] = planJobs("p1", 1, [], 0).map((j) => ({
       ...j,

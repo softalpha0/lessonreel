@@ -29,10 +29,11 @@ export function planJobs(
   sceneCount: number,
   languages: string[],
   now = Date.now(),
+  images = true,
 ): CloudJob[] {
   const jobs: CloudJob[] = [];
   for (let i = 1; i <= sceneCount; i++) {
-    jobs.push(base(projectId, i, "image", undefined, now));
+    if (images) jobs.push(base(projectId, i, "image", undefined, now));
     for (const lang of languages) jobs.push(base(projectId, i, "tts", lang, now));
   }
   return jobs;

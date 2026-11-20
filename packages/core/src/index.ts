@@ -5,3 +5,4 @@ export * from "./queue";
 export * from "./device";
 export * from "./errors";
 export * from "./form";
+export * from "./audio";

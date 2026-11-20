@@ -85,5 +85,5 @@ async function runJob(ai: AI, project: Project, job: CloudJob): Promise<void> {
   }
 
   const img = await generateSceneImage(ai, scene);
-  if (img) await saveAsset(assetKey(project.id, scene.index, "image"), img);
+  await saveAsset(assetKey(project.id, scene.index, "image"), img);
 }
