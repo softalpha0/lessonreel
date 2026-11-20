@@ -6,7 +6,7 @@ import { assetKey, listJobs, saveAsset, updateJob, type Project } from "./store"
 import { checkConnectivity, isOnline } from "./connectivity";
 
 export interface RunnerEvents {
-  onProgress: (p: { done: number; total: number; failed: number }) => void;
+  onProgress: (p: { done: number; total: number; failed: number }, jobs: CloudJob[]) => void;
   onJob: (job: CloudJob) => void;
 }
 
@@ -44,7 +44,7 @@ async function drainLoop(
 ): Promise<void> {
   for (;;) {
     const jobs = await listJobs(db, uid, project.id);
-    events.onProgress(progress(jobs)); // shown offline too: "Waiting for internet. 0 of 15 done."
+    events.onProgress(progress(jobs), jobs); // shown offline too: "Waiting for internet. 0 of 15 done."
     if (!isOnline()) return;
     const batch = nextRunnable(jobs, 2);
     if (batch.length === 0) return;

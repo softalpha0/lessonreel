@@ -96,11 +96,32 @@
       <section class="card" aria-labelledby="board-heading">
         <h2 id="board-heading" class="card-title">Storyboard</h2>
         <div id="board" class="board"><p class="muted">Your storyboard appears here.</p></div>
-        <p id="queue" class="queue"></p>
+        <section id="production" class="production" aria-labelledby="production-heading" hidden>
+          <h3 id="production-heading" class="production-title">Voice and pictures</h3>
+          <p id="queue" class="queue"></p>
+          <div
+            id="progress"
+            class="progress"
+            role="progressbar"
+            aria-label="Voice and pictures"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div class="progress__fill"></div>
+          </div>
+          <p id="queue-announce" class="visually-hidden" role="status" aria-live="polite"></p>
+          <p id="images-off" class="muted" hidden>
+            Pictures are off, so each scene uses a coloured background.
+          </p>
+          <ul id="rows" class="rows"></ul>
+          <button id="retry" class="ghost" type="button" hidden>Retry failed scenes</button>
+        </section>
         <div class="actions">
           <button id="play" type="button" disabled>Preview video</button>
           <button id="download" class="ghost" type="button" disabled>Download video</button>
         </div>
+        <p id="download-hint" class="helper" hidden>Available when all scenes are ready.</p>
         <div id="stage" class="stage" aria-live="polite"></div>
       </section>
     </main>

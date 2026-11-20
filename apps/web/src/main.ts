@@ -8,19 +8,34 @@ import {
   NARRATION_LANGUAGES,
   NotesEmptyError,
   NotesTooLongError,
+  chipName,
+  chipText,
+  exhaustedJobs,
+  failureMessage,
   notesCounter,
+  productionRows,
+  shouldAnnounce,
   parseSceneCount,
   planJobs,
   queueSummary,
   SAMPLE_LESSON,
   StoryboardParseError,
+  type CloudJob,
   type NanoStatus,
   type Storyboard,
 } from "@lessonreel/core";
 import { ensureSignedIn, initFirebase, type FirebaseServices } from "./firebase";
 import { checkDeviceModel, generateStoryboard, warmUpDeviceModel } from "./ai/storyboard";
 import { imagesEnabled } from "./ai/cloud-media";
-import { enqueueJobs, latestProject, saveProject, type Project } from "./lib/store";
+import {
+  assetKey,
+  enqueueJobs,
+  latestProject,
+  loadAsset,
+  saveProject,
+  updateJob,
+  type Project,
+} from "./lib/store";
 import { drainQueue } from "./lib/runner";
 import { checkConnectivity, isOnline, watchConnectivity } from "./lib/connectivity";
 import { playPreview } from "./lib/player";
@@ -54,6 +69,13 @@ const els = {
   updateBanner: $("update-banner"),
   update: $<HTMLButtonElement>("update"),
   toast: $("toast"),
+  production: $("production"),
+  progress: $("progress"),
+  queueAnnounce: $("queue-announce"),
+  imagesOff: $("images-off"),
+  rows: $("rows"),
+  retry: $<HTMLButtonElement>("retry"),
+  downloadHint: $("download-hint"),
 };
 
 let fb: FirebaseServices | null = null;
@@ -177,6 +199,8 @@ async function onMake() {
     setStatus(online ? "Writing storyboard…" : "Offline: writing storyboard on this device…");
     const res = await generateStoryboard(fb.ai, request);
     renderBoard(res.board, res.source, res.ms);
+    lastJobs = []; // fresh S-3 rows for the new lesson
+    lastAnnounced = -1;
 
     const project: Project = {
       id: newId(),
@@ -255,31 +279,123 @@ async function planJobsIfSignedIn(project: Project) {
   await saveProject(project);
 }
 
-function renderQueue(p: { done: number; total: number; failed: number }) {
+let lastJobs: CloudJob[] = [];
+let lastAnnounced = -1;
+
+/** S-3 "Voice and pictures": summary, progress bar, per-scene rows, retry (Stage 8). */
+function renderQueue(p: { done: number; total: number; failed: number }, jobs?: CloudJob[]) {
+  if (!current) return;
+  if (jobs) lastJobs = jobs;
   const online = isOnline();
-  els.queue.innerHTML = `${badge(online ? "in_cloud" : "queued")} ${escape(queueSummary(p, online))}`;
+  const summary = queueSummary(p, online);
+  els.production.hidden = false;
+  els.queue.innerHTML = `${badge(online ? "in_cloud" : "queued")} ${escape(summary)}`;
+  const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;
+  els.progress.setAttribute("aria-valuenow", String(pct));
+  (els.progress.firstElementChild as HTMLElement).style.width = `${pct}%`;
+  if (shouldAnnounce(lastAnnounced, p.done, p.total)) {
+    els.queueAnnounce.textContent = summary; // screen readers hear it at most every 5 jobs
+    lastAnnounced = p.done;
+  }
+  els.imagesOff.hidden = imagesEnabled();
+  renderRows();
+  els.retry.hidden = p.failed === 0;
   els.play.disabled = p.done === 0;
-  els.download.disabled = p.done < p.total || p.total === 0;
+  const ready = p.done === p.total && p.total > 0;
+  els.download.disabled = !ready;
+  els.downloadHint.hidden = ready;
+}
+
+function renderRows() {
+  if (!current) return;
+  const rows = productionRows(lastJobs, current.board.scenes.length);
+  els.rows.replaceChildren(
+    ...rows.map((row) => {
+      const li = document.createElement("li");
+      const label = document.createElement("span");
+      label.className = "row-label";
+      label.textContent = `Scene ${row.sceneIndex}`;
+      li.append(label);
+      for (const chip of row.chips) {
+        // A finished voice is a button that plays it, for the Stage 6 listening check.
+        const playable = chip.kind === "tts" && chip.state === "done";
+        const el = document.createElement(playable ? "button" : "span");
+        el.className = "chip";
+        el.dataset.state = chip.state;
+        el.textContent = playable ? `${chipText(chip)} ▶` : chipText(chip);
+        el.setAttribute(
+          "aria-label",
+          playable ? `Play: ${chipName(chip, row.sceneIndex)}` : chipName(chip, row.sceneIndex),
+        );
+        if (playable && el instanceof HTMLButtonElement) {
+          el.type = "button";
+          el.addEventListener("click", () => void playClip(row.sceneIndex, chip.languageCode));
+        }
+        li.append(el);
+      }
+      for (const chip of row.chips.filter((c) => c.state === "failed")) {
+        const msg = document.createElement("p");
+        msg.className = "row-error";
+        msg.textContent = failureMessage(chip, row.sceneIndex); // E-5
+        li.append(msg);
+      }
+      return li;
+    }),
+  );
+}
+
+let clip: HTMLAudioElement | null = null;
+async function playClip(sceneIndex: number, languageCode: string | undefined) {
+  if (!current) return;
+  const blob = await loadAsset(assetKey(current.id, sceneIndex, "tts", languageCode ?? "en-US"));
+  if (!blob) return;
+  clip?.pause();
+  const url = URL.createObjectURL(blob);
+  clip = new Audio(url);
+  clip.onended = () => URL.revokeObjectURL(url);
+  void clip.play().catch(() => URL.revokeObjectURL(url));
+}
+
+/** BTN-retry: give failed jobs 3 fresh tries; they run now if online, else when back online. */
+async function onRetry() {
+  if (!fb?.uid || !current) return;
+  els.retry.disabled = true;
+  try {
+    const failed = exhaustedJobs(lastJobs);
+    failed.forEach((j) =>
+      updateJob(fb!.db, fb!.uid!, j.id, { status: "queued", attempts: 0, error: "" }),
+    );
+    lastJobs = lastJobs.map((j) =>
+      failed.some((f) => f.id === j.id) ? { ...j, status: "queued", attempts: 0, error: "" } : j,
+    );
+    await runQueue();
+  } finally {
+    els.retry.disabled = false;
+  }
 }
 
 async function runQueue() {
   if (!fb || !current) return;
   if (!fb.uid) {
     // Not signed in yet: show what's waiting; planning happens when sign-in completes.
-    const total = planJobs(
+    const planned = planJobs(
       current.id,
       current.board.scenes.length,
       current.languages,
       Date.now(),
       imagesEnabled(),
-    ).length;
-    renderQueue({ done: 0, total, failed: 0 });
+    );
+    renderQueue({ done: 0, total: planned.length, failed: 0 }, planned);
     return;
   }
   if (current.jobsPlanned === false) await planJobsIfSignedIn(current);
   await drainQueue(fb.ai, fb.db, fb.uid, current, {
     onProgress: renderQueue,
-    onJob: () => undefined,
+    onJob: (job) => {
+      // Live chip updates between progress refreshes ("…" while a job runs).
+      lastJobs = lastJobs.map((j) => (j.id === job.id ? { ...j, ...job } : j));
+      renderRows();
+    },
   });
 }
 
@@ -424,6 +540,7 @@ async function boot() {
   els.make.addEventListener("click", () => void onMake());
   els.play.addEventListener("click", () => void onPlay());
   els.download.addEventListener("click", () => void onDownload());
+  els.retry.addEventListener("click", () => void onRetry());
 }
 
 void boot();
