@@ -42,3 +42,15 @@ export function videoLanguages(languages: string[]): string[] {
     ...unique.filter((l) => !l.startsWith("en")),
   ];
 }
+
+/**
+ * F9.4 (refined): a video can be downloaded when every job IT needs is done — all pictures plus
+ * the voice in that language. So the English video isn't blocked by a French clip still waiting.
+ */
+export function videoReady(
+  jobs: { kind: string; languageCode?: string; status: string }[],
+  languageCode: string,
+): boolean {
+  const needed = jobs.filter((j) => j.kind === "image" || j.languageCode === languageCode);
+  return needed.length > 0 && needed.every((j) => j.status === "done");
+}

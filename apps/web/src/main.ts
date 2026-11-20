@@ -22,6 +22,7 @@ import {
   quizText,
   videoFileName,
   videoLanguages,
+  videoReady,
   queueSummary,
   SAMPLE_LESSON,
   StoryboardParseError,
@@ -368,7 +369,7 @@ function renderQueue(p: { done: number; total: number; failed: number }, jobs?: 
   renderRows();
   els.retry.hidden = p.failed === 0;
   els.play.disabled = busyVideo || p.done === 0;
-  const ready = p.done === p.total && p.total > 0;
+  const ready = videoReady(lastJobs, els.videoLang.value); // F9.4, per video language
   els.download.disabled = busyVideo || !ready;
   els.downloadHint.hidden = ready;
 }
@@ -627,6 +628,7 @@ async function boot() {
   els.download.addEventListener("click", () => void onDownload());
   els.retry.addEventListener("click", () => void onRetry());
   els.copyQuiz.addEventListener("click", () => void onCopyQuiz());
+  els.videoLang.addEventListener("change", () => renderQueue(lastProgress));
 }
 
 void boot();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { optionLetter, quizText, videoFileName, videoLanguages } from "../src/video";
+import { optionLetter, quizText, videoFileName, videoLanguages, videoReady } from "../src/video";
 
 describe("videoFileName (F9.5)", () => {
   it("slugs the title and adds language and extension", () => {
@@ -41,5 +41,22 @@ describe("quizText (F2.5, docs/13 §12)", () => {
 describe("videoLanguages", () => {
   it("puts English first and removes duplicates", () => {
     expect(videoLanguages(["fr-FR", "en-US", "fr-FR"])).toEqual(["en-US", "fr-FR"]);
+  });
+});
+
+describe("videoReady (F9.4 per language)", () => {
+  const jobs = [
+    { kind: "tts", languageCode: "en-US", status: "done" },
+    { kind: "tts", languageCode: "fr-FR", status: "done" },
+    { kind: "tts", languageCode: "en-US", status: "done" },
+    { kind: "tts", languageCode: "fr-FR", status: "queued" },
+  ];
+  it("lets the English video download while a French clip still waits", () => {
+    expect(videoReady(jobs, "en-US")).toBe(true);
+    expect(videoReady(jobs, "fr-FR")).toBe(false);
+  });
+  it("needs every picture too, and at least one job", () => {
+    expect(videoReady([...jobs, { kind: "image", status: "failed" }], "en-US")).toBe(false);
+    expect(videoReady([], "en-US")).toBe(false);
   });
 });
