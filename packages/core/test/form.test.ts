@@ -34,6 +34,12 @@ describe("queue summary (docs/13 §7)", () => {
       "Waiting for internet. 0 of 15 done.",
     );
   });
+  it("says when the queue is paused by Google's free limit", () => {
+    expect(queueSummary({ done: 4, total: 10, failed: 0 }, true, 1)).toBe(
+      "4 of 10 done. Google's free limit is reached, so the rest continues in 1 minute.",
+    );
+    expect(queueSummary({ done: 4, total: 10, failed: 0 }, true, 15)).toContain("in 15 minutes.");
+  });
 });
 
 describe("scene count box (TC-2.5)", () => {

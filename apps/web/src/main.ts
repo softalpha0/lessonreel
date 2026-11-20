@@ -281,13 +281,17 @@ async function planJobsIfSignedIn(project: Project) {
 
 let lastJobs: CloudJob[] = [];
 let lastAnnounced = -1;
+let pausedUntil = 0; // set when Google's free limit pauses the queue
+let lastProgress = { done: 0, total: 0, failed: 0 };
 
 /** S-3 "Voice and pictures": summary, progress bar, per-scene rows, retry (Stage 8). */
 function renderQueue(p: { done: number; total: number; failed: number }, jobs?: CloudJob[]) {
   if (!current) return;
   if (jobs) lastJobs = jobs;
+  lastProgress = p;
   const online = isOnline();
-  const summary = queueSummary(p, online);
+  const waitMs = pausedUntil - Date.now();
+  const summary = queueSummary(p, online, waitMs > 0 ? Math.ceil(waitMs / 60_000) : undefined);
   els.production.hidden = false;
   els.queue.innerHTML = `${badge(online ? "in_cloud" : "queued")} ${escape(summary)}`;
   const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;
@@ -391,6 +395,10 @@ async function runQueue() {
   if (current.jobsPlanned === false) await planJobsIfSignedIn(current);
   await drainQueue(fb.ai, fb.db, fb.uid, current, {
     onProgress: renderQueue,
+    onPause: (ms) => {
+      pausedUntil = Date.now() + ms;
+      renderQueue(lastProgress);
+    },
     onJob: (job) => {
       // Live chip updates between progress refreshes ("…" while a job runs).
       lastJobs = lastJobs.map((j) => (j.id === job.id ? { ...j, ...job } : j));

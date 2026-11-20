@@ -37,10 +37,16 @@ export function notesCounter(notes: string): { text: string; warn: boolean; over
 export function queueSummary(
   p: { done: number; total: number; failed: number },
   online: boolean,
+  waitMinutes?: number,
 ): string {
   const count = `${p.done} of ${p.total} done`;
   const failed = p.failed ? `, ${p.failed} couldn't be made` : "";
-  return online ? `${count}${failed}` : `Waiting for internet. ${count}${failed}.`;
+  if (!online) return `Waiting for internet. ${count}${failed}.`;
+  if (waitMinutes) {
+    const when = waitMinutes === 1 ? "1 minute" : `${waitMinutes} minutes`;
+    return `${count}${failed}. Google's free limit is reached, so the rest continues in ${when}.`;
+  }
+  return `${count}${failed}`;
 }
 
 function formatNumber(n: number): string {

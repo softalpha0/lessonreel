@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildStoryboardPrompt, NotesEmptyError, NotesTooLongError } from "../src/prompts";
 import {
   MAX_ATTEMPTS,
+  busyPauseMs,
   nextRunnable,
   planJobs,
   progress,
@@ -78,5 +79,13 @@ describe("languages", () => {
       false,
     );
     expect(findLanguage("en-US")?.status).toBe("ga");
+  });
+});
+
+describe("busyPauseMs", () => {
+  it("backs off 1, 2, 4, 8 minutes then stays at 15", () => {
+    expect([0, 1, 2, 3, 4, 9].map(busyPauseMs)).toEqual([
+      60_000, 120_000, 240_000, 480_000, 900_000, 900_000,
+    ]);
   });
 });

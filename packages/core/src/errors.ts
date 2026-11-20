@@ -11,7 +11,7 @@
 export type AiErrorKind = "busy" | "access" | "other";
 
 export function classifyAiError(message: string): AiErrorKind {
-  const status = message.match(/\[(\d{3})\s*\]/)?.[1];
+  const status = message.match(/\[(\d{3})[^\]]*\]/)?.[1];
   if (status === "429" || status === "500" || status === "503") return "busy";
   if (/high demand|overloaded|resource.?exhausted|try again later/i.test(message)) return "busy";
   if (status === "401" || status === "403") return "access";

@@ -48,6 +48,15 @@ export function nextRunnable(jobs: CloudJob[], limit = 2): CloudJob[] {
 }
 
 /**
+ * How long the queue pauses after Google says "busy" or "quota exceeded" (429/500/503):
+ * 1 min, 2, 4, 8, then every 15 min. Free-tier limits reset per minute or per day, so waiting
+ * (without using up a job's 3 tries) beats failing every job within seconds.
+ */
+export function busyPauseMs(pausesInARow: number): number {
+  return Math.min(60_000 * 2 ** pausesInARow, 15 * 60_000);
+}
+
+/**
  * Jobs left "running" when a tab closed or crashed mid-call. The runner resets them
  * to "queued" when it starts (their attempt was already counted), so they aren't stuck forever.
  */
