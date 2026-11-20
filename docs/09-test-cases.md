@@ -29,26 +29,26 @@
 
 ## Stage 0: Setup and backup
 
-| ID     | Type | Preconditions                  | Steps                                  | Expected                                                              | Actual | Status | Sev |
-| ------ | ---- | ------------------------------ | -------------------------------------- | --------------------------------------------------------------------- | ------ | ------ | --- |
-| TC-0.1 | N    | Repo unzipped, tools installed | `pnpm install` then `pnpm run ci`      | Lint, format, typecheck pass; **14 tests pass**; build OK             |        | ⬜     | 🔴  |
-| TC-0.2 | S    | `.env.local` created           | `git status`                           | `.env.local` **not** listed                                           |        | ⬜     | 🔴  |
-| TC-0.3 | S    | n/a                            | `git check-ignore apps\web\.env.local` | Prints the path                                                       |        | ⬜     | 🔴  |
-| TC-0.4 | N    | Remote created                 | `git push`, then open GitHub           | Commits visible; `git status` "up to date with origin/main"           |        | ⬜     | 🔴  |
-| TC-0.5 | N    | Authors rewritten              | `git log --format="%an <%ae>"`         | Benjamin's name/email on every commit                                 |        | ⬜     | 🟠  |
-| TC-0.6 | N    | Firebase set up                | `pnpm dev`, open localhost:5173        | Page loads, no red console errors; App Check debug token printed once |        | ⬜     | 🔴  |
+| ID     | Type | Preconditions                  | Steps                                  | Expected                                                              | Actual                                                                                      | Status | Sev |
+| ------ | ---- | ------------------------------ | -------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------ | --- |
+| TC-0.1 | N    | Repo unzipped, tools installed | `pnpm install` then `pnpm run ci`      | Lint, format, typecheck pass; **19 tests pass**; build OK             | 19 passed, build OK (Windows, Node 26)                                                      | ✅     | 🔴  |
+| TC-0.2 | S    | `.env.local` created           | `git status`                           | `.env.local` **not** listed                                           | Not listed                                                                                  | ✅     | 🔴  |
+| TC-0.3 | S    | n/a                            | `git check-ignore apps\web\.env.local` | Prints the path                                                       | Printed                                                                                     | ✅     | 🔴  |
+| TC-0.4 | N    | Remote created                 | `git push`, then open GitHub           | Commits visible; `git status` "up to date with origin/main"           | Up to date; CI ✓ on GitHub                                                                  | ✅     | 🔴  |
+| TC-0.5 | N    | Authors rewritten              | `git log --format="%an <%ae>"`         | Benjamin's name/email on every commit                                 | `softalpha0` on all 12, dates kept                                                          | ✅     | 🟠  |
+| TC-0.6 | N    | Firebase set up                | `pnpm dev`, open localhost:5173        | Page loads, no red console errors; App Check debug token printed once | Loads; token printed; only browser-extension warnings. Cloud storyboard + 15/15 jobs worked | ✅     | 🔴  |
 
 ## Stage 1: Shell and status
 
-| ID     | Type | Preconditions                 | Steps                         | Expected                                              | Actual | Status        | Sev |
-| ------ | ---- | ----------------------------- | ----------------------------- | ----------------------------------------------------- | ------ | ------------- | --- |
-| TC-1.1 | N    | App open, online              | Look at header                | "Online" pill                                         |        | ⬜            | 🟡  |
-| TC-1.2 | F    | App open                      | DevTools → Network → Offline  | Pill changes to "Offline" within 1 s                  |        | ⬜            | 🟠  |
-| TC-1.3 | N    | Nano-capable Chrome           | Click "Prepare offline model" | % increases → "Nano: ready"                           |        | ⬜            | 🔴  |
-| TC-1.4 | E    | Non-Nano machine or phone     | Click Prepare                 | "Nano: not available here (cloud fallback)", no crash |        | ⬜            | 🟠  |
-| TC-1.5 | E    | Download running              | Click Prepare again quickly   | Button disabled; no second download                   |        | ⬜            | 🟡  |
-| TC-1.6 | F    | Offline, model not downloaded | Click Prepare                 | Clear message, no crash                               |        | ⬜            | 🟡  |
-| TC-1.7 | N    | Planned (F3.3)                | Reload page                   | Nano status shown without clicking                    |        | ⏭ until built | 🟡  |
+| ID     | Type | Preconditions                 | Steps                                       | Expected                                                                                      | Actual                                                                                                                | Status | Sev |
+| ------ | ---- | ----------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------ | --- |
+| TC-1.1 | N    | App open, online              | Look at header                              | "Online" pill                                                                                 | Online                                                                                                                | ✅     | 🟡  |
+| TC-1.2 | F    | App open                      | Wi-Fi off (or DevTools → Network → Offline) | Pill changes to "Offline" (DevTools: within 1 s; real Wi-Fi: within 15 s, or at once on Make) | Failed first (Hyper-V adapter kept it Online); fixed with real internet check; passed                                 | ✅     | 🟠  |
+| TC-1.3 | N    | Nano-capable Chrome           | Click "Prepare offline model"               | % increases → "Nano: ready"                                                                   | Nano was already downloaded ("ready" on load); then Chrome removed it (2.1 GB free disk). Re-test after freeing space | ⏭      | 🔴  |
+| TC-1.4 | E    | Non-Nano machine or phone     | Click Prepare                               | "Nano: not available here (cloud fallback)", no crash                                         | Shown, no crash                                                                                                       | ✅     | 🟠  |
+| TC-1.5 | E    | Download running              | Click Prepare again quickly                 | Button disabled; no second download                                                           | Double-click: disabled while checking, no error (no download possible)                                                | ✅     | 🟡  |
+| TC-1.6 | F    | Offline, model not downloaded | Click Prepare                               | Clear message, no crash                                                                       | Simulated: "You're offline. Connect to the internet to download the offline model."                                   | ✅     | 🟡  |
+| TC-1.7 | N    | Built (F3.3)                  | Reload page                                 | Nano status shown without clicking                                                            | "Nano: ready", later "not available here", without a click                                                            | ✅     | 🟡  |
 
 ## Stage 2: Lesson form
 
@@ -194,21 +194,21 @@
 
 ## Results summary
 
-| Stage | Cases | ✅  | ❌  | ⬜  | Date | Approved by |
-| ----- | ----- | --- | --- | --- | ---- | ----------- |
-| 0     | 6     |     |     | 6   |      |             |
-| 1     | 7     |     |     | 7   |      |             |
-| 2     | 10    |     |     | 10  |      |             |
-| 3     | 8     |     |     | 8   |      |             |
-| 4     | 4     |     |     | 4   |      |             |
-| 4B    | 6     |     |     | 6   |      |             |
-| 5     | 7     |     |     | 7   |      |             |
-| 6     | 4     |     |     | 4   |      |             |
-| 7     | 2     |     |     | 2   |      |             |
-| 8     | 3     |     |     | 3   |      |             |
-| 9     | 4     |     |     | 4   |      |             |
-| 10    | 5     |     |     | 5   |      |             |
-| 11–13 | 4     |     |     | 4   |      |             |
-| 14    | 5     |     |     | 5   |      |             |
-| A11y  | 3     |     |     | 3   |      |             |
-| E2E   | 7     |     |     | 7   |      |             |
+| Stage | Cases | ✅  | ❌  | ⬜                 | Date       | Approved by |
+| ----- | ----- | --- | --- | ------------------ | ---------- | ----------- |
+| 0     | 6     | 6   |     |                    | 2026-11-19 | Benjamin    |
+| 1     | 7     | 6   |     | 1 ⏭ (TC-1.3: disk) | 2026-11-19 | Benjamin    |
+| 2     | 10    |     |     | 10                 |            |             |
+| 3     | 8     |     |     | 8                  |            |             |
+| 4     | 4     |     |     | 4                  |            |             |
+| 4B    | 6     |     |     | 6                  |            |             |
+| 5     | 7     |     |     | 7                  |            |             |
+| 6     | 4     |     |     | 4                  |            |             |
+| 7     | 2     |     |     | 2                  |            |             |
+| 8     | 3     |     |     | 3                  |            |             |
+| 9     | 4     |     |     | 4                  |            |             |
+| 10    | 5     |     |     | 5                  |            |             |
+| 11–13 | 4     |     |     | 4                  |            |             |
+| 14    | 5     |     |     | 5                  |            |             |
+| A11y  | 3     |     |     | 3                  |            |             |
+| E2E   | 7     |     |     | 7                  |            |             |

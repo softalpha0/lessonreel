@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildStoryboardPrompt, NotesTooLongError } from "../src/prompts";
+import { buildStoryboardPrompt, NotesEmptyError, NotesTooLongError } from "../src/prompts";
 import {
   MAX_ATTEMPTS,
   nextRunnable,
@@ -22,7 +22,10 @@ describe("buildStoryboardPrompt", () => {
   });
 
   it("rejects empty and oversized notes", () => {
-    expect(() => buildStoryboardPrompt({ notes: "   ", audience: "x" })).toThrow();
+    expect(() => buildStoryboardPrompt({ notes: "   ", audience: "x" })).toThrow(NotesEmptyError);
+    expect(() => buildStoryboardPrompt({ notes: "", audience: "x" })).toThrow(
+      "Add your lesson notes first.",
+    );
     expect(() => buildStoryboardPrompt({ notes: "a".repeat(12_001), audience: "x" })).toThrow(
       NotesTooLongError,
     );

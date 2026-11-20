@@ -65,17 +65,16 @@
 
 ## 5. Status pills (S-0)
 
-| State             | Text                                      | Status                                  |
-| ----------------- | ----------------------------------------- | --------------------------------------- |
-| Online            | Online                                    | ✅                                      |
-| Offline           | Offline                                   | ✅                                      |
-| Nano unchecked    | Nano: not checked                         | ✅ (goes away when F3.3 checks on load) |
-| Nano checking     | Nano: checking…                           | 🆕                                      |
-| Nano downloadable | Nano: not downloaded                      | 🆕                                      |
-| Nano downloading  | Nano: downloading {n}%                    | ✅                                      |
-| Nano ready        | Nano: ready                               | ✅                                      |
-| Nano unavailable  | Nano: not available here (cloud fallback) | ✅                                      |
-| App cached        | Works offline ✓                           | 🆕 (PWA)                                |
+| State             | Text                                                              | Status                                   |
+| ----------------- | ----------------------------------------------------------------- | ---------------------------------------- |
+| Online            | Online                                                            | ✅                                       |
+| Offline           | Offline                                                           | ✅                                       |
+| Nano checking     | Nano: checking…                                                   | ✅ (F3.3, shown until the check returns) |
+| Nano downloadable | Nano: not downloaded                                              | ✅                                       |
+| Nano downloading  | Nano: downloading {n}% (on load, % unknown: "Nano: downloading…") | ✅                                       |
+| Nano ready        | Nano: ready                                                       | ✅                                       |
+| Nano unavailable  | Nano: not available here (cloud fallback)                         | ✅                                       |
+| App cached        | Works offline ✓                                                   | 🆕 (PWA)                                 |
 
 ## 6. Badges
 
@@ -102,6 +101,7 @@
 | Rendering                | Making your video… {n}%                                                                   | 🔧 (code: "Rendering video… {n}%")                |
 | Render done              | Video ready ({n}s, {MP4/WEBM}).                                                           | ✅                                                |
 | Render tip               | Keep this tab open until it finishes.                                                     | 🆕                                                |
+| Prepare clicked offline  | You're offline. Connect to the internet to download the offline model.                    | ✅ (added Stage 1)                                |
 | Scene edited             | Scene {n} updated. Its voice will be made again.                                          | 🆕                                                |
 
 ## 8. Empty states
@@ -125,8 +125,9 @@
 | E-5                | Scene {n}: couldn't make the {French voice / picture} after 3 tries.                               | S-3 row     | 🆕                                                                 |
 | E-6                | This browser can't record video. Use a recent version of Chrome.                                   | status line | 🔧 (code: "Use a recent Chrome.")                                  |
 | E-7                | (no error) Queued badge + "Waiting for internet."                                                  | S-3         | 🆕                                                                 |
-| E-8                | Lessonreel can't reach the AI service right now. Turn off ad blockers for this site and try again. | status line | 🆕                                                                 |
+| E-8                | Lessonreel can't reach the AI service right now. Turn off ad blockers for this site and try again. | status line | ✅                                                                 |
 | E-9                | Your browser is out of space. Delete old lessons and try again.                                    | status line | 🆕                                                                 |
+| E-10               | The AI service is busy right now. Wait a minute and try again.                                     | status line | ✅ (added Stage 1 debugging)                                       |
 | Edit scene invalid | Narration must be 1 to 400 characters.                                                             | under field | 🆕                                                                 |
 
 ## 10. Onboarding, install and offline

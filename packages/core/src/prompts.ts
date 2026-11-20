@@ -16,13 +16,22 @@ export interface StoryboardRequest {
   includeQuiz?: boolean;
 }
 
+/** E-2a: nothing to work with. Message is user-facing (docs/13 §9). */
+export class NotesEmptyError extends Error {
+  override name = "NotesEmptyError";
+  constructor() {
+    super("Add your lesson notes first.");
+  }
+}
+
+/** E-2b: over the BR-1 limit. Message is user-facing (docs/13 §9). */
 export class NotesTooLongError extends Error {
   override name = "NotesTooLongError";
 }
 
 export function buildStoryboardPrompt(req: StoryboardRequest): string {
   const notes = req.notes.trim();
-  if (!notes) throw new Error("Add your lesson notes first.");
+  if (!notes) throw new NotesEmptyError();
   if (notes.length > LIMITS.maxNotesChars) {
     throw new NotesTooLongError(
       `Notes are ${notes.length} characters; the limit is ${LIMITS.maxNotesChars}. Split the lesson.`,

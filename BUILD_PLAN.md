@@ -23,8 +23,8 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 
 | Stage | Feature                                                | Spec IDs                           | Depends on | Status | Target    |
 | ----- | ------------------------------------------------------ | ---------------------------------- | ---------- | ------ | --------- |
-| 0     | Setup, GitHub backup, Firebase project                 | §7–§9 of HACKATHON.md              | n/a        | 🟡     | Nov 19    |
-| 1     | App shell + connection and Nano status                 | S-0, F3.2, F3.3                    | 0          | 🟡     | Nov 20    |
+| 0     | Setup, GitHub backup, Firebase project                 | §7–§9 of HACKATHON.md              | n/a        | ✅     | Nov 19    |
+| 1     | App shell + connection and Nano status                 | S-0, F3.2, F3.3                    | 0          | ✅     | Nov 20    |
 | 2     | Lesson form + validation                               | S-1, F1, BR-1, E-2                 | 1          | 🟡     | Nov 20    |
 | 3     | Storyboard: on-device with cloud fallback              | S-2, F2.1–F2.4, F3, F7.1, E-1, E-3 | 2          | 🟡     | Nov 20    |
 | 4     | Save and reload the lesson                             | F11.2, D-1                         | 3          | 🟡     | Nov 21    |
@@ -69,19 +69,19 @@ Every stage ends with the same **exit gate** (not repeated below):
 
 > Technical checks pass (`pnpm run ci`, app runs, no console errors) · stage test cases in [`docs/09-test-cases.md`](docs/09-test-cases.md) run and recorded · Benjamin tested the happy path **and** the break tests · problems fixed · self-review done (functionality, security, reliability, UX, hackathon readiness) · `FEATURE_GUIDE.md` updated · Benjamin approved · commit + **push verified**.
 
-### Stage 0: Setup, GitHub backup, Firebase project 🟡
+### Stage 0: Setup, GitHub backup, Firebase project ✅ (approved 2026-11-19)
 
 - **What it does:** Gets Benjamin's Windows machine ready, puts the project on GitHub, and creates the Firebase project.
 - **What Benjamin can do after:** run `pnpm dev`, open the app on `localhost:5173`, see the code on github.com.
 - **Steps:** HACKATHON.md §7 (tools, one at a time) → §9.1 (fix commit authors, create repo, push) → §8 (Firebase console).
-- **Test:** `pnpm run ci` passes (14 tests). `git status` says up to date with origin. Repo visible on GitHub. `.env.local` is ignored (`git check-ignore apps\web\.env.local`).
+- **Test:** `pnpm run ci` passes (19 tests). `git status` says up to date with origin. Repo visible on GitHub. `.env.local` is ignored (`git check-ignore apps\web\.env.local`).
 - **Break tests:** run `git status` after creating `.env.local` and confirm it is **not** listed.
 - **Done when:** exit gate + Firebase web config in `.env.local` + App Check debug token registered.
 
-### Stage 1: App shell + connection and Nano status 🟡
+### Stage 1: App shell + connection and Nano status ✅ (approved 2026-11-19)
 
 - **What it does:** The header (S-0): app name, Online/Offline pill, Nano status, "Prepare offline model" button that downloads Gemini Nano with a progress %.
-- **Missing today:** check Nano status **on page load** without downloading (F3.3).
+- **Built:** Nano status checked **on page load** without downloading (F3.3); real internet check behind the Online/Offline pill (Windows virtual adapters keep `navigator.onLine` true with Wi-Fi off); cloud retry when Nano says "ready" but fails; one retry when Gemini is busy; plain error messages (E-1/E-2/E-3/E-8/E-10).
 - **What Benjamin can do:** see if he's online; see if his Chrome can run AI offline; download the model once.
 - **Data/services:** browser `online`/`offline` events; Firebase AI Logic `initializeDeviceModel` (needs a click).
 - **Test:** turn Wi-Fi off/on and watch the pill change. Click Prepare: % rises to "ready" (or "not available here" on unsupported machines).
@@ -118,6 +118,7 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Build:** `vite-plugin-pwa` (ADR-012), manifest (name, icons from [11 §3](docs/11-brand-guidelines.md#3-visual-identity)), precache app shell + font, **never cache Firebase/Gemini calls**, update prompt ([13 §10](docs/13-ux-writing.md#10-onboarding-install-and-offline)).
 - **Test:** TC-4B.1–4B.5 in [09](docs/09-test-cases.md). Open once online → close Chrome → Wi-Fi off → open from icon → app + last lesson load.
 - **Break tests:** deploy a new version → "new version" message; clear site data → reload online re-caches; check Network tab that AI calls aren't served from cache.
+- **Known bug to fix here (found 2026-11-19, Stage 1 testing):** when the page is _opened_ with no internet, Firebase sign-in waits ~30 s before giving up, and the buttons stay dead until then (`boot()` awaits `initFirebase()`, which awaits `signInAnonymously`). Fix: wire the buttons first and sign in in the background (uid arrives later; the queue starts when it does).
 
 ### Stage 5: Plan jobs + offline queue 🟡
 
@@ -199,6 +200,7 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-19: **Stages 0 and 1 approved.** Firebase project `lessonreel-7234f` (Spark), AI Logic (Gemini Developer API), App Check (Fraud Defense, enforced on AI Logic), Anonymous Auth, Firestore europe-west1 + rules. Stage 1 testing found and fixed 3 bugs (DEBUGGING.md bug log) and one environment issue (Nano needs ~22 GB free disk). Opening the app offline hangs ~30 s: logged under Stage 4B.
 - 2026-11-19: Design pack (docs/11–15) added. New Stage 4B (PWA) from the design audit; Stage 2 now includes the token/font/wording fixes.
 - 2026-11-19: TDD.md added. Stale `running` job recovery fixed early (was planned for Stage 8).
 - 2026-11-19: Plan created. Existing code mapped to stages as 🟡. Fixed `crypto.randomUUID` crash on plain-http phone testing; added `pnpm dev:lan`.

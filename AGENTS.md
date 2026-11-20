@@ -57,6 +57,10 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 - TTS: `generationConfig: { responseModalities: [ResponseModality.AUDIO], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } }, languageCode } }`. Non-streaming returns a full WAV (24 kHz, 16-bit, mono) in `response.inlineDataParts()[0].inlineData.data` (base64).
 - **`gemini-3.1-flash-tts-preview` shut down on 2026-11-17.** Use the current TTS model from the Firebase docs (`gemini-3.8-flash-tts` at time of writing). Model names live in `.env.local` (`VITE_*_MODEL`) so a retired model is a config change.
 - TTS languages offered: en-US, fr-FR, es-ES, hi-IN (GA), sw-KE (preview). **Yoruba, Igbo, Hausa, Nigerian Pidgin are not supported.** Test each code on the exact model before the demo.
+- **PREFER_ON_DEVICE does not fall back to the cloud when Nano throws at run time** (e.g. "The device does not have enough disk space…", "The input is too large."). It only uses the cloud when availability isn't "available". `generateStoryboard` retries with an ONLY_IN_CLOUD model itself.
+- **Nano needs ~22 GB free disk.** Below that Chrome may still say "available" but refuse to create a session, and may remove the model.
+- **`navigator.onLine` is unreliable on Windows** (Hyper-V/WSL/VPN adapters keep it true). Use `isOnline()`/`checkConnectivity()` from `lib/connectivity.ts`, never `navigator.onLine` directly.
+- Firebase AI errors read `AI: Error fetching from <url>: [STATUS ] message (AI/fetch-error)`. Use `classifyAiError` (core) to sort them.
 
 ## Unverified / to check before relying on it
 
@@ -86,6 +90,7 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-19: **Stages 0 + 1 approved.** Firebase `lessonreel-7234f`: AI Logic (Gemini Developer API), App Check = "Fraud Defense (formerly reCAPTCHA Enterprise)" enforced on AI Logic, Anonymous Auth, Firestore europe-west1 + rules. Stage 1: Nano check on load, real connectivity check, cloud retry on Nano runtime failure, busy retry, E-10. 19 tests. Installed SDK is `@firebase/ai` 3.1.0 (firebase 13.4.0).
 - 2026-11-19: Added HACKATHON_LANDING_PAGE_AND_FRONTEND_TOOLING.md (nothing installed; decisions pending). Ignored .mcp.json (may hold API keys).
 - 2026-11-19: Design pack: docs/11 brand, 12 design system, 13 UX writing, 14 accessibility, 15 design QA; expanded 02 (principles P1–P11, UF-6/7, states) and 03 (per-control UI spec, responsive). Found: page can't open offline → PWA (F12, ADR-012, Stage 4B); amber and input-border contrast fixes.
 - 2026-11-19: Added docs/07 frontend guide, 08 AI architecture, 09 test cases, 10 demo plan (replaces demo-script), user stories in 04 §10.

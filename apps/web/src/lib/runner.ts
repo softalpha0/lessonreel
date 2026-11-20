@@ -3,6 +3,7 @@ import type { Firestore } from "firebase/firestore";
 import { nextRunnable, progress, staleRunning, type CloudJob } from "@lessonreel/core";
 import { generateSceneImage, synthesizeNarration } from "../ai/cloud-media";
 import { assetKey, listJobs, saveAsset, updateJob, type Project } from "./store";
+import { checkConnectivity, isOnline } from "./connectivity";
 
 export interface RunnerEvents {
   onProgress: (p: { done: number; total: number; failed: number }) => void;
@@ -11,7 +12,7 @@ export interface RunnerEvents {
 
 /**
  * Drains the cloud queue for one project while online. Stops quietly when the
- * connection drops; the next "online" event resumes from where it left off.
+ * connection drops; the next "back online" change resumes from where it left off.
  */
 export async function drainQueue(
   ai: AI,
@@ -44,7 +45,7 @@ async function drainLoop(
   events: RunnerEvents,
 ): Promise<void> {
   for (;;) {
-    if (!navigator.onLine) return;
+    if (!isOnline()) return;
     const jobs = await listJobs(db, uid, project.id);
     events.onProgress(progress(jobs));
     const batch = nextRunnable(jobs, 2);
@@ -59,6 +60,12 @@ async function drainLoop(
           await updateJob(db, uid, job.id, { status: "done", error: "" });
           events.onJob({ ...job, status: "done" });
         } catch (err) {
+          if (!(await checkConnectivity())) {
+            // Lost the internet mid-job: that's waiting, not failure. Don't use up a try.
+            await updateJob(db, uid, job.id, { status: "queued", attempts: job.attempts });
+            events.onJob({ ...job, status: "queued" });
+            return;
+          }
           const message = err instanceof Error ? err.message : String(err);
           await updateJob(db, uid, job.id, { status: "failed", error: message.slice(0, 300) });
           events.onJob({ ...job, status: "failed", error: message });
