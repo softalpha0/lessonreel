@@ -37,8 +37,8 @@ Status key: ⬜ not started · 🟡 code exists, not tested by Benjamin · 🔵 
 | 9     | Preview player                                         | S-4, F8                            | 6, 7       | ✅     | Nov 22    |
 | 10    | Download the video                                     | S-5, F9, E-6                       | 9          | ✅     | Nov 23    |
 | 11    | Quiz panel + copy                                      | F2.5                               | 3          | ✅     | Nov 23    |
-| 12    | Edit a scene before voice (Should)                     | F2.6, UF-4                         | 5, 6       | ⬜     | Nov 24    |
-| 13    | Slow narration toggle (Should)                         | F4.4                               | 6          | ⬜     | Nov 24    |
+| 12    | Edit a scene before voice (Should)                     | F2.6, UF-4                         | 5, 6       | ✅     | Nov 24    |
+| 13    | Slow narration toggle (Should)                         | F4.4                               | 6          | ✅     | Nov 24    |
 | 14    | Deploy + App Check enforcement + judge path            | N4, N5, N7                         | 1–10       | 🔵     | Nov 25    |
 | 15    | Final end-to-end test, polish, evidence, video, submit | §11 of HACKATHON.md                | all        | ⬜     | Nov 26–29 |
 
@@ -185,12 +185,16 @@ Every stage ends with the same **exit gate** (not repeated below):
 - **Test:** copy and paste into WhatsApp/Notes; formatting is readable.
 - **Break tests:** a storyboard with no quiz; click Copy repeatedly.
 
-### Stage 12: Edit a scene before voice (Should) ⬜
+### Stage 12: Edit a scene before voice (Should) ✅ (approved 2026-11-20, `a276321`)
+
+- **Result:** Edit on every scene (narration + on-screen text), 1–400 character check, Save resets only that scene's voice jobs and deletes its old clips; Cancel restores and returns focus; edits survive reload. Save is refused while that scene's voice is being made.
 
 - **What it does:** edit narration/on-screen text; that scene's voice jobs reset.
 - **Break tests:** empty text; 401+ characters; edit after voice was made.
 
-### Stage 13: Slow narration toggle (Should) ⬜
+### Stage 13: Slow narration toggle (Should) ✅ (approved 2026-11-20, `a276321`)
+
+- **Result:** "Slow, clear narration" checkbox (helper "Good for younger learners."), stored per lesson, sent to TTS as "slowly and clearly, with short pauses". Listening comparison waits for the daily voice limit.
 
 - **What it does:** a checkbox for slower, clearer narration for younger learners.
 - **Test:** compare a normal and slow clip.
@@ -223,6 +227,8 @@ Check on the phone: text readable without zooming, buttons easy to tap (≥ 44 p
 
 ## Change log
 
+- 2026-11-24: **Example lesson** (`97399c3`): "Open the example lesson" loads a finished narrated lesson made earlier with the app (4 scenes, English + Spanish, clips in `apps/web/public/example/`, loaded on demand). Judges can preview and download a narrated video even when the free voice limit is used up. Labelled "Example"; no AI quota used.
+- 2026-11-20: **Stages 12–13 approved** (scene editing, slow narration). All planned features built; Benjamin chose to keep shipping past the Nov 26 freeze. Docker removed and archives cleared on the laptop: 22 GB free for Gemini Nano.
 - 2026-11-20: **Stages 6–11 approved** and the app is **live** at https://lessonreel-7234f.web.app (Stage 14 in progress). Found and fixed: silent clips from empty translations; Google's free limit (429) used up all 3 tries in seconds; per-language download. Pictures off on the free plan. Testing locally was confused by an old built copy (service worker + old preview server), so testing now happens on the live link.
 - 2026-11-20: **Stages 2B, 3, 4, 4B and 5 approved** (one batch at Benjamin's request, one commit per stage). Prompt v2; installable offline app; offline storyboard no longer hangs on Firestore. Stage 3 on-device evaluation waits for free disk space (Nano).
 - 2026-11-20: **Stage 2A approved.** Stage 2 split into 2A (form features) and 2B (tokens, font, headings). Testing found and fixed two bugs (scenes "0" became 5; E-2b number format).

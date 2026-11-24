@@ -225,13 +225,51 @@ There's **no server of our own**. The app runs in the browser. Firebase gives us
 9. **Limitations:** 3 questions, as the storyboard makes them.
 10. **Before demoing:** paste it into WhatsApp on camera.
 
-## Still to build
+### Stage 12: Edit a scene ✅ (approved 2026-11-20, commit `a276321`)
 
-| Stage                   | What it adds                                                |
+1. **What we built:** an **Edit** button on every scene to change its narration and on-screen text, with **Save scene** and **Cancel**.
+2. **Why it's needed:** teachers want the narration to say exactly what they would say.
+3. **What happens when you use it:** Save shows "Scene 2 updated. Its voice will be made again." and only that scene's voices are made again; empty or 401+ characters shows "Narration must be 1 to 400 characters." and Save is disabled.
+4. **How it works behind the scenes:** the lesson is saved again in IndexedDB, that scene's old clips are deleted, and its voice jobs go back to "queued" with fresh tries.
+5. **Important files:** `core/edit.ts` (`sceneEditError`, `voiceJobsForScene`, `sceneBusy`), `main.ts` (`openEditor`, `saveScene`, `closeEditor`).
+6. **How the app talks to services:** Firestore job updates; the runner remakes the voice through Firebase AI Logic.
+7. **Data in → data out:** new words → new voice clips for that scene only.
+8. **Terms to know:** _requeue_ = put a job back in the waiting line.
+9. **Limitations:** the title and image idea can't be edited.
+10. **Before demoing:** edit one line on camera to show the teacher stays in control.
+
+### Stage 13: Slow, clear narration ✅ (approved 2026-11-20, commit `a276321`)
+
+1. **What we built:** a "Slow, clear narration" checkbox ("Good for younger learners.").
+2. **Why it's needed:** young learners follow slower speech better.
+3. **What happens when you use it:** tick it before Make storyboard; that lesson's voices are asked to speak slowly with short pauses.
+4. **How it works behind the scenes:** the choice is saved with the lesson and passed to `buildNarrationStyle`, which the TTS prompt uses.
+5. **Important files:** `index.html` (checkbox), `lib/store.ts` (`slow`), `lib/runner.ts`, `core/prompts.ts`.
+6. **How the app talks to services:** Gemini TTS through Firebase AI Logic.
+7. **Data in → data out:** checkbox → slower voice clips.
+8. **Terms to know:** _style prompt_ = instructions on how to speak, sent with the text.
+9. **Limitations:** applies to new lessons, not to clips already made.
+10. **Before demoing:** play a normal and a slow clip one after the other.
+
+### Example lesson ✅ (2026-11-24, commit `97399c3`)
+
+1. **What we built:** an "Open the example lesson" link that loads a finished, narrated lesson made earlier with Lessonreel.
+2. **Why it's needed:** the free plan allows only a few voice clips a day for everyone; judges can still hear and download a full video.
+3. **What happens when you use it:** the storyboard appears with an **Example** badge, every chip is ✓, and Preview and Download work at once. Edit is hidden on the example.
+4. **How it works behind the scenes:** `lesson.json` and 8 WAV clips in `apps/web/public/example/` are fetched on demand and saved in IndexedDB like any lesson; its jobs are "done" without Firestore.
+5. **Important files:** `main.ts` (`onExample`, `runQueue`), `core/video.ts` (`exampleJobs`, `exampleClipPath`), `public/example/`.
+6. **How the app talks to services:** it doesn't: no AI calls, no quota.
+7. **Data in → data out:** one click → a ready lesson.
+8. **Terms to know:** _on demand_ = downloaded only when someone clicks, not for every visitor.
+9. **Limitations:** fixed content (photosynthesis, English + Spanish); the clips were made by the app on 2026-11-24.
+10. **Before demoing:** say it was made earlier with the app, then make a live lesson to show the AI working.
+
+## Still to do
+
+| Item                    | What it adds                                                |
 | ----------------------- | ----------------------------------------------------------- |
-| 12 Edit scene (Should)  | Change a scene's words before the voice is made             |
-| 13 Slow voice (Should)  | Slower, clearer narration for younger learners              |
 | 14 Deploy (in progress) | Live at https://lessonreel-7234f.web.app; final checks left |
+| Nano on this laptop     | The on-device + offline demo (22 GB now free)               |
 
 How they connect: `main.ts` is the conductor. It reads the form, asks `storyboard.ts` for a storyboard, saves it with `store.ts`, plans jobs with `core/queue.ts`, and lets `runner.ts` do the cloud work through `cloud-media.ts`. `player.ts` and `exporter.ts` read the saved storyboard and assets to play or render the video. `firebase.ts` starts Firebase (App Check first) before anything else.
 

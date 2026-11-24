@@ -158,9 +158,9 @@
 | ID      | Type | Steps                                      | Expected                                                | Status                                                               | Sev |
 | ------- | ---- | ------------------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------- | --- |
 | TC-11.1 | N    | Click "Copy quiz", paste in Notes/WhatsApp | Readable questions with answers                         | ✅ — Browser test: docs/13 format on clipboard, "Quiz copied." toast | 🟡  |
-| TC-12.1 | I    | Edit a scene to empty / 401 chars          | Save disabled with hint                                 | ⏭ until built                                                        | 🟡  |
-| TC-12.2 | N    | Edit narration after voice made            | That scene's voice jobs requeue; new audio matches edit | ⏭ until built                                                        | 🟠  |
-| TC-13.1 | N    | Tick "Slow narration", generate            | Noticeably slower, clearer audio                        | ⏭ until built                                                        | 🟡  |
+| TC-12.1 | I    | Edit a scene to empty / 401 chars          | Save disabled with hint                                 | ✅ — Browser test: blank and 401 chars disable Save with the message | 🟡  |
+| TC-12.2 | N    | Edit narration after voice made            | That scene's voice jobs requeue; new audio matches edit | ✅ — Browser test: only scene 2's 2 clips remade with the new words  | 🟠  |
+| TC-13.1 | N    | Tick "Slow narration", generate            | Noticeably slower, clearer audio                        | 🔵 — Slow instruction reaches TTS; listening waits for voice quota   | 🟡  |
 
 ## Stage 14: Deploy and judge path
 

@@ -199,6 +199,8 @@ AGENTS.md            Coding rules, verified SDK facts, status log
 ## Build log
 
 - **2026-11-18:** Idea locked. Monorepo scaffolded, core logic + tests, hybrid storyboard, cloud TTS/translate/image, offline queue, preview player.
+- **2026-11-24:** Built-in example lesson so anyone can hear a finished narrated video instantly.
+- **2026-11-20 (evening):** Edit a scene before its voice is made, and slow, clear narration for younger learners.
 - **2026-11-20 (later):** Voice narration with an honest free-limit wait, per-scene progress and retry, preview, MP4 download per language, quiz panel with copy. Deployed to Firebase Hosting with real App Check.
 - **2026-11-20:** Lesson form (sample notes, counter, hints), brand font and contrast fixes, prompt v2, installable offline app (opens with no internet), offline queue fixes.
 - **2026-11-19:** Architecture doc. In-browser video export (canvas + Web Audio + MediaRecorder). Decided to build everything new, no reused code.

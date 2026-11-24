@@ -93,6 +93,8 @@ Cloud jobs are queued in Firestore (persistent local cache) while offline and dr
 
 ## Status
 
+- 2026-11-24: **Example lesson** live (public/example, English + Spanish, no quota). 51 tests. Production App Check now rejects automated (headless) browsers, so live-site checks must be done by Benjamin in his Chrome.
+- 2026-11-20: **Stages 12–13 approved** (scene editing with per-scene voice reset, slow narration). All planned features built and live. 49 tests. Next: Gemini Nano on Benjamin's laptop (22 GB free now), offline eval, Blaze decision, phone test, final demo.
 - 2026-11-20: **Stages 6–11 approved; live at https://lessonreel-7234f.web.app** (Stage 14 in progress). Voice (empty-translation guard), pictures off on Spark (no picture jobs), S-3 rows + Retry, 429 waits with backoff (one job at a time), preview language menu, MP4 download per language, quiz panel + Copy. Built app never uses App Check debug tokens (`config.ts`: `env.DEV &&`). 44 tests.
 - 2026-11-20: **Stages 2B, 3, 4, 4B, 5 approved.** Prompt v2; PWA (vite-plugin-pwa 2.0.0, icons in `apps/web/public`, `pnpm build && pnpm preview` on :5173); background sign-in; offline queue fixes. 25 tests. Stage 3 on-device eval pending (Nano needs disk).
 - 2026-11-20: **Stage 2A approved** (sample notes, counter, helpers, inline E-2, stacked options < 600 px, docs/13 wording). Stage 2 split: 2B = tokens, font, headings. 25 tests.
