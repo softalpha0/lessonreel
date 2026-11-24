@@ -33,6 +33,8 @@ export interface Project {
   jobsPlanned?: boolean;
   /** "Slow, clear narration" was ticked (F4.4). Missing = false. */
   slow?: boolean;
+  /** The built-in example lesson: clips ship with the app, no cloud jobs. */
+  example?: boolean;
 }
 
 const projectKey = (id: string) => `project:${id}`;

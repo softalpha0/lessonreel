@@ -1,4 +1,5 @@
 import type { Storyboard } from "./storyboard";
+import { planJobs, type CloudJob } from "./queue";
 
 /**
  * Output helpers for S-4/S-5 (Stages 9–11). Wording: docs/13 §12.
@@ -53,4 +54,25 @@ export function videoReady(
 ): boolean {
   const needed = jobs.filter((j) => j.kind === "image" || j.languageCode === languageCode);
   return needed.length > 0 && needed.every((j) => j.status === "done");
+}
+
+/**
+ * The built-in example lesson (judges can hear a finished video even when the free voice limit
+ * is used up). Its clips ship with the app, so its jobs are simply "done" and never touch Firestore.
+ */
+export function exampleJobs(
+  projectId: string,
+  sceneCount: number,
+  languages: string[],
+): CloudJob[] {
+  return planJobs(projectId, sceneCount, languages, 0, false).map((j) => ({
+    ...j,
+    status: "done" as const,
+    attempts: 1,
+  }));
+}
+
+/** Published path of an example clip, e.g. "example/scene-2-fr-FR.wav". */
+export function exampleClipPath(sceneIndex: number, languageCode: string): string {
+  return `example/scene-${sceneIndex}-${languageCode}.wav`;
 }

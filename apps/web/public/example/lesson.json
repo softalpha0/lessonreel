@@ -1,0 +1,63 @@
+{
+  "audience": "JSS2 students",
+  "languages": ["en-US", "es-ES"],
+  "board": {
+    "title": "How Plants Make Food",
+    "audience": "JSS2 students",
+    "scenes": [
+      {
+        "index": 1,
+        "title": "What is Photosynthesis",
+        "narration": "Have you ever wondered how plants get their food? Unlike us, plants make their own food using sunlight, water, and carbon dioxide in a amazing process called photosynthesis.",
+        "onScreenText": "Making Food from Sunlight",
+        "imagePrompt": "A green plant under a bright warm sun with water drops on its roots",
+        "durationSec": 8
+      },
+      {
+        "index": 2,
+        "title": "Inside the Leaf",
+        "narration": "This magic happens right inside the leaves. Tiny parts called chloroplasts hold a green pigment named chlorophyll, which catches the sunlight.",
+        "onScreenText": "Chloroplasts and Chlorophyll",
+        "imagePrompt": "A close up cartoon of a green leaf showing tiny green circles inside",
+        "durationSec": 7
+      },
+      {
+        "index": 3,
+        "title": "The Word Equation",
+        "narration": "We can write this down as an equation. Carbon dioxide plus water, using sunlight, turns into glucose for food, and releases oxygen into the air.",
+        "onScreenText": "CO2 + Water -> Glucose + Oxygen",
+        "imagePrompt": "A simple equation diagram with plant ingredients on one side and food and oxygen on the other",
+        "durationSec": 8
+      },
+      {
+        "index": 4,
+        "title": "Why It Matters",
+        "narration": "This is super important for all of us. Photosynthesis feeds almost all life on Earth and gives us the fresh oxygen we breathe every day.",
+        "onScreenText": "Life and Oxygen for Earth",
+        "imagePrompt": "Earth surrounded by green leaves and smiling people breathing fresh air",
+        "durationSec": 7
+      }
+    ],
+    "quiz": [
+      {
+        "question": "What do plants use to make their food?",
+        "options": [
+          "Sunlight, water, and carbon dioxide",
+          "Soil, rocks, and wind",
+          "Moonlight and dry sand"
+        ],
+        "answerIndex": 0
+      },
+      {
+        "question": "Which pigment gives leaves their green color?",
+        "options": ["Chlorophyll", "Glucose", "Oxygen"],
+        "answerIndex": 0
+      },
+      {
+        "question": "What gas do plants release during photosynthesis?",
+        "options": ["Carbon dioxide", "Oxygen", "Nitrogen"],
+        "answerIndex": 1
+      }
+    ]
+  }
+}

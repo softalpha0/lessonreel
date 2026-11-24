@@ -39,7 +39,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"],
+        globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"], // example/ clips load on demand, not for every visitor
         navigateFallback: "index.html",
         navigateFallbackDenylist: [/^\/__\//], // Firebase's reserved /__/ paths
         runtimeCaching: [], // F12.5: never cache API calls

@@ -26,6 +26,8 @@ import {
   videoFileName,
   videoLanguages,
   videoReady,
+  exampleClipPath,
+  exampleJobs,
   queueSummary,
   SAMPLE_LESSON,
   StoryboardParseError,
@@ -42,6 +44,7 @@ import {
   enqueueJobs,
   latestProject,
   loadAsset,
+  saveAsset,
   saveProject,
   updateJob,
   type Project,
@@ -93,6 +96,7 @@ const els = {
   quizList: $("quiz-list"),
   copyQuiz: $<HTMLButtonElement>("copy-quiz"),
   slow: $<HTMLInputElement>("slow"),
+  example: $<HTMLButtonElement>("example"),
 };
 
 let fb: FirebaseServices | null = null;
@@ -151,19 +155,28 @@ function renderNet() {
   els.net.dataset.state = online ? "on" : "off";
 }
 
-function badge(source: "on_device" | "in_cloud" | "queued"): string {
-  const label = { on_device: "On-device", in_cloud: "Cloud", queued: "Queued" }[source];
+function badge(source: "on_device" | "in_cloud" | "queued" | "example"): string {
+  const label = { on_device: "On-device", in_cloud: "Cloud", queued: "Queued", example: "Example" }[
+    source
+  ];
   return `<span class="badge badge--${source}">${label}</span>`;
 }
 
-function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: number) {
+function renderBoard(
+  board: Storyboard,
+  source: "on_device" | "in_cloud",
+  ms?: number,
+  example = false,
+) {
   const time = ms ? ` in ${(ms / 1000).toFixed(1)}s` : "";
   els.board.innerHTML = `
-    <h3 class="board-title">${escape(board.title)} ${badge(source)} <small>${time}</small></h3>
+    <h3 class="board-title">${escape(board.title)} ${badge(example ? "example" : source)} <small>${time}</small></h3>
     ${
-      source === "in_cloud"
-        ? `<p class="muted">This device doesn't have Gemini Nano, so the storyboard was written in the cloud.</p>`
-        : ""
+      example
+        ? `<p class="muted">An example lesson made earlier with Lessonreel (storyboard by Gemini, voice by Gemini TTS). Make your own with the form: it uses the AI live.</p>`
+        : source === "in_cloud"
+          ? `<p class="muted">This device doesn't have Gemini Nano, so the storyboard was written in the cloud.</p>`
+          : ""
     }
     <ol class="scenes">
       ${board.scenes
@@ -171,7 +184,7 @@ function renderBoard(board: Storyboard, source: "on_device" | "in_cloud", ms?: n
           (s) => `<li data-scene="${s.index}">
             <div class="scene-head">
               <strong>${escape(s.title)}</strong> <small>${s.durationSec}s</small>
-              <button type="button" class="tertiary scene-edit" data-edit="${s.index}" aria-label="Edit scene ${s.index}">Edit</button>
+              ${example ? "" : `<button type="button" class="tertiary scene-edit" data-edit="${s.index}" aria-label="Edit scene ${s.index}">Edit</button>`}
             </div>
             <div class="scene-body">
               <p>${escape(s.narration)}</p>
@@ -252,7 +265,7 @@ function openEditor(sceneIndex: number) {
 
 function closeEditor(sceneIndex: number) {
   if (!current) return;
-  renderBoard(current.board, current.storyboardSource);
+  renderBoard(current.board, current.storyboardSource, undefined, current.example);
   els.board.querySelector<HTMLButtonElement>(`[data-edit="${sceneIndex}"]`)?.focus();
 }
 
@@ -306,6 +319,57 @@ function onBoardClick(e: MouseEvent) {
   if (target.dataset.edit) openEditor(Number(target.dataset.edit));
   else if (target.dataset.save) void saveScene(Number(target.dataset.save));
   else if (target.dataset.cancel) closeEditor(Number(target.dataset.cancel));
+}
+
+interface ExampleFile {
+  audience: string;
+  languages: string[];
+  board: Storyboard;
+}
+
+/** Opens the built-in example lesson (public/example). Loaded on demand, then kept in IndexedDB. */
+async function onExample() {
+  els.example.disabled = true;
+  try {
+    const res = await fetch("example/lesson.json");
+    if (!res.ok) throw new Error(`example/lesson.json: ${res.status}`);
+    const ex = (await res.json()) as ExampleFile;
+    const project: Project = {
+      id: "example-lesson",
+      createdAt: Date.now(),
+      notes: "",
+      audience: ex.audience,
+      languages: ex.languages,
+      board: ex.board,
+      storyboardSource: "in_cloud",
+      jobsPlanned: true,
+      example: true,
+    };
+    await Promise.all(
+      project.board.scenes.flatMap((scene) =>
+        project.languages.map(async (lang) => {
+          const clip = await fetch(exampleClipPath(scene.index, lang));
+          if (clip.ok) {
+            await saveAsset(assetKey(project.id, scene.index, "tts", lang), await clip.blob());
+          }
+        }),
+      ),
+    );
+    await saveProject(project);
+    current = project;
+    lastJobs = [];
+    lastAnnounced = -1;
+    renderBoard(project.board, project.storyboardSource, undefined, true);
+    renderVideoControls(project);
+    await runQueue();
+    setStatus("Example lesson ready. Press Preview video to watch it.", "ok");
+    els.board.closest("section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (err) {
+    console.warn("Example lesson failed to load:", err);
+    setStatus("The example lesson couldn't be opened. Reload the page and try again.", "warn");
+  } finally {
+    els.example.disabled = false;
+  }
 }
 
 async function onCopyQuiz() {
@@ -554,6 +618,12 @@ async function onRetry() {
 }
 
 async function runQueue() {
+  if (current?.example) {
+    // Example lesson: everything is already on the device; no cloud jobs.
+    const jobs = exampleJobs(current.id, current.board.scenes.length, current.languages);
+    renderQueue({ done: jobs.length, total: jobs.length, failed: 0 }, jobs);
+    return;
+  }
   if (!fb || !current) return;
   if (!fb.uid) {
     // Not signed in yet: show what's waiting; planning happens when sign-in completes.
@@ -728,7 +798,7 @@ async function boot() {
 
   current = (await latestProject()) ?? null;
   if (current) {
-    renderBoard(current.board, current.storyboardSource);
+    renderBoard(current.board, current.storyboardSource, undefined, current.example);
     renderVideoControls(current);
     void runQueue();
   }
@@ -740,6 +810,7 @@ async function boot() {
   els.retry.addEventListener("click", () => void onRetry());
   els.copyQuiz.addEventListener("click", () => void onCopyQuiz());
   els.board.addEventListener("click", onBoardClick);
+  els.example.addEventListener("click", () => void onExample());
   els.videoLang.addEventListener("change", () => renderQueue(lastProgress));
 }
 

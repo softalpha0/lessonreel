@@ -302,6 +302,9 @@ select:focus-visible {
 .badge--queued {
   background: var(--color-queued);
 }
+.badge--example {
+  background: var(--color-stage);
+}
 
 /* S-2 storyboard */
 .board-title {

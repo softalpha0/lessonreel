@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { optionLetter, quizText, videoFileName, videoLanguages, videoReady } from "../src/video";
+import {
+  exampleClipPath,
+  exampleJobs,
+  optionLetter,
+  quizText,
+  videoFileName,
+  videoLanguages,
+  videoReady,
+} from "../src/video";
 
 describe("videoFileName (F9.5)", () => {
   it("slugs the title and adds language and extension", () => {
@@ -58,5 +66,17 @@ describe("videoReady (F9.4 per language)", () => {
   it("needs every picture too, and at least one job", () => {
     expect(videoReady([...jobs, { kind: "image", status: "failed" }], "en-US")).toBe(false);
     expect(videoReady([], "en-US")).toBe(false);
+  });
+});
+
+describe("example lesson", () => {
+  it("has every voice done and no picture jobs, so its video is ready at once", () => {
+    const jobs = exampleJobs("example", 5, ["en-US", "fr-FR"]);
+    expect(jobs).toHaveLength(10);
+    expect(jobs.every((j) => j.status === "done" && j.kind === "tts")).toBe(true);
+    expect(videoReady(jobs, "fr-FR")).toBe(true);
+  });
+  it("names clips by scene and language", () => {
+    expect(exampleClipPath(2, "fr-FR")).toBe("example/scene-2-fr-FR.wav");
   });
 });
